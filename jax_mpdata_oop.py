@@ -197,3 +197,32 @@ solver.solve(50)
 quicklook(solver.state())
 
 plt.show()
+
+# import time
+
+# times = []
+
+# for _ in range(100):
+#     solver = SolverDonorcell(
+#         bcx=Cyclic,
+#         bcy=Cyclic,
+#         nx=20,
+#         ny=30,
+#     )
+
+#     solver.set_courant(0, -0.2)
+#     solver.set_courant(1, 0.5)
+
+#     solver.set_state(fill_gaussian(solver.state()))
+
+#     start = time.perf_counter()
+
+#     solver.solve(50)
+
+#     end = time.perf_counter()
+#     print(f"Time: {end - start:.6f} seconds")
+
+#     times.append(end - start)
+
+# print("Average time:")
+# print(sum(times)/len(times))
