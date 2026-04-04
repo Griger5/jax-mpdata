@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - if: matrix.os == 'macos-15-intel'
-        run: pip install jaxlib
+        run: pip install -r https://raw.githubusercontent.com/intel/intel-extension-for-openxla/main/test/requirements.txt
 
       - run: pip install --verbose -e .[benchmarks]
       - run: python benchmarks/main.py
