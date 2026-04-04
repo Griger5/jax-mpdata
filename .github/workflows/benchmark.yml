@@ -22,5 +22,8 @@ jobs:
         os: [ubuntu-latest, ubuntu-24.04-arm, macos-15, macos-15-intel, windows-latest]
     steps:
       - uses: actions/checkout@v6
+      - if: matrix.os == 'macos-15-intel'
+        run: pip install jaxlib
+
       - run: pip install --verbose -e .[benchmarks]
       - run: python benchmarks/main.py
