@@ -15,5 +15,6 @@ dependencies = [
 
 [project.optional-dependencies]
 benchmarks = [
-    "xarray"
+    "xarray",
+    "netCDF4"
 ]
