@@ -9,7 +9,11 @@ import matplotlib.pyplot as plt
 real_t = "float32"
 
 cpu_device = jax.devices("cpu")[0]
-gpu_device = jax.devices("gpu")[0]
+
+try:
+    gpu_device = jax.devices("gpu")[0]
+except:
+    gpu_device = None
 
 def donorcell(psi_l, psi_r, C):
     return ((C + jnp.abs(C)) * psi_l + (C - jnp.abs(C)) * psi_r) / 2
