@@ -146,16 +146,6 @@ def ext(r, n):
 		(r + n).stop
 	)
 
-solver = solver_donorcell(
-	bcx=cyclic,
-	bcy=cyclic,
-	nx=20,
-	ny=30,
-)
-
-print(solver.i)
-print(solver.j)
-
 def quicklook(arg):
 	pyplot.imshow(arg.state(), vmax=1)
 	pyplot.colorbar()
@@ -168,42 +158,53 @@ def fill_gaussian(a):
 	sigma = min(h, w) / 6
 	a[:] = np.exp(-((x - cx)**2 + (y - cy)**2) / (2 * sigma**2))
 
-fill_gaussian(solver.state()) 
-
-print(solver.state())
-
-solver.courant(0)[:,:] = -.2
-solver.courant(1)[:,:] = .5
-
-# quicklook(solver)
-# solver.solve(50)
-# quicklook(solver)
-
-import time
-
-times = []
-
-for _ in range(100):
+if __name__ == "__main__":
 	solver = solver_donorcell(
 		bcx=cyclic,
 		bcy=cyclic,
-		nx=200,
-		ny=300,
+		nx=20,
+		ny=30,
 	)
 
+	print(solver.i)
+	print(solver.j)
+
 	fill_gaussian(solver.state()) 
+
+	print(solver.state())
 
 	solver.courant(0)[:,:] = -.2
 	solver.courant(1)[:,:] = .5
 
-	start = time.perf_counter()
+	# quicklook(solver)
+	# solver.solve(50)
+	# quicklook(solver)
 
-	solver.solve(500)
+	import time
 
-	end = time.perf_counter()
-	print(f"Time: {end - start:.6f} seconds")
+	times = []
 
-	times.append(end - start)
+	for _ in range(100):
+		solver = solver_donorcell(
+			bcx=cyclic,
+			bcy=cyclic,
+			nx=200,
+			ny=300,
+		)
 
-print("Average time:")
-print(sum(times)/len(times))
+		fill_gaussian(solver.state()) 
+
+		solver.courant(0)[:,:] = -.2
+		solver.courant(1)[:,:] = .5
+
+		start = time.perf_counter()
+
+		solver.solve(500)
+
+		end = time.perf_counter()
+		print(f"Time: {end - start:.6f} seconds")
+
+		times.append(end - start)
+
+	print("Average time:")
+	print(sum(times)/len(times))
