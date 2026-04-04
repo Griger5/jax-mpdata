@@ -52,7 +52,7 @@ def step(psi, Cx, Cy, halo):
     return psi
 
 @jax.jit(static_argnums=(4,))
-def solve(psi0, Cx, Cy, nt, halo=1):
+def solve(psi0, Cx, Cy, nt, halo = 1):
     def body(n, psi):
         return step(psi, Cx, Cy, halo)
 
@@ -83,41 +83,43 @@ def quicklook(arg, halo):
 	im = ax.imshow(arg[halo:-halo, halo:-halo], vmax=1)
 	fig.colorbar(im, ax=ax)
 
-nx, ny = 20, 30
-nt = 50
-halo = 1
+if __name__ == "__main__":
+    # nx, ny = 200, 300
+    # nt = 500
+    # halo = 1
 
-psi0, Cx, Cy = init(nx, ny, halo)
-quicklook(psi0, halo)
-plt.show()
+    # psi0, Cx, Cy = init(nx, ny, halo)
+    # quicklook(psi0, halo)
+    # plt.show()
 
-start = time.perf_counter()
-psi_final = solve(psi0, Cx, Cy, nt, halo)
-end = time.perf_counter()
+    # start = time.perf_counter()
+    # psi_final = solve(psi0, Cx, Cy, nt, halo)
+    # end = time.perf_counter()
 
-quicklook(psi_final, halo)
-plt.show()
+    # quicklook(psi_final, halo)
+    # plt.show()
 
-print(f"Time: {end - start:.6f} s")
+    # print(f"Time: {end - start:.6f} s")
 
-# times = {cpu_device: [], gpu_device : []}
+    times = {cpu_device: [], gpu_device : []}
 
-# for _ in range(10):
-#     for device, name in zip([cpu_device, gpu_device], ["CPU", "GPU"]):
-#         print("#########################      " + name + "     ##########################")
-#         with jax.default_device(device):
-#             nx = 30
-#             ny = 20
-#             halo = 1
+    for _ in range(10):
+        for device, name in zip([cpu_device, gpu_device], ["CPU", "GPU"]):
+            print("#########################      " + name + "     ##########################")
+            with jax.default_device(device):
+                nx = 200
+                ny = 300
+                halo = 1
+                nt = 500
 
-#             psi0, Cx, Cy = init(nx, ny, halo)
+                psi0, Cx, Cy = init(nx, ny, halo)
 
-#             start = time.perf_counter()
-#             psi_final = solve(psi0, Cx, Cy, nt, halo)
-#             end = time.perf_counter()
+                start = time.perf_counter()
+                psi_final = solve(psi0, Cx, Cy, nt, halo)
+                end = time.perf_counter()
 
-#             print(f"Time: {end - start:.6f} seconds")
+                print(f"Time: {end - start:.6f} seconds")
 
-#             times[device].append(end - start)
+                times[device].append(end - start)
 
-#         print(f"{min(times[device])=}")
+            print(f"{min(times[device])=}")
