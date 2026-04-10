@@ -3,6 +3,7 @@ import importlib.util
 import time
 
 import xarray as xr
+import numpy as np
 
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
@@ -17,35 +18,42 @@ def load_module_from_path(path: Path):
 
     return module
 
-def benchmark_module(module_name, data, metadata, iters = 100):
-    results = []
+def benchmark_module(module_name: Path, data, metadata, iters = 10):
+    time_results = []
+    result = None
 
     setup_function_name = "setup"
     compute_function_name = "compute"
+    to_numpy_function_name = "result_to_numpy"
 
-    path = Path(module_name) / "benchmark.py"
+    path = module_name / "benchmark.py"
     
     module = load_module_from_path(path)
 
     if hasattr(module, setup_function_name):
         setup_f = getattr(module, setup_function_name)
 
-        setup_f(metadata)
+        setup_f(data, metadata)
 
     if hasattr(module, compute_function_name):
         compute_f = getattr(module, compute_function_name)
+
+        # avoid a cold start for JIT compilation, save a single result
+        result = compute_f(data, metadata)
 
         for _ in range(iters):
             start = time.perf_counter()
             compute_f(data, metadata)
             end = time.perf_counter()
 
-            results.append((end - start))
+            time_results.append((end - start))
 
-    print(f"########## {module_name.stem} ##########")
-    print(f"Min = {min(results):.6f}s")
-    print(f"Max = {max(results):.6f}s")
-    print(f"Average = {sum(results)/len(results):.6f}s")
+    if hasattr(module, to_numpy_function_name):
+        to_numpy_f = getattr(module, to_numpy_function_name)
+
+        result = to_numpy_f(result, metadata)
+
+    return result, time_results
 
 if __name__ == "__main__":
     for data_path in DATA_DIR.glob("*.nc"):
@@ -66,8 +74,30 @@ if __name__ == "__main__":
         data = (psi, Cx, Cy)
         metadata = {"size_x" : ds.attrs["size_x"], "size_y" : ds.attrs["size_y"], "halo" : ds.attrs["halo"], "steps" : ds.attrs["steps"]}
 
+        results = {}
+
         for directory in MODELS_DIR.iterdir():
             if not directory.is_dir():
                 continue
             
-            benchmark_module(directory, data, metadata)
+            result, time_results = benchmark_module(directory, data, metadata)
+
+            results[directory.stem] = result
+
+            print(f"########## {directory.stem} ##########")
+            print(f"Min = {min(time_results):.6f}s")
+            print(f"Max = {max(time_results):.6f}s")
+            print(f"Average = {sum(time_results)/len(time_results):.6f}s")
+
+        reference_algorithm = "Arabas_et_al_2014"
+
+        reference = results[reference_algorithm]
+        failures = 0
+
+        for name, res in results.items():
+            if not np.allclose(res, reference, atol=1e-6):
+                print(f"Result mismatch in \"{name}\":")
+                failures += 1
+
+        if failures:
+            raise AssertionError(f"{failures} algorithms did not match reference result ({reference_algorithm})")
