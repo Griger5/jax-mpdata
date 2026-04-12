@@ -22,6 +22,24 @@ jobs:
         os: [ubuntu-latest, ubuntu-24.04-arm, macos-15, windows-latest]
     steps:
       - uses: actions/checkout@v6
+
+      - if: matrix.os == 'windows-latest'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: false
+          install: >-
+            mingw-w64-x86_64-gcc-fortran
+            mingw-w64-x86_64-ninja
+            m4
+      
+      - if: matrix.os == 'macos-15'
+        run: brew reinstall gcc
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
       - run: pip install --verbose -e .[benchmarks]
       - run: pip install -e benchmarks/models/NCAR/
       - run: python benchmarks/main.py
