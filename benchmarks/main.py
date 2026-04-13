@@ -100,4 +100,4 @@ if __name__ == "__main__":
                 failures += 1
 
         if failures:
-            raise AssertionError(f"{failures} algorithms did not match reference result ({reference_algorithm})")
+            raise AssertionError(f"{failures} algorithm{"" if failures == 1 else "s"} did not match the reference result ({reference_algorithm})")

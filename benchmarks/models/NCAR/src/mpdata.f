@@ -1,3 +1,4 @@
+c     based on https://github.com/igfuw/bE_SDs/blob/master/babyEULAG.SDs.for
       subroutine mpdat_2d(u1,u2,x,h,nx,nz,iflg,liner)
       integer nx, nz
       integer nxz, n1, n2, n1m, n2m
