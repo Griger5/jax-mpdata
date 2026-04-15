@@ -21,7 +21,7 @@ add_library(mpdata_fortran STATIC
     src/mpdata_wrapper.F90
 )
 
-nanobind_add_module(ncar_mpdata
+nanobind_add_module(ncar_mpdata NOMINSIZE
     src/mpdata.cpp
 )
 

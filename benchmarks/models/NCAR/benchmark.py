@@ -7,7 +7,7 @@ h = None
 u1 = None
 u2 = None
 
-def setup(data, metadata: dict = {}):
+def setup(data, metadata: dict):
     global psi, h, u1, u2
 
     psi_in = np.array(data[0], dtype=np.float32)
@@ -28,13 +28,12 @@ def setup(data, metadata: dict = {}):
         np.full((metadata["size_x"] + 1, metadata["size_y"] + 2), data[2][metadata["halo"], metadata["halo"]], dtype=np.float32)
     )
 
-def compute(data, metadata: dict = {}):
+def compute(data, metadata: dict):
     global psi, h, u1, u2
 
-    for _ in range(metadata["steps"]):
-        ncar_mpdata.mpdata_2d(u1, u2, psi, h, 0, 0)
+    ncar_mpdata.mpdata_2d(u1, u2, psi, h, 0, 0, metadata["steps"])
 
     return psi.copy()
 
-def result_to_numpy(result, metadata):
+def result_to_numpy(result, metadata: dict):
     return np.ascontiguousarray(result[:metadata["size_x"], :metadata["size_y"]])

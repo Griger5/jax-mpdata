@@ -1,5 +1,6 @@
 c     based on https://github.com/igfuw/bE_SDs/blob/master/babyEULAG.SDs.for
-      subroutine mpdat_2d(u1,u2,x,h,nx,nz,iflg,liner)
+      subroutine mpdat_2d(u1,u2,x,h,nx,nz,iflg,liner,v1,v2,f1,f2,cp,cn
+     1,mx,mn)
       integer nx, nz
       integer nxz, n1, n2, n1m, n2m
       integer i,j,k,im,ip,jm,jp,i0
@@ -9,8 +10,14 @@ c     based on https://github.com/igfuw/bE_SDs/blob/master/babyEULAG.SDs.for
       real, intent(inout) :: x(nx, nz)
       real, intent(in)    :: h(nx, nz)
 
-      real, allocatable :: v1(:,:), v2(:,:), f1(:,:), f2(:,:)
-      real, allocatable :: cp(:,:), cn(:,:), mx(:,:), mn(:,:)
+      real, intent(inout)  :: v1(nx + 1, nz)
+      real, intent(inout)  :: v2(nx, nz + 1)
+      real, intent(inout)  :: f1(nx + 1, nz)
+      real, intent(inout)  :: f2(nx, nz + 1)
+      real, intent(inout)  :: cp(nx, nz)
+      real, intent(inout)  :: cn(nx, nz)
+      real, intent(inout)  :: mx(nx, nz)
+      real, intent(inout)  :: mn(nx, nz)
 
       real, parameter :: ep = 1.e-12
 
@@ -22,15 +29,6 @@ c
       n2m = nz
       nxz = nx * nz
 
-      allocate(v1(n1, n2m))
-      allocate(v2(n1m, n2))
-      allocate(f1(n1, n2m))
-      allocate(f2(n1m, n2))
-      allocate(cp(n1m, n2m))
-      allocate(cn(n1m, n2m))
-      allocate(mx(n1m, n2m))
-      allocate(mn(n1m, n2m))
- 
       iord=iord0
       if(isor.eq.3) iord=max0(iord,3)
       if(liner.eq.1) iord=1
