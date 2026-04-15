@@ -6,7 +6,7 @@ def gaussian_2d(height, width):
     cy, cx = (height - 1) / 2, (width - 1) / 2
     sigma = min(height, width) / 6
 
-    return np.exp(-((x - cx)**2 + (y - cy)**2) / (2 * sigma**2))
+    return np.exp(-((x - cx)**2 + (y - cy)**2) / (2 * sigma**2), dtype="float32")
 
 if __name__ == "__main__":
     size_x = 200
