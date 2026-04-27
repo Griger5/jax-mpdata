@@ -1,0 +1,15 @@
+[build-system]
+requires = ["scikit-build-core >=0.4.3", "nanobind >=1.3.2", "setuptools-scm==8.3.1"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "libmpdataxx"
+version = "0.0.1"
+description = "C++ MPDATA solver with nanobind bindings"
+requires-python = ">=3.9"
+
+[tool.scikit-build]
+cmake.minimum-version = "3.18"
+build-dir = "build/"
+cmake.verbose = true
+ninja.make-fallback = true
