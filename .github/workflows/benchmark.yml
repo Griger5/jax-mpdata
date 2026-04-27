@@ -19,22 +19,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-15, windows-latest]
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-15]
     steps:
       - uses: actions/checkout@v6
-
-      - if: matrix.os == 'windows-latest'
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW64
-          update: false
-          install: >-
-            mingw-w64-x86_64-gcc-fortran
-            mingw-w64-x86_64-ninja
-            m4
       
       - if: matrix.os == 'macos-15'
         run: brew reinstall gcc
+
+      - if: startsWith(matrix.os, 'ubuntu-')
+        run: sudo apt-get install libblitz0-dev libboost-thread-dev libboost-date-time-dev libboost-system-dev libboost-iostreams-dev libboost-timer-dev libboost-filesystem-dev
+          
+      - if: startsWith(matrix.os, 'macos-')
+        run: brew install blitz boost
+
+        run: |
+          git clone https://github.com/igfuw/libmpdataxx.git
+          cd libmpdataxx/libmpdata++
+          mkdir build
+          cd build
+          cmake ..
+          sudo make install
+          cd ../../../
+          rm -rf libmpdataxx
 
       - uses: actions/setup-python@v5
         with:
