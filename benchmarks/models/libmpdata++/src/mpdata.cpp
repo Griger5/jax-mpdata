@@ -14,7 +14,7 @@ using Array2D = nb::ndarray<T, nb::ndim<2>, nb::c_contig>;
 using namespace libmpdataxx;
 
 Array2D<> mpdata_2d(Array2D<> advectee_np, Array2D<> u_np, Array2D<> v_np, double dt, int nt, int n_iters) {
-    std::cerr.setstate(std::ios_base::failbit);
+    // std::cerr.setstate(std::ios_base::failbit);
     enum {x, y};
 
     struct ct_params_t : ct_params_default_t {
@@ -38,19 +38,49 @@ Array2D<> mpdata_2d(Array2D<> advectee_np, Array2D<> u_np, Array2D<> v_np, doubl
 
     concurr::serial<slv_t, bcond::cyclic, bcond::cyclic, bcond::cyclic, bcond::cyclic> slv{p};
 
-    blitz::Array<ct_params_t::real_t, 2> adv(advectee_np.data(), blitz::shape(nx, ny), blitz::neverDeleteData);
-    blitz::Array<ct_params_t::real_t, 2> u(u_np.data(), blitz::shape(nx + 1, ny), blitz::neverDeleteData);
-    blitz::Array<ct_params_t::real_t, 2> v(v_np.data(), blitz::shape(nx, ny + 1), blitz::neverDeleteData);
+    // blitz::Array<ct_params_t::real_t, 2> adv(advectee_np.data(), blitz::shape(nx, ny), blitz::neverDeleteData);
+    // blitz::Array<ct_params_t::real_t, 2> u(u_np.data(), blitz::shape(nx + 1, ny), blitz::neverDeleteData);
+    // blitz::Array<ct_params_t::real_t, 2> v(v_np.data(), blitz::shape(nx, ny + 1), blitz::neverDeleteData);
 
-    slv.advectee().reference(adv);
-    slv.advector(x).reference(u);
-    slv.advector(y).reference(v);
+    // // slv.advectee().reference(adv);
+    // // slv.advector(x).reference(u);
+    // // slv.advector(y).reference(v);
+
+    // slv.advectee() = adv;
+    // slv.advector(x) = u;
+    // slv.advector(y) = v;
+
+    // slv.advance(nt);
+
+    // std::memcpy(advectee_np.data(), slv.advectee().data(), nx * ny * sizeof(float));
+
+    // return advectee_np;
+
+    blitz::GeneralArrayStorage<2> cStorage;
+    cStorage.ordering() = blitz::secondDim, blitz::firstDim;  // last dim varies fastest
+    cStorage.base() = 0, 0;
+    cStorage.ascendingFlag() = true, true;
+
+    blitz::Range i{0, nx - 1};
+    blitz::Range j{0, ny - 1};
+
+    blitz::Array<ct_params_t::real_t, 2> adv(
+        advectee_np.data(), blitz::shape(nx, ny), blitz::neverDeleteData, cStorage);
+    blitz::Array<ct_params_t::real_t, 2> u(
+        u_np.data(), blitz::shape(nx + 1, ny), blitz::neverDeleteData, cStorage);
+    blitz::Array<ct_params_t::real_t, 2> v(
+        v_np.data(), blitz::shape(nx, ny + 1), blitz::neverDeleteData, cStorage);
+
+    slv.advectee()(i,j) = adv;
+    slv.advector(x)(i,j) = u;
+    slv.advector(y)(i,j) = v;
 
     slv.advance(nt);
 
-    std::memcpy(advectee_np.data(), slv.advectee().data(), nx * ny * sizeof(float));
+    adv = slv.advectee()(i,j);
 
     return advectee_np;
+    // return adv.data();
 }
 
 NB_MODULE(libmpdataxx, m) {
