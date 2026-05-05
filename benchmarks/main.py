@@ -57,14 +57,6 @@ def benchmark_module(module_name: Path, data, metadata, iters = 10):
 
     return result, time_results
 
-import matplotlib.pyplot as plt
-
-def quicklook(arg):
-	fig, ax = plt.subplots()
-	
-	im = ax.imshow(arg, vmax=1)
-	fig.colorbar(im, ax=ax)
-
 if __name__ == "__main__":
     for data_path in DATA_DIR.glob("*.nc"):
         ds = xr.open_dataset(data_path)
@@ -108,10 +100,6 @@ if __name__ == "__main__":
             if not np.allclose(res, reference, atol=1e-6, rtol=1e-5):
                 print(f"Result mismatch in \"{name}\".")
                 failures += 1
-
-            quicklook(res)
-
-        plt.show()
 
         if failures:
             raise AssertionError(f"{failures} algorithm{"" if failures == 1 else "s"} did not match the reference result ({reference_algorithm})")
