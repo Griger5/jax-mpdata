@@ -32,7 +32,8 @@ jobs:
       - if: startsWith(matrix.os, 'macos-')
         run: brew install blitz boost
 
-      - run: |
+      - if: startsWith(matrix.os, 'ubuntu-')
+        run: |
           git clone https://github.com/igfuw/libmpdataxx.git
           cd libmpdataxx/libmpdata++
           mkdir build
