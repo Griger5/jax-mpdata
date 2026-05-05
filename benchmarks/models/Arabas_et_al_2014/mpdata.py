@@ -146,6 +146,98 @@ def ext(r, n):
         (r + n).stop
     )
 
+#listing09
+def mpdata_frac(nom, den):
+    return numpy.where(den > 0, nom/den, 0)
+
+#listing10
+def mpdata_A(d, psi, i, j):
+    return mpdata_frac(
+        psi[pi(d, i+one, j)] - psi[pi(d, i, j)],
+        psi[pi(d, i+one, j)] + psi[pi(d, i, j)]
+    )
+
+#listing11
+def mpdata_B(d, psi, i, j):
+    return mpdata_frac( 
+        psi[pi(d, i+one, j+one)] + psi[pi(d, i, j+one)] -
+        psi[pi(d, i+one, j-one)] - psi[pi(d, i, j-one)],
+        psi[pi(d, i+one, j+one)] + psi[pi(d, i, j+one)] +
+        psi[pi(d, i+one, j-one)] + psi[pi(d, i, j-one)]
+    ) / 2
+
+#listing12
+def mpdata_C_bar(d, C, i, j):
+    return (
+        C[pi(d, i+one, j+hlf)] + C[pi(d, i,  j+hlf)] +
+        C[pi(d, i+one, j-hlf)] + C[pi(d, i,  j-hlf)] 
+    ) / 4
+
+#listing13
+def mpdata_C_adf(d, psi, i, j, C):
+    return (
+        abs(C[d][pi(d, i+hlf, j)]) 
+        * (1 - abs(C[d][pi(d, i+hlf, j)])) 
+        * mpdata_A(d, psi, i, j)
+        - C[d][pi(d, i+hlf, j)] 
+        * mpdata_C_bar(d, C[d-1], i, j)
+        * mpdata_B(d, psi, i, j)
+    )
+
+#listing18
+class solver_mpdata(Solver):
+    def __init__(self, n_iters, bcx, bcy, nx, ny):
+        Solver.__init__(self, bcx, bcy, nx, ny, 1)
+        self.im = slice(self.i.start-1, self.i.stop)
+        self.jm = slice(self.j.start-1, self.j.stop)
+
+        self.n_iters = n_iters
+    
+        self.tmp = [(
+        numpy.empty(self.C[0].shape, real_t),
+        numpy.empty(self.C[1].shape, real_t)
+        )]
+        if n_iters > 2:
+            self.tmp.append((
+                numpy.empty(self.C[0].shape, real_t),
+                numpy.empty(self.C[1].shape, real_t)    
+            ))
+
+    def advop(self):
+        for step in range(self.n_iters):
+            if step == 0:
+                donorcell_op(
+                self.psi, self.n, self.C, self.i, self.j
+                )
+            else:
+                self.cycle()
+                self.bcx.fill_halos(
+                self.psi[self.n], ext(self.j, self.hlo)
+                )
+                self.bcy.fill_halos(
+                self.psi[self.n], ext(self.i, self.hlo)
+                )
+                if step == 1:
+                    C_unco, C_corr = self.C, self.tmp[0]
+                elif step % 2:
+                    C_unco, C_corr = self.tmp[1], self.tmp[0]
+                else:
+                    C_unco, C_corr = self.tmp[0], self.tmp[1]
+
+                C_corr[0][self.im+hlf, self.j] = mpdata_C_adf(
+                0, self.psi[self.n], self.im, self.j, C_unco
+                )
+                self.bcy.fill_halos(C_corr[0], ext(self.i, hlf))
+                
+                C_corr[1][self.i, self.jm+hlf] = mpdata_C_adf(
+                1, self.psi[self.n], self.jm, self.i, C_unco
+                )
+                self.bcx.fill_halos(C_corr[1], ext(self.j, hlf))
+
+                donorcell_op(
+                self.psi, self.n, C_corr, self.i, self.j
+                )
+
 def quicklook(arg):
     pyplot.imshow(arg.state(), vmax=1)
     pyplot.colorbar()
@@ -165,13 +257,20 @@ if __name__ == "__main__":
         nx=20,
         ny=30,
     )
+    solver2 = solver_mpdata(
+        n_iters=3,
+        bcx=cyclic,
+        bcy=cyclic,
+        nx=20,
+        ny=30,
+    )
 
-    print(solver.i)
-    print(solver.j)
+    # print(solver.i)
+    # print(solver.j)
 
     fill_gaussian(solver.state()) 
 
-    print(solver.state())
+    # print(solver.state())
 
     solver.courant(0)[:,:] = -.2
     solver.courant(1)[:,:] = .5
@@ -180,31 +279,44 @@ if __name__ == "__main__":
     # solver.solve(50)
     # quicklook(solver)
 
-    import time
+    fill_gaussian(solver2.state()) 
 
-    times = []
+    # print(solver.state())
 
-    for _ in range(100):
-        solver = solver_donorcell(
-            bcx=cyclic,
-            bcy=cyclic,
-            nx=200,
-            ny=300,
-        )
+    solver2.courant(0)[:,:] = -.2
+    solver2.courant(1)[:,:] = .5
 
-        fill_gaussian(solver.state()) 
+    quicklook(solver2)
+    solver2.solve(50)
+    quicklook(solver2)
 
-        solver.courant(0)[:,:] = -.2
-        solver.courant(1)[:,:] = .5
+    print(np.allclose(solver.state(), solver2.state()))
 
-        start = time.perf_counter()
+    # import time
 
-        solver.solve(500)
+    # times = []
 
-        end = time.perf_counter()
-        print(f"Time: {end - start:.6f} seconds")
+    # for _ in range(100):
+    #     solver = solver_donorcell(
+    #         bcx=cyclic,
+    #         bcy=cyclic,
+    #         nx=200,
+    #         ny=300,
+    #     )
 
-        times.append(end - start)
+    #     fill_gaussian(solver.state()) 
 
-    print("Average time:")
-    print(sum(times)/len(times))
+    #     solver.courant(0)[:,:] = -.2
+    #     solver.courant(1)[:,:] = .5
+
+    #     start = time.perf_counter()
+
+    #     solver.solve(500)
+
+    #     end = time.perf_counter()
+    #     print(f"Time: {end - start:.6f} seconds")
+
+    #     times.append(end - start)
+
+    # print("Average time:")
+    # print(sum(times)/len(times))
