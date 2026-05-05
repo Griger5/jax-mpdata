@@ -27,8 +27,12 @@ jobs:
         run: brew reinstall gcc
 
       - if: startsWith(matrix.os, 'ubuntu-')
-        run: |
-          sudo apt-get install libblitz0-dev libboost-thread-dev libboost-date-time-dev libboost-system-dev libboost-iostreams-dev libboost-timer-dev libboost-filesystem-dev
+        run: sudo apt-get install libblitz0-dev libboost-thread-dev libboost-date-time-dev libboost-system-dev libboost-iostreams-dev libboost-timer-dev libboost-filesystem-dev
+
+      - if: startsWith(matrix.os, 'macos-')
+        run: brew install blitz boost
+
+      - run: |
           git clone https://github.com/igfuw/libmpdataxx.git
           cd libmpdataxx/libmpdata++
           mkdir build
@@ -37,9 +41,6 @@ jobs:
           sudo make install
           cd ../../../
           rm -rf libmpdataxx
-
-      - if: startsWith(matrix.os, 'macos-')
-        run: brew install blitz boost
 
       - uses: actions/setup-python@v5
         with:
