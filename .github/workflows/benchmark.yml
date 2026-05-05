@@ -37,7 +37,7 @@ jobs:
           cd libmpdataxx/libmpdata++
           mkdir build
           cd build
-          cmake ..
+          cmake .. -DCMAKE_POLICY_VERSION_MINIMUM=3.5
           sudo make install
           cd ../../../
           rm -rf libmpdataxx
