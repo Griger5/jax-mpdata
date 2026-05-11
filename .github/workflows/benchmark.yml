@@ -49,7 +49,7 @@ jobs:
           cd libmpdataxx/libmpdata++
           mkdir build
           cd build
-          cmake .. -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DBoost_DIR=$(brew --prefix boost)/lib/cmake/Boost-1.90.0
+          cmake .. -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DBoost_ROOT=$(brew --prefix boost) -DBoost_NO_SYSTEM_PATHS=ON
           sudo make install
           cd ../../../
           rm -rf libmpdataxx
