@@ -51,7 +51,7 @@ jobs:
           cd build
           # cmake .. -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DBOOST_ROOT=$(brew --prefix boost) -DBoost_NO_SYSTEM_PATHS=ON
           cmake .. \
-          -DCMAKE_POLICY_VERSION_MINIMUM=3.10 \
+          -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
           -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
           -DCMAKE_POLICY_DEFAULT_CMP0167=NEW \
           -DBoost_DIR=$(brew --prefix boost)/lib/cmake/Boost-1.90.0
