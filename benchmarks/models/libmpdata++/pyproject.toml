@@ -3,9 +3,9 @@ requires = ["scikit-build-core >=0.4.3", "nanobind >=1.3.2", "setuptools-scm==8.
 build-backend = "scikit_build_core.build"
 
 [project]
-name = "ncar_mpdata"
+name = "libmpdataxx"
 version = "0.0.1"
-description = "Fortran NCAR MPDATA solver with nanobind bindings"
+description = "C++ MPDATA solver with nanobind bindings"
 requires-python = ">=3.9"
 
 [tool.scikit-build]
