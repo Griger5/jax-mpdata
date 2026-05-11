@@ -66,10 +66,10 @@ jobs:
       - run: pip install -e benchmarks/models/NCAR/
 
       - if: startsWith(matrix.os, 'ubuntu-')
-      - run: pip install -e benchmarks/models/libmpdata++/
+        run: pip install -e benchmarks/models/libmpdata++/
       
       - if: startsWith(matrix.os, 'macos-')
-      - run: |
+        run: |
           export CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
           pip install -e benchmarks/models/libmpdata++/
       
