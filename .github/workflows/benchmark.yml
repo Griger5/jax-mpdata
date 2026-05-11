@@ -70,7 +70,7 @@ jobs:
       
       - if: startsWith(matrix.os, 'macos-')
         run: |
-          export CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+          export CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_POLICY_DEFAULT_CMP0074=NEW -DCMAKE_POLICY_DEFAULT_CMP0167=NEW"
           pip install -e benchmarks/models/libmpdata++/
       
       - run: python benchmarks/main.py
