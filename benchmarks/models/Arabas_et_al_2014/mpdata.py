@@ -160,10 +160,8 @@ def mpdata_A(d, psi, i, j):
 #listing11
 def mpdata_B(d, psi, i, j):
     return mpdata_frac( 
-        psi[pi(d, i+one, j+one)] + psi[pi(d, i, j+one)] -
-        psi[pi(d, i+one, j-one)] - psi[pi(d, i, j-one)],
-        psi[pi(d, i+one, j+one)] + psi[pi(d, i, j+one)] +
-        psi[pi(d, i+one, j-one)] + psi[pi(d, i, j-one)]
+        psi[pi(d, i+one, j+one)] + psi[pi(d, i, j+one)] - psi[pi(d, i+one, j-one)] - psi[pi(d, i, j-one)],
+        psi[pi(d, i+one, j+one)] + psi[pi(d, i, j+one)] + psi[pi(d, i+one, j-one)] + psi[pi(d, i, j-one)]
     ) / 2
 
 #listing12
@@ -176,12 +174,8 @@ def mpdata_C_bar(d, C, i, j):
 #listing13
 def mpdata_C_adf(d, psi, i, j, C):
     return (
-        abs(C[d][pi(d, i+hlf, j)]) 
-        * (1 - abs(C[d][pi(d, i+hlf, j)])) 
-        * mpdata_A(d, psi, i, j)
-        - C[d][pi(d, i+hlf, j)] 
-        * mpdata_C_bar(d, C[d-1], i, j)
-        * mpdata_B(d, psi, i, j)
+        abs(C[d][pi(d, i+hlf, j)]) * (1 - abs(C[d][pi(d, i+hlf, j)])) * mpdata_A(d, psi, i, j)
+        - C[d][pi(d, i+hlf, j)] * mpdata_C_bar(d, C[d-1], i, j) * mpdata_B(d, psi, i, j)
     )
 
 #listing18
@@ -207,15 +201,15 @@ class solver_mpdata(Solver):
         for step in range(self.n_iters):
             if step == 0:
                 donorcell_op(
-                self.psi, self.n, self.C, self.i, self.j
+                    self.psi, self.n, self.C, self.i, self.j
                 )
             else:
                 self.cycle()
                 self.bcx.fill_halos(
-                self.psi[self.n], ext(self.j, self.hlo)
+                    self.psi[self.n], ext(self.j, self.hlo)
                 )
                 self.bcy.fill_halos(
-                self.psi[self.n], ext(self.i, self.hlo)
+                    self.psi[self.n], ext(self.i, self.hlo)
                 )
                 if step == 1:
                     C_unco, C_corr = self.C, self.tmp[0]
@@ -225,17 +219,17 @@ class solver_mpdata(Solver):
                     C_unco, C_corr = self.tmp[0], self.tmp[1]
 
                 C_corr[0][self.im+hlf, self.j] = mpdata_C_adf(
-                0, self.psi[self.n], self.im, self.j, C_unco
+                    0, self.psi[self.n], self.im, self.j, C_unco
                 )
                 self.bcy.fill_halos(C_corr[0], ext(self.i, hlf))
                 
                 C_corr[1][self.i, self.jm+hlf] = mpdata_C_adf(
-                1, self.psi[self.n], self.jm, self.i, C_unco
+                    1, self.psi[self.n], self.jm, self.i, C_unco
                 )
                 self.bcx.fill_halos(C_corr[1], ext(self.j, hlf))
 
                 donorcell_op(
-                self.psi, self.n, C_corr, self.i, self.j
+                    self.psi, self.n, C_corr, self.i, self.j
                 )
 
 def quicklook(arg):
