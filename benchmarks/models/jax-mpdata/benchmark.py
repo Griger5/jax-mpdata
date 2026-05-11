@@ -17,7 +17,7 @@ def setup(data, metadata: dict):
 def compute(data, metadata: dict):
     global psi
     with jax.default_device(cpu_device):
-        return solve(psi, data[1], data[2], metadata["steps"], metadata["halo"])
+        return solve(psi, data[1], data[2], metadata["steps"], metadata["halo"], metadata["n_iters"])
     
 def result_to_numpy(result, metadata):
     return np.asarray(result[metadata["halo"]:-metadata["halo"], metadata["halo"]:-metadata["halo"]])

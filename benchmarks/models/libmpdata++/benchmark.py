@@ -19,7 +19,7 @@ def compute(data, metadata: dict):
     psi_ext[metadata["size_x"], metadata["size_y"]] = psi_in[0, 0]
     psi = psi_ext
 
-    libmpdataxx.mpdata_2d(psi, data[1], data[2], 0.1, metadata["steps"], 1)
+    libmpdataxx.mpdata_2d(psi, data[1], data[2], 0.1, metadata["steps"], metadata["n_iters"])
 
     return psi
 

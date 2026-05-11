@@ -4,11 +4,12 @@ solver = None
 
 def setup(data, metadata: dict):
     global solver
-    solver = mpdata.solver_donorcell(
+    solver = mpdata.solver_mpdata(
         bcx = mpdata.cyclic,
         bcy = mpdata.cyclic,
         nx = metadata["size_x"],
         ny = metadata["size_y"],
+        n_iters = metadata["n_iters"]
     )
 
 def compute(data, metadata: dict):
