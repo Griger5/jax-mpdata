@@ -19,27 +19,71 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-15, windows-latest]
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-15]
     steps:
       - uses: actions/checkout@v6
-
-      - if: matrix.os == 'windows-latest'
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW64
-          update: false
-          install: >-
-            mingw-w64-x86_64-gcc-fortran
-            mingw-w64-x86_64-ninja
-            m4
       
-      - if: matrix.os == 'macos-15'
+      - name: Install gfortran on macOS
+        if: startsWith(matrix.os, 'macos-')
         run: brew reinstall gcc
+
+      - name: Install libmpdata++ dependencies (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu-')
+        run: sudo apt-get install libblitz0-dev libboost-thread-dev libboost-date-time-dev libboost-system-dev libboost-iostreams-dev libboost-timer-dev libboost-filesystem-dev
+
+      - name: Install libmpdata++ dependencies (macOS)
+        if: startsWith(matrix.os, 'macos-')
+        run: brew install blitz boost
+
+      - name: Install libmpdata++ (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu-')
+        run: |
+          git clone https://github.com/igfuw/libmpdataxx.git
+          cd libmpdataxx/libmpdata++
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+          sudo make install
+          cd ../../../
+          rm -rf libmpdataxx
+
+      - name: Install libmpdata++ (macOS)
+        if: startsWith(matrix.os, 'macos-')
+        run: |
+          git clone https://github.com/igfuw/libmpdataxx.git
+          cd libmpdataxx/libmpdata++
+          mkdir build
+          cd build
+          cmake .. \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+            -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
+            -DCMAKE_POLICY_DEFAULT_CMP0167=NEW \
+            -DBoost_DIR=$(brew --prefix boost)/lib/cmake/Boost-1.90.0
+          sudo make install
+          cd ../../../
+          rm -rf libmpdataxx
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
 
-      - run: pip install --verbose -e .[benchmarks]
-      - run: pip install -e benchmarks/models/NCAR/
+      - name: Install benchmark dependencies
+        run: pip install --verbose -e .[benchmarks]
+
+      - name: Create NCAR bindings
+        run: pip install -e benchmarks/models/NCAR/
+
+      - name: Create libmpdata++ bindings (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu-')
+        run: pip install -e benchmarks/models/libmpdata++/
+      
+      - name: Create libmpdata++ bindings (macOS)
+        if: startsWith(matrix.os, 'macos-')
+        run: |
+          export CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_POLICY_DEFAULT_CMP0074=NEW -DCMAKE_POLICY_DEFAULT_CMP0167=NEW -DCMAKE_CXX_FLAGS='-Wno-error=narrowing'"
+          export CMAKE_PREFIX_PATH="/opt/homebrew"
+          export LDFLAGS="-L/opt/homebrew/lib"
+          export CPPFLAGS="-I/opt/homebrew/include"
+          pip install -e benchmarks/models/libmpdata++/
+      
       - run: python benchmarks/main.py

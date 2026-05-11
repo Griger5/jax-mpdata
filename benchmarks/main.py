@@ -1,6 +1,7 @@
 from pathlib import Path
 import importlib.util
 import time
+import copy
 
 import xarray as xr
 import numpy as np
@@ -34,18 +35,21 @@ def benchmark_module(module_name: Path, data, metadata, iters = 10):
     compute_f = getattr(module, compute_function_name)
     to_numpy_f = getattr(module, to_numpy_function_name)
 
-    setup_f(data, metadata)
+    data_copy = copy.deepcopy(data)
+
+    setup_f(data_copy, metadata)
 
     # avoid a cold start for JIT compilation, save a single result
-    result = compute_f(data, metadata)
+    result = compute_f(data_copy, metadata)
 
     result = to_numpy_f(result, metadata)
 
     for _ in range(iters):
-        setup_f(data, metadata)
+        data_copy = copy.deepcopy(data)
+        setup_f(data_copy, metadata)
 
         start = time.perf_counter()
-        result = compute_f(data, metadata)
+        result = compute_f(data_copy, metadata)
         result = to_numpy_f(result, metadata)
         end = time.perf_counter()
 
