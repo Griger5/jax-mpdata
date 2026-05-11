@@ -67,6 +67,7 @@ if __name__ == "__main__":
         print(f"size_y = {ds.attrs["size_y"]}")
         print(f"halo = {ds.attrs["halo"]}")
         print(f"steps = {ds.attrs["steps"]}")
+        print(f"n_iters = {ds.attrs["n_iters"]}")
         print("####################")
 
         psi = ds["psi"].to_numpy()
@@ -74,7 +75,7 @@ if __name__ == "__main__":
         Cy = ds["Cy"].to_numpy()
 
         data = (psi, Cx, Cy)
-        metadata = {"size_x" : ds.attrs["size_x"], "size_y" : ds.attrs["size_y"], "halo" : ds.attrs["halo"], "steps" : ds.attrs["steps"]}
+        metadata = {"size_x" : ds.attrs["size_x"], "size_y" : ds.attrs["size_y"], "halo" : ds.attrs["halo"], "steps" : ds.attrs["steps"], "n_iters" : ds.attrs["n_iters"]}
 
         results = {}
 
