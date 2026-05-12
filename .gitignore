@@ -4,3 +4,13 @@
 .vscode
 *.egg-info
 build
+
+thesis/.quarto
+thesis/thesis_files
+thesis/logo_AGH.pdf
+thesis/refs.bib
+thesis/thesis.aux
+thesis/thesis.bcf
+thesis/thesis.log
+thesis/thesis.tex
+thesis/thesis.pdf
