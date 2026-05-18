@@ -14,3 +14,5 @@ thesis/thesis.bcf
 thesis/thesis.log
 thesis/thesis.tex
 thesis/thesis.pdf
+
+benchmarks_results.json

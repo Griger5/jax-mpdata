@@ -5,6 +5,7 @@
 
 #include <libmpdata++/solvers/mpdata.hpp>
 #include <libmpdata++/concurr/serial.hpp>
+#include <libmpdata++/concurr/threads.hpp>
 
 namespace nb = nanobind;
 
@@ -36,7 +37,7 @@ Array2D<> mpdata_2d(Array2D<> advectee_np, Array2D<> u_np, Array2D<> v_np, doubl
     p.dj = ny;
     p.dt = dt;
 
-    concurr::serial<slv_t, bcond::cyclic, bcond::cyclic, bcond::cyclic, bcond::cyclic> slv{p};
+    concurr::concurr<slv_t, bcond::cyclic, bcond::cyclic, bcond::cyclic, bcond::cyclic> slv{p};
 
     blitz::GeneralArrayStorage<2> cStorage;
     cStorage.ordering() = blitz::secondDim, blitz::firstDim;

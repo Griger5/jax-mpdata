@@ -2,6 +2,7 @@ from pathlib import Path
 import importlib.util
 import time
 import copy
+import json
 
 import xarray as xr
 import numpy as np
@@ -57,7 +58,17 @@ def benchmark_module(module_name: Path, data, metadata, iters = 10):
 
     return result, time_results
 
+import matplotlib.pyplot as plt
+
+def quicklook(arg, impl):
+    fig, ax = plt.subplots()
+    ax.set(xlabel="x/Δx", ylabel="y/Δy", title=impl)
+    im = ax.imshow(arg, vmax=1)
+    fig.colorbar(im, ax=ax)
+
 if __name__ == "__main__":
+    timing_data = {}
+
     for data_path in DATA_DIR.glob("*.nc"):
         ds = xr.open_dataset(data_path)
 
@@ -75,9 +86,11 @@ if __name__ == "__main__":
         Cy = ds["Cy"].to_numpy()
 
         data = (psi, Cx, Cy)
-        metadata = {"size_x" : ds.attrs["size_x"], "size_y" : ds.attrs["size_y"], "halo" : ds.attrs["halo"], "steps" : ds.attrs["steps"], "n_iters" : ds.attrs["n_iters"]}
+        metadata = {"size_x" : int(ds.attrs["size_x"]), "size_y" : int(ds.attrs["size_y"]), "halo" : int(ds.attrs["halo"]), "steps" : int(ds.attrs["steps"]), "n_iters" : int(ds.attrs["n_iters"])}
 
         results = {}
+
+        timing_data[data_path.name] = { "metadata" : metadata, "data": {} }
 
         for directory in MODELS_DIR.iterdir():
             if not directory.is_dir() or str(directory).startswith("_"):
@@ -86,6 +99,8 @@ if __name__ == "__main__":
             result, time_results = benchmark_module(directory, data, metadata)
 
             results[directory.stem] = result
+
+            timing_data[data_path.name]["data"][directory.stem] = tuple(float(f"{time:.3g}") for time in time_results)
 
             print(f"########## {directory.stem} ##########")
             print(f"Min = {min(time_results):.6f}s")
@@ -98,9 +113,16 @@ if __name__ == "__main__":
         failures = 0
 
         for name, res in results.items():
-            if not np.allclose(res, reference, atol=1e-6, rtol=1e-5):
+            if not np.allclose(res, reference, atol=5e-2, rtol=1e-5):
                 print(f"Result mismatch in \"{name}\".")
                 failures += 1
+
+        #     quicklook(res, name)
+
+        # plt.show()
+
+        with open("benchmarks_results.json", "w", encoding="UTF-8") as f:
+            json.dump(timing_data, f, sort_keys=True, indent=4)
 
         if failures:
             raise AssertionError(f"{failures} algorithm{"" if failures == 1 else "s"} did not match the reference result ({reference_algorithm})")

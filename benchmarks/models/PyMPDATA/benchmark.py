@@ -9,8 +9,8 @@ import numpy as np
 
 advectee = None
 advector = None
-options = Options(n_iters=1, dtype=np.float32)
-stepper = Stepper(options=options, n_dims=2, n_threads=1)
+options = None
+stepper = None
 solver = None
 
 def setup(data, metadata: dict):
@@ -31,6 +31,7 @@ def setup(data, metadata: dict):
     )
 
     solver = Solver(stepper=stepper, advectee=advectee, advector=advector)
+    solver.advance(n_steps=0)
 
 def compute(data, metadata: dict):
     solver.advance(n_steps=metadata["steps"])
