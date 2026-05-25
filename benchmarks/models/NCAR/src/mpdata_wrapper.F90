@@ -4,11 +4,11 @@ module mpdata_c_wrapper
 
 contains
 
-subroutine f_mpdata_2d(u1, u2, x, h, nx, nz, iflg, liner, v1,v2,f1,f2,cp,cn,mx,mn) bind(C, name="f_mpdata_2d")
+subroutine f_mpdata_2d(u1, u2, x, h, nx, nz, iflg, liner, v1,v2,f1,f2,cp,cn,mx,mn,n_iters) bind(C, name="f_mpdata_2d")
   use iso_c_binding
   implicit none
 
-  integer(c_int), value :: nx, nz, iflg, liner
+  integer(c_int), value :: nx, nz, iflg, liner, n_iters
 
   real(c_float) :: u1(*)
   real(c_float) :: u2(*)
@@ -23,7 +23,7 @@ subroutine f_mpdata_2d(u1, u2, x, h, nx, nz, iflg, liner, v1,v2,f1,f2,cp,cn,mx,m
   real(c_float) :: mx(*)
   real(c_float) :: mn(*)
 
-  call mpdat_2d(u1, u2, x, h, nx, nz, iflg, liner, v1, v2, f1, f2, cp, cn, mx, mn)
+  call mpdat_2d(u1, u2, x, h, nx, nz, iflg, liner, v1, v2, f1, f2, cp, cn, mx, mn, n_iters)
 
 end subroutine
 

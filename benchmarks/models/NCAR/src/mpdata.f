@@ -1,6 +1,6 @@
 c     based on https://github.com/igfuw/bE_SDs/blob/master/babyEULAG.SDs.for
       subroutine mpdat_2d(u1,u2,x,h,nx,nz,iflg,liner,v1,v2,f1,f2,cp,cn
-     1,mx,mn)
+     1,mx,mn,n_iters)
       integer nx, nz
       integer nxz, n1, n2, n1m, n2m
       integer i,j,k,im,ip,jm,jp,i0
@@ -21,7 +21,7 @@ c     based on https://github.com/igfuw/bE_SDs/blob/master/babyEULAG.SDs.for
 
       real, parameter :: ep = 1.e-12
 
-      parameter(iord0=1,isor=0,nonos=0,idiv=0)
+      parameter(isor=0,nonos=0,idiv=0)
 c
       n1 = nx + 1
       n2 = nz + 1
@@ -29,7 +29,7 @@ c
       n2m = nz
       nxz = nx * nz
 
-      iord=iord0
+      iord=n_iters
       if(isor.eq.3) iord=max0(iord,3)
       if(liner.eq.1) iord=1
 

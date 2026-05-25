@@ -31,7 +31,7 @@ def setup(data, metadata: dict):
 def compute(data, metadata: dict):
     global psi, h, u1, u2
 
-    ncar_mpdata.mpdata_2d(u1, u2, psi, h, 0, 0, metadata["steps"])
+    ncar_mpdata.mpdata_2d(u1, u2, psi, h, 0, 0, metadata["steps"], metadata["n_iters"])
 
     return psi.copy()
 

@@ -9,10 +9,10 @@ template <typename T = float>
 using Array2D = nb::ndarray<T, nb::ndim<2>, nb::f_contig>;
 
 extern "C" {
-    void f_mpdata_2d(float *u1, float *u2, float *x, float *h, int nx, int nz, int iflg, int liner, float *v1, float *v2, float *f1, float *f2, float *cp, float *cn, float *mx, float *mn);
+    void f_mpdata_2d(float *u1, float *u2, float *x, float *h, int nx, int nz, int iflg, int liner, float *v1, float *v2, float *f1, float *f2, float *cp, float *cn, float *mx, float *mn, int n_iters);
 }
 
-void mpdata_2d(Array2D<> u1, Array2D<> u2, Array2D<> x, Array2D<> h, int iflg, int liner, int nt) {
+void mpdata_2d(Array2D<> u1, Array2D<> u2, Array2D<> x, Array2D<> h, int iflg, int liner, int nt, int n_iters) {
     size_t nx = x.shape(0);
     size_t nz = x.shape(1);  
     size_t n1 = nx + 1;
@@ -31,7 +31,7 @@ void mpdata_2d(Array2D<> u1, Array2D<> u2, Array2D<> x, Array2D<> h, int iflg, i
     std::valarray<float> mn(n1m * n2m);
 
     for (int i = 0; i < nt; i++) {
-        f_mpdata_2d(u1.data(), u2.data(), x.data(), h.data(), x.shape(0), x.shape(1), iflg, liner, &v1[0], &v2[0], &f1[0], &f2[0], &cp[0], &cn[0], &mx[0], &mn[0]);
+        f_mpdata_2d(u1.data(), u2.data(), x.data(), h.data(), x.shape(0), x.shape(1), iflg, liner, &v1[0], &v2[0], &f1[0], &f2[0], &cp[0], &cn[0], &mx[0], &mn[0], n_iters);
     }
 }
 
