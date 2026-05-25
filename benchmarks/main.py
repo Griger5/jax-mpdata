@@ -3,9 +3,15 @@ import importlib.util
 import time
 import copy
 import json
+import os
+import platform
 
 import numba
-numba.set_num_threads(4)
+
+if platform.system() == "Darwin":
+    numba.set_num_threads(min(4, numba.config.NUMBA_NUM_THREADS))
+else:
+    numba.set_num_threads(4)
 
 import xarray as xr
 import numpy as np
@@ -90,6 +96,10 @@ if __name__ == "__main__":
         for directory in MODELS_DIR.iterdir():
             if not directory.is_dir() or str(directory).startswith("_"):
                 continue
+
+            if os.environ.get("CI", "false").lower() == "true":
+                if str(directory).endswith("_gpu"):
+                    continue
             
             result, time_results = benchmark_module(directory, data, metadata)
 
