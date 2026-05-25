@@ -20,5 +20,6 @@ include = ["jax_mpdata*"]
 benchmarks = [
     "xarray",
     "netCDF4",
-    "PyMPDATA"
+    "PyMPDATA",
+    "tqdm"
 ]

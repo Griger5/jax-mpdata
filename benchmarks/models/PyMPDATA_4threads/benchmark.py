@@ -35,7 +35,7 @@ def _setup(data, metadata, n_threads):
 def setup(data, metadata: dict):
     global solver
 
-    solver = _setup(data, metadata, 4 if not platform.system() == "Darwin" and os.environ.get("CI", "false").lower() == "true" else 3)
+    solver = _setup(data, metadata, 3 if platform.system() == "Darwin" and os.environ.get("CI", "false").lower() == "true" else 4)
 
 def compute(data, metadata: dict):
     solver.advance(n_steps=metadata["steps"])

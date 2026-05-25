@@ -15,6 +15,7 @@ else:
 
 import xarray as xr
 import numpy as np
+from tqdm import tqdm
 
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
@@ -70,17 +71,17 @@ def benchmark_module(module_name: Path, data, metadata, iters = 10):
 if __name__ == "__main__":
     timing_data = {}
 
-    for data_path in DATA_DIR.glob("*.nc"):
+    for data_path in tqdm(list(DATA_DIR.glob("*.nc")), position = 0):
         ds = xr.open_dataset(data_path)
 
-        print("####################")
-        print(f"##### {data_path.stem} #####")
-        print(f"size_x = {ds.attrs["size_x"]}")
-        print(f"size_y = {ds.attrs["size_y"]}")
-        print(f"halo = {ds.attrs["halo"]}")
-        print(f"steps = {ds.attrs["steps"]}")
-        print(f"n_iters = {ds.attrs["n_iters"]}")
-        print("####################")
+        tqdm.write("####################")
+        tqdm.write(f"##### {data_path.stem} #####")
+        tqdm.write(f"size_x = {ds.attrs["size_x"]}")
+        tqdm.write(f"size_y = {ds.attrs["size_y"]}")
+        tqdm.write(f"halo = {ds.attrs["halo"]}")
+        tqdm.write(f"steps = {ds.attrs["steps"]}")
+        tqdm.write(f"n_iters = {ds.attrs["n_iters"]}")
+        tqdm.write("####################")
 
         psi = ds["psi"].to_numpy()
         Cx = ds["Cx"].to_numpy()
@@ -93,7 +94,7 @@ if __name__ == "__main__":
 
         timing_data[data_path.name] = { "metadata" : metadata, "data": {} }
 
-        for directory in MODELS_DIR.iterdir():
+        for directory in tqdm(list(MODELS_DIR.iterdir()), position = 1, leave=False):
             if not directory.is_dir() or str(directory).startswith("_"):
                 continue
 
@@ -107,10 +108,10 @@ if __name__ == "__main__":
 
             timing_data[data_path.name]["data"][directory.stem] = tuple(float(f"{time:.3g}") for time in time_results)
 
-            print(f"########## {directory.stem} ##########")
-            print(f"Min = {min(time_results):.6f}s")
-            print(f"Max = {max(time_results):.6f}s")
-            print(f"Average = {sum(time_results)/len(time_results):.6f}s")
+            tqdm.write(f"########## {directory.stem} ##########")
+            tqdm.write(f"Min = {min(time_results):.6f}s")
+            tqdm.write(f"Max = {max(time_results):.6f}s")
+            tqdm.write(f"Average = {sum(time_results)/len(time_results):.6f}s")
 
         reference_algorithm = "Arabas_et_al_2014"
 
@@ -119,7 +120,7 @@ if __name__ == "__main__":
 
         for name, res in results.items():
             if not np.allclose(res, reference, atol=5e-2, rtol=1e-5):
-                print(f"Result mismatch in \"{name}\".")
+                tqdm.write(f"Result mismatch in \"{name}\".")
                 failures += 1
 
         with open("benchmarks_results.json", "w", encoding="UTF-8") as f:
