@@ -38,13 +38,7 @@ def create_gaussian_benchmark(size_x, size_y, steps, halo, n_iters, name):
     ds.to_netcdf(f"benchmarks/data/{name}.nc", format="NETCDF4")
 
 if __name__ == "__main__":
-    # create_gaussian_benchmark(200, 300, 500, 1, 1, "gaussian2d_big_upwind")
-    # create_gaussian_benchmark(20, 30, 50, 1, 1, "gaussian2d_small_upwind")
-
-    # create_gaussian_benchmark(200, 300, 500, 1, 3, "gaussian2d_big_mpdata")
-    # create_gaussian_benchmark(20, 30, 50, 1, 3, "gaussian2d_small_mpdata")
-
     for n_iters in range(1,4):
-        for n in np.logspace(5, 7, num = 3, base = 2).astype(int):
+        for n in np.logspace(5, 10, num = 11, base = 2).astype(int):
             create_gaussian_benchmark(n, n, 100, 1, n_iters, f"gaussian2d_{n}_{n_iters}")
         
