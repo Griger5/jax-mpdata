@@ -37,7 +37,7 @@ Array2D<> mpdata_2d(Array2D<> advectee_np, Array2D<> u_np, Array2D<> v_np, doubl
     p.dj = ny;
     p.dt = dt;
 
-    concurr::concurr<slv_t, bcond::cyclic, bcond::cyclic, bcond::cyclic, bcond::cyclic> slv{p};
+    concurr::threads<slv_t, bcond::cyclic, bcond::cyclic, bcond::cyclic, bcond::cyclic> slv{p};
 
     blitz::GeneralArrayStorage<2> cStorage;
     cStorage.ordering() = blitz::secondDim, blitz::firstDim;
