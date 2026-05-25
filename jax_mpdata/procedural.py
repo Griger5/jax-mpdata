@@ -110,15 +110,15 @@ def step(psi, Cx, Cy, halo, n_iters):
     for _ in range(1, n_iters):
         psi = fill_halos(psi, halo)
 
-        Cx_corr = jnp.zeros_like(Cx)
-        Cx_corr = Cx_corr.at[x_faces, j].set(
-            mpdata_C_antidiff_x(psi, Cx_uncorr, Cy_uncorr, x_faces, j)
+        Cx_corr = jnp.pad(
+            mpdata_C_antidiff_x(psi, Cx_uncorr, Cy_uncorr, x_faces, j),
+            ((halo, halo), (halo, halo))
         )
         Cx_corr = fill_halos(Cx_corr, halo)
 
-        Cy_corr = jnp.zeros_like(Cy)
-        Cy_corr = Cy_corr.at[i, y_faces].set(
-            mpdata_C_antidiff_y(psi, Cx_uncorr, Cy_uncorr, i, y_faces)
+        Cy_corr = jnp.pad(
+            mpdata_C_antidiff_y(psi, Cx_uncorr, Cy_uncorr, i, y_faces),
+            ((halo, halo), (halo, halo)),
         )
         Cy_corr = fill_halos(Cy_corr, halo)
 
@@ -127,7 +127,7 @@ def step(psi, Cx, Cy, halo, n_iters):
 
     return psi
 
-@jax.jit(static_argnums=(4, 5))
+@jax.jit(static_argnums=(4, 5), donate_argnums=(0,))
 def solve(psi0, Cx, Cy, nt, halo = 1, n_iters = 1):
     def body(n, psi):
         return step(psi, Cx, Cy, halo, n_iters)
@@ -159,43 +159,56 @@ def quicklook(arg, halo):
 	fig.colorbar(im, ax=ax)
 
 if __name__ == "__main__":
-    nx, ny = 20, 30
-    nt = 50
-    halo = 1
+    # nx, ny = 20, 30
+    # nt = 50
+    # halo = 1
 
-    psi0, Cx, Cy = init(nx, ny, halo)
-    quicklook(psi0, halo)
-    plt.show()
+    # psi0, Cx, Cy = init(nx, ny, halo)
+    # quicklook(psi0, halo)
+    # plt.show()
 
-    start = time.perf_counter()
-    psi_final = solve(psi0, Cx, Cy, nt, halo)
-    end = time.perf_counter()
+    # start = time.perf_counter()
+    # psi_final = solve(psi0, Cx, Cy, nt, halo)
+    # end = time.perf_counter()
 
-    quicklook(psi_final, halo)
+    # quicklook(psi_final, halo)
 
-    psi0, Cx, Cy = init(nx, ny, halo)
-    psi_mp = solve(psi0, Cx, Cy, nt, halo, 3)
-    quicklook(psi_mp, halo)
+    # psi0, Cx, Cy = init(nx, ny, halo)
+    # psi_mp = solve(psi0, Cx, Cy, nt, halo, 3)
+    # quicklook(psi_mp, halo)
 
-    plt.show()
+    # plt.show()
 
     # print(f"Time: {end - start:.6f} s")
 
-    # times = {cpu_device: [], gpu_device : []}
+    times = {cpu_device: [], gpu_device : []}
+
+    with jax.default_device(gpu_device):
+        with jax.profiler.trace("/tmp/jax-trace", create_perfetto_link=True):
+                nx = int(200 * 0.5)
+                ny = int(300 * 0.5)
+                halo = 1
+                n_iters = 3
+                nt = 100
+
+                psi0, Cx, Cy = init(nx, ny, halo)
+
+                psi_final = solve(psi0, Cx, Cy, nt, halo, n_iters).block_until_ready()
 
     # for _ in range(10):
     #     for device, name in zip([cpu_device, gpu_device], ["CPU", "GPU"]):
     #         print("#########################      " + name + "     ##########################")
     #         with jax.default_device(device):
-    #             nx = 200
-    #             ny = 300
+    #             nx = int(200 * 0.5)
+    #             ny = int(300 * 0.5)
     #             halo = 1
-    #             nt = 500
+    #             n_iters = 3
+    #             nt = 100
 
     #             psi0, Cx, Cy = init(nx, ny, halo)
 
     #             start = time.perf_counter()
-    #             psi_final = solve(psi0, Cx, Cy, nt, halo)
+    #             psi_final = solve(psi0, Cx, Cy, nt, halo, n_iters).block_until_ready()
     #             end = time.perf_counter()
 
     #             print(f"Time: {end - start:.6f} seconds")
