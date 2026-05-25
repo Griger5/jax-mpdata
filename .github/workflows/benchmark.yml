@@ -75,7 +75,7 @@ jobs:
 
       - name: Create libmpdata++ bindings (Ubuntu)
         if: startsWith(matrix.os, 'ubuntu-')
-        run: pip install -e benchmarks/models/libmpdata++/
+        run: pip install -e benchmarks/models/libmpdataxx_serial/
       
       - name: Create libmpdata++ bindings (macOS)
         if: startsWith(matrix.os, 'macos-')
@@ -84,6 +84,6 @@ jobs:
           export CMAKE_PREFIX_PATH="/opt/homebrew"
           export LDFLAGS="-L/opt/homebrew/lib"
           export CPPFLAGS="-I/opt/homebrew/include"
-          pip install -e benchmarks/models/libmpdata++/
+          pip install -e benchmarks/models/libmpdataxx_serial/
       
       - run: python -m benchmarks.main
