@@ -86,4 +86,4 @@ jobs:
           export CPPFLAGS="-I/opt/homebrew/include"
           pip install -e benchmarks/models/libmpdata++/
       
-      - run: python benchmarks/main.py
+      - run: python -m benchmarks.main
