@@ -4,6 +4,9 @@ import time
 import copy
 import json
 
+import numba
+numba.set_num_threads(4)
+
 import xarray as xr
 import numpy as np
 
@@ -58,14 +61,6 @@ def benchmark_module(module_name: Path, data, metadata, iters = 10):
 
     return result, time_results
 
-import matplotlib.pyplot as plt
-
-def quicklook(arg, impl):
-    fig, ax = plt.subplots()
-    ax.set(xlabel="x/Δx", ylabel="y/Δy", title=impl)
-    im = ax.imshow(arg, vmax=1)
-    fig.colorbar(im, ax=ax)
-
 if __name__ == "__main__":
     timing_data = {}
 
@@ -116,10 +111,6 @@ if __name__ == "__main__":
             if not np.allclose(res, reference, atol=5e-2, rtol=1e-5):
                 print(f"Result mismatch in \"{name}\".")
                 failures += 1
-
-        #     quicklook(res, name)
-
-        # plt.show()
 
         with open("benchmarks_results.json", "w", encoding="UTF-8") as f:
             json.dump(timing_data, f, sort_keys=True, indent=4)
