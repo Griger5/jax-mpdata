@@ -5,6 +5,7 @@ from PyMPDATA import Stepper
 from PyMPDATA import Solver
 from PyMPDATA.boundary_conditions import Periodic
 
+import os
 import platform
 
 import numpy as np
@@ -34,7 +35,7 @@ def _setup(data, metadata, n_threads):
 def setup(data, metadata: dict):
     global solver
 
-    solver = _setup(data, metadata, 4 if not platform.system() == "Darwin" else 3)
+    solver = _setup(data, metadata, 4 if not platform.system() == "Darwin" and os.environ.get("CI", "false").lower() == "true" else 3)
 
 def compute(data, metadata: dict):
     solver.advance(n_steps=metadata["steps"])

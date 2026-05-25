@@ -8,7 +8,7 @@ import platform
 
 import numba
 
-if platform.system() == "Darwin":
+if platform.system() == "Darwin" and os.environ.get("CI", "false").lower() == "true":
     numba.set_num_threads(min(4, numba.config.NUMBA_NUM_THREADS))
 else:
     numba.set_num_threads(4)
