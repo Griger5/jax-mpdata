@@ -1,4 +1,4 @@
-from models.Arabas_et_al_2014 import mpdata
+from benchmarks.models.Arabas_et_al_2014 import mpdata
 
 solver = None
 
