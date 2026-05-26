@@ -1,5 +1,9 @@
 import time
 
+import os
+# # os.environ["XLA_FLAGS"] = "--xla_cpu_multi_thread_eigen=true intra_op_parallelism_threads=4"
+# os.environ["OMP_NUM_THREADS"] = "4"
+
 import jax
 import jax.numpy as jnp
 from jax import lax
@@ -183,17 +187,45 @@ if __name__ == "__main__":
 
     times = {cpu_device: [], gpu_device : []}
 
-    with jax.default_device(gpu_device):
-        with jax.profiler.trace("/tmp/jax-trace", create_perfetto_link=True):
-                nx = int(200 * 0.5)
-                ny = int(300 * 0.5)
-                halo = 1
-                n_iters = 3
-                nt = 100
+    # import os
+    # import psutil
+    # print(os.environ.get("XLA_FLAGS", "not set"))
 
-                psi0, Cx, Cy = init(nx, ny, halo)
+    # proc = psutil.Process(os.getpid())
+    # print(f"Threads in use: {proc.num_threads()}")
+    # for thread in proc.threads():
+    #     print(f"Thread id: {thread.id}, user time: {thread.user_time:.3f}s, sys time: {thread.system_time:.3f}s")
 
-                psi_final = solve(psi0, Cx, Cy, nt, halo, n_iters).block_until_ready()
+    with jax.default_device(cpu_device):
+        # with jax.profiler.trace("/tmp/jax-trace", create_perfetto_link=True):
+        # nx = int(200 * 3)
+        # ny = int(300 * 3)
+        nx = 1024
+        ny = 1024
+        halo = 1
+        n_iters = 3
+        nt = 100
+
+        psi0, Cx, Cy = init(nx, ny, halo)
+
+        solve(psi0, Cx, Cy, nt, halo, n_iters).block_until_ready()
+
+        psi0, Cx, Cy = init(nx, ny, halo)
+
+        start_wall = time.perf_counter()
+        start_cpu = time.process_time()
+
+        psi_final = solve(psi0, Cx, Cy, nt, halo, n_iters).block_until_ready()
+
+        wall = time.perf_counter() - start_wall
+        cpu = time.process_time() - start_cpu
+
+        print(f"Wall: {wall:.3f}s  CPU: {cpu:.3f}s  Ratio: {cpu/wall:.2f}x")
+
+        # print(f"Threads in use: {proc.num_threads()}")
+
+        quicklook(psi_final, halo)
+        plt.show()
 
     # for _ in range(10):
     #     for device, name in zip([cpu_device, gpu_device], ["CPU", "GPU"]):
