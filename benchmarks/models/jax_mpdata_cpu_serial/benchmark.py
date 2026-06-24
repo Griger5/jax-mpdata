@@ -2,7 +2,7 @@ import os
 
 # os.environ["OMP_NUM_THREADS"] = "4"
 
-from jax_mpdata.procedural import solve
+from jax_mpdata.permutations import solve
 
 import jax
 import jax.numpy as jnp
@@ -27,7 +27,7 @@ def _compute(data, metadata, device):
     #     print(f"Thread id: {thread.id}, user time: {thread.user_time:.3f}s, sys time: {thread.system_time:.3f}s")
 
     with jax.default_device(device):
-        return solve(psi, data[1], data[2], metadata["steps"], metadata["halo"], metadata["n_iters"])
+        return solve(psi, (data[1], data[2]), metadata["steps"], metadata["halo"], metadata["n_iters"])
 
 def setup(data, metadata: dict):
     _setup(data, metadata, cpu_device)
