@@ -22,7 +22,7 @@ Array2D<> mpdata_2d(Array2D<> advectee_np, Array2D<> u_np, Array2D<> v_np, doubl
         using real_t = float;
         enum { n_dims = 2 };
         enum { n_eqns = 1 };
-        enum { opts = opts::npa | opts::eps };
+        enum { opts = opts::npa };
     };
 
     using slv_t = solvers::mpdata<ct_params_t>;
