@@ -147,8 +147,8 @@ def ext(r, n):
     )
 
 #listing09
-def mpdata_frac(nom, den):
-    return numpy.where(den > 0, nom/den, 0)
+def mpdata_frac(nom, den, eps = 1e-12):
+    return nom / (den + eps)
 
 #listing10
 def mpdata_A(d, psi, i, j):
