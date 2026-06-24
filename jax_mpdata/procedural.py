@@ -35,8 +35,8 @@ def fill_halos(psi, halo):
 
     return psi
 
-def mpdata_frac(nom, den):
-    return jnp.where(den > 0, nom / den, 0.0)
+def mpdata_frac(nom, den, eps = 1e-12):
+    return nom / (den + eps)
 
 def mpdata_C_antidiff_x(psi, Cx, Cy, x_faces, j):
     cell_left = slice(x_faces.start - 1, x_faces.stop - 1)
@@ -183,17 +183,20 @@ if __name__ == "__main__":
 
     times = {cpu_device: [], gpu_device : []}
 
-    with jax.default_device(gpu_device):
-        with jax.profiler.trace("/tmp/jax-trace", create_perfetto_link=True):
-                nx = int(200 * 0.5)
-                ny = int(300 * 0.5)
-                halo = 1
-                n_iters = 3
-                nt = 100
+    with jax.default_device(cpu_device):
+        # with jax.profiler.trace("/tmp/jax-trace", create_perfetto_link=True):
+            nx = int(20 * 30)
+            ny = int(30 * 30)
+            halo = 1
+            n_iters = 3
+            nt = 5000
 
-                psi0, Cx, Cy = init(nx, ny, halo)
+            psi0, Cx, Cy = init(nx, ny, halo)
 
-                psi_final = solve(psi0, Cx, Cy, nt, halo, n_iters).block_until_ready()
+            psi_final = solve(psi0, Cx, Cy, nt, halo, n_iters).block_until_ready()
+
+            quicklook(psi_final, halo)
+            plt.show()
 
     # for _ in range(10):
     #     for device, name in zip([cpu_device, gpu_device], ["CPU", "GPU"]):
