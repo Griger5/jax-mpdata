@@ -13,7 +13,7 @@ import numpy as np
 solver = None
 
 def _setup(data, metadata, n_threads):
-    options = Options(n_iters=metadata["n_iters"], dtype=np.float32)
+    options = Options(n_iters=metadata["n_iters"], dtype=np.float32, epsilon=1e-12)
     stepper = Stepper(options=options, n_dims=2, n_threads=n_threads)
 
     advectee = ScalarField(
