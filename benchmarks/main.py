@@ -5,6 +5,9 @@ import copy
 import json
 import os
 import platform
+import sys
+import subprocess
+import shutil
 
 import numba
 
@@ -23,50 +26,64 @@ MODELS_DIR = BASE_DIR / "models"
 
 def load_module_from_path(path: Path):
     module_name = path.stem
-
     spec = importlib.util.spec_from_file_location(module_name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-
     return module
 
-def benchmark_module(module_name: Path, data, metadata, iters = 10):
-    time_results = []
-    result = None
-
-    setup_function_name = "setup"
-    compute_function_name = "compute"
-    to_numpy_function_name = "result_to_numpy"
-
-    path = module_name / "benchmark.py"
-    
-    module = load_module_from_path(path)
-
-    setup_f = getattr(module, setup_function_name)
-    compute_f = getattr(module, compute_function_name)
-    to_numpy_f = getattr(module, to_numpy_function_name)
+def _benchmark_inprocess(module_dir, data, metadata, iters):
+    module = load_module_from_path(module_dir / "benchmark.py")
 
     data_copy = copy.deepcopy(data)
-
-    setup_f(data_copy, metadata)
+    module.setup(data_copy, metadata)
 
     # avoid a cold start for JIT compilation, save a single result
-    result = compute_f(data_copy, metadata)
+    result = module.compute(data_copy, metadata)
+    result = module.result_to_numpy(result, metadata)
 
-    result = to_numpy_f(result, metadata)
-
+    time_results = []
     for _ in range(iters):
         data_copy = copy.deepcopy(data)
-        setup_f(data_copy, metadata)
+        module.setup(data_copy, metadata)
 
         start = time.perf_counter()
-        result = compute_f(data_copy, metadata)
-        result = to_numpy_f(result, metadata)
+        result = module.compute(data_copy, metadata)
+        result = module.result_to_numpy(result, metadata)
         end = time.perf_counter()
 
-        time_results.append((end - start))
+        time_results.append(end - start)
 
     return result, time_results
+
+def _benchmark_subprocess(module_dir, data_path, config, iters):
+    cmd = [sys.executable, str(BASE_DIR / "worker.py"), str(data_path), str(module_dir), str(iters)]
+
+    if "cores" in config:
+        cores = ",".join(str(i) for i in range(config["cores"]))
+        if shutil.which("taskset"):
+            cmd = ["taskset", "-c", cores] + cmd
+
+    result = subprocess.run(cmd, capture_output=True, text=True)
+
+    if result.returncode != 0:
+        raise RuntimeError(f"{module_dir.stem} failed:\n{result.stderr}")
+
+    parsed = json.loads(result.stdout)
+    return np.array(parsed["result"]), parsed["times"]
+
+def benchmark_module(module_dir: Path, data, metadata, data_path: Path, iters=10):
+    config_path = module_dir / "config.json"
+
+    if config_path.exists():
+        with open(config_path) as f:
+            config = json.load(f)
+
+        if not shutil.which("taskset") and "cores" in config and not config.get("main_config", False):
+            return None, None
+
+        return _benchmark_subprocess(module_dir, data_path, config, iters)
+
+    return _benchmark_inprocess(module_dir, data, metadata, iters)
 
 if __name__ == "__main__":
     timing_data = {}
@@ -76,11 +93,11 @@ if __name__ == "__main__":
 
         tqdm.write("####################")
         tqdm.write(f"##### {data_path.stem} #####")
-        tqdm.write(f"size_x = {ds.attrs["size_x"]}")
-        tqdm.write(f"size_y = {ds.attrs["size_y"]}")
-        tqdm.write(f"halo = {ds.attrs["halo"]}")
-        tqdm.write(f"steps = {ds.attrs["steps"]}")
-        tqdm.write(f"n_iters = {ds.attrs["n_iters"]}")
+        tqdm.write(f"size_x = {ds.attrs['size_x']}")
+        tqdm.write(f"size_y = {ds.attrs['size_y']}")
+        tqdm.write(f"halo = {ds.attrs['halo']}")
+        tqdm.write(f"steps = {ds.attrs['steps']}")
+        tqdm.write(f"n_iters = {ds.attrs['n_iters']}")
         tqdm.write("####################")
 
         psi = ds["psi"].to_numpy()
@@ -101,8 +118,11 @@ if __name__ == "__main__":
             if os.environ.get("CI", "false").lower() == "true":
                 if str(directory).endswith("_gpu"):
                     continue
-            
-            result, time_results = benchmark_module(directory, data, metadata)
+
+            result, time_results = benchmark_module(directory, data, metadata, data_path)
+
+            if result is None:
+                continue
 
             results[directory.stem] = result
 
@@ -127,4 +147,4 @@ if __name__ == "__main__":
             json.dump(timing_data, f, sort_keys=True, indent=4)
 
         if failures:
-            raise AssertionError(f"{failures} algorithm{"" if failures == 1 else "s"} did not match the reference result ({reference_algorithm})")
+            raise AssertionError(f"{failures} algorithm{'' if failures == 1 else 's'} did not match the reference result ({reference_algorithm})")

@@ -9,7 +9,7 @@ description = "Fortran NCAR MPDATA solver with nanobind bindings"
 requires-python = ">=3.9"
 
 [tool.scikit-build]
-cmake.minimum-version = "3.18"
+cmake.version = ">=3.18"
 build-dir = "build/"
-cmake.verbose = true
+build.verbose = true
 ninja.make-fallback = true
