@@ -39,6 +39,6 @@ def create_gaussian_benchmark(size_x, size_y, steps, halo, n_iters, name):
 
 if __name__ == "__main__":
     for n_iters in range(1,4):
-        for n in np.logspace(5, 10, num = 11, base = 2).astype(int):
+        for n in np.logspace(5, 12, num = 13, base = 2).astype(int):
             create_gaussian_benchmark(n, n, 100, 1, n_iters, f"gaussian2d_{n}_{n_iters}")
         

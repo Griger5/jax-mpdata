@@ -25,8 +25,8 @@ def setup(data, metadata: dict):
     pass  
 
 def compute(data, metadata: dict):
-    with EnvContextManager("OMP_NUM_THREADS", "4"):
-        return _compute(data, metadata)
+    # with EnvContextManager("OMP_NUM_THREADS", "4"):
+    return _compute(data, metadata)
 
 def result_to_numpy(result, metadata: dict):
     return result[:metadata["size_x"], :metadata["size_y"]]
