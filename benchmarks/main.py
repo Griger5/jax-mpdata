@@ -7,6 +7,7 @@ import os
 import platform
 import sys
 import subprocess
+import shutil
 
 import numba
 
@@ -29,16 +30,6 @@ def load_module_from_path(path: Path):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
-
-def benchmark_module(module_dir: Path, data, metadata, data_path: Path, iters=10):
-    config_path = module_dir / "config.json"
-
-    if config_path.exists():
-        with open(config_path) as f:
-            config = json.load(f)
-        return _benchmark_subprocess(module_dir, data_path, config, iters)
-
-    return _benchmark_inprocess(module_dir, data, metadata, iters)
 
 def _benchmark_inprocess(module_dir, data, metadata, iters):
     module = load_module_from_path(module_dir / "benchmark.py")
@@ -69,7 +60,8 @@ def _benchmark_subprocess(module_dir, data_path, config, iters):
 
     if "cores" in config:
         cores = ",".join(str(i) for i in range(config["cores"]))
-        cmd = ["taskset", "-c", cores] + cmd
+        if shutil.which("taskset"):
+            cmd = ["taskset", "-c", cores] + cmd
 
     result = subprocess.run(cmd, capture_output=True, text=True)
 
@@ -78,6 +70,20 @@ def _benchmark_subprocess(module_dir, data_path, config, iters):
 
     parsed = json.loads(result.stdout)
     return np.array(parsed["result"]), parsed["times"]
+
+def benchmark_module(module_dir: Path, data, metadata, data_path: Path, iters=10):
+    config_path = module_dir / "config.json"
+
+    if config_path.exists():
+        with open(config_path) as f:
+            config = json.load(f)
+
+        if not shutil.which("taskset") and "cores" in config and not config.get("main_config", False):
+            return None, None
+
+        return _benchmark_subprocess(module_dir, data_path, config, iters)
+
+    return _benchmark_inprocess(module_dir, data, metadata, iters)
 
 if __name__ == "__main__":
     timing_data = {}
@@ -114,6 +120,9 @@ if __name__ == "__main__":
                     continue
 
             result, time_results = benchmark_module(directory, data, metadata, data_path)
+
+            if result is None:
+                continue
 
             results[directory.stem] = result
 

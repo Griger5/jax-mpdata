@@ -1,1 +1,4 @@
-{"cores": 16}
+{
+    "cores": 16,
+    "main_config": true
+}
