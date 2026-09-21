@@ -86,4 +86,4 @@ jobs:
           export CPPFLAGS="-I/opt/homebrew/include"
           pip install -e benchmarks/implementations_comparison/models/libmpdataxx_serial/
       
-      - run: python -m benchmarks.main
+      - run: python -m benchmarks.implementations_comparison.main
