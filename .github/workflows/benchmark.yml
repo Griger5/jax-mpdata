@@ -13,8 +13,8 @@ on:
     types: [published]
 
 jobs:
-  benchmark_implementations:
-    name: Run all benchmarks on ${{ matrix.os }}
+  implementations_comparison:
+    name: Run implementations comparison benchmark on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -71,11 +71,11 @@ jobs:
         run: pip install --verbose -e .[benchmarks]
 
       - name: Create NCAR bindings
-        run: pip install -e benchmarks/models/NCAR/
+        run: pip install -e benchmarks/implementations_compatison/models/NCAR/
 
       - name: Create libmpdata++ bindings (Ubuntu)
         if: startsWith(matrix.os, 'ubuntu-')
-        run: pip install -e benchmarks/models/libmpdataxx_serial/
+        run: pip install -e benchmarks/implementations_compatison/models/libmpdataxx_serial/
       
       - name: Create libmpdata++ bindings (macOS)
         if: startsWith(matrix.os, 'macos-')
@@ -84,6 +84,6 @@ jobs:
           export CMAKE_PREFIX_PATH="/opt/homebrew"
           export LDFLAGS="-L/opt/homebrew/lib"
           export CPPFLAGS="-I/opt/homebrew/include"
-          pip install -e benchmarks/models/libmpdataxx_serial/
+          pip install -e benchmarks/implementations_compatison/models/libmpdataxx_serial/
       
       - run: python -m benchmarks.main
