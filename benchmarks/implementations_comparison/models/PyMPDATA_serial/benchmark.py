@@ -1,4 +1,4 @@
-from benchmarks.models.PyMPDATA_4threads.benchmark import _setup
+from benchmarks.implementations_comparison.models.PyMPDATA_4threads.benchmark import _setup
 
 solver = None
 

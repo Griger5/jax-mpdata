@@ -3,7 +3,7 @@ import copy
 import libmpdataxx
 import numpy as np
 
-from benchmarks.env_manager import EnvContextManager
+from benchmarks.common.env_manager import EnvContextManager
 
 def _compute(data, metadata):
     psi = copy.deepcopy(data[0])

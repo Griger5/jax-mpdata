@@ -23,6 +23,7 @@ from tqdm import tqdm
 BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / "data"
 MODELS_DIR = BASE_DIR / "models"
+RESULTS_DIR = BASE_DIR.parent / "results"
 
 def load_module_from_path(path: Path):
     module_name = path.stem
@@ -143,7 +144,9 @@ if __name__ == "__main__":
                 tqdm.write(f"Result mismatch in \"{name}\".")
                 failures += 1
 
-        with open("benchmarks_results.json", "w", encoding="UTF-8") as f:
+        RESULTS_DIR.mkdir(exist_ok=True)
+
+        with open(RESULTS_DIR / "implementations_comparison.json", "w", encoding="UTF-8") as f:
             json.dump(timing_data, f, sort_keys=True, indent=4)
 
         if failures:

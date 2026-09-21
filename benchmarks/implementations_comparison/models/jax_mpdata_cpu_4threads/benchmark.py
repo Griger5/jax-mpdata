@@ -1,7 +1,5 @@
 import os
 
-# os.environ["OMP_NUM_THREADS"] = "4"
-
 from jax_mpdata.permutations import solve
 
 import jax
