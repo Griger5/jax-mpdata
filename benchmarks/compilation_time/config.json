@@ -33,16 +33,30 @@
             "warm": 3,
             "tests": {
                 "jax_loop_unrolled": {
-                    "enabled": true
+                    "enabled": true,
+                    "platforms": [
+                        "cpu",
+                        "cuda"
+                    ]
                 },
                 "jax_loop_fori": {
-                    "enabled": true
+                    "enabled": true,
+                    "platforms": [
+                        "cpu",
+                        "cuda"
+                    ]
                 },
                 "numba_loop": {
-                    "enabled": true
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
                 },
                 "numba_loop_parallel": {
                     "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ],
                     "threads": 4,
                     "cores": 4
                 }
@@ -61,13 +75,23 @@
             "warm": 3,
             "tests": {
                 "jax_stencil": {
-                    "enabled": true
+                    "enabled": true,
+                    "platforms": [
+                        "cpu",
+                        "cuda"
+                    ]
                 },
                 "numba_stencil_serial": {
-                    "enabled": true
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
                 },
                 "numba_stencil_parallel": {
                     "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ],
                     "threads": 4,
                     "cores": 4
                 }
@@ -84,19 +108,36 @@
             "warm": 3,
             "tests": {
                 "jax_control_scalar": {
-                    "enabled": true
+                    "enabled": true,
+                    "platforms": [
+                        "cpu",
+                        "cuda"
+                    ]
                 },
                 "numba_control_scalar": {
-                    "enabled": true
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
                 },
                 "jax_control_array": {
-                    "enabled": true
+                    "enabled": true,
+                    "platforms": [
+                        "cpu",
+                        "cuda"
+                    ]
                 },
                 "numba_control_array": {
-                    "enabled": true
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
                 },
                 "numba_control_array_parallel": {
                     "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ],
                     "threads": 4,
                     "cores": 4
                 }
@@ -121,13 +162,23 @@
             "warm": 1,
             "tests": {
                 "recompile_jax_stencil": {
-                    "enabled": true
+                    "enabled": true,
+                    "platforms": [
+                        "cpu",
+                        "cuda"
+                    ]
                 },
                 "recompile_numba_stencil": {
-                    "enabled": true
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
                 },
                 "recompile_numba_stencil_parallel": {
                     "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ],
                     "threads": 4,
                     "cores": 4
                 }
@@ -144,32 +195,38 @@
                 {
                     "name": "PyMPDATA_serial",
                     "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ],
                     "threads": 1,
                     "cores": 1
                 },
                 {
                     "name": "PyMPDATA_4threads",
                     "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ],
                     "threads": 4,
                     "cores": 4
                 },
                 {
                     "name": "jax_mpdata_cpu_serial",
                     "enabled": true,
-                    "threads": 1,
-                    "cores": 1,
                     "platforms": [
                         "cpu"
-                    ]
+                    ],
+                    "threads": 1,
+                    "cores": 1
                 },
                 {
                     "name": "jax_mpdata_cpu_4threads",
                     "enabled": true,
-                    "threads": 4,
-                    "cores": 4,
                     "platforms": [
                         "cpu"
-                    ]
+                    ],
+                    "threads": 4,
+                    "cores": 4
                 },
                 {
                     "name": "jax_mpdata_gpu",

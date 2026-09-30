@@ -8,16 +8,17 @@ def _category(config, name):
 def _enabled(cfg, default=True):
     return bool(cfg.get("enabled", default))
 
+def _as_list(value):
+    if value is None:
+        return []
+    return [value] if isinstance(value, str) else list(value)
+
 def _platforms(config, cat_cfg, entry_cfg):
     platforms = entry_cfg.get(
         "platforms",
         cat_cfg.get("platforms", config.get("global", {}).get("platforms", ["cpu"])),
     )
-
-    if isinstance(platforms, str):
-        return [platforms]
-
-    return list(platforms)
+    return _as_list(platforms)
 
 def _base_spec(config, runner, cat_cfg, entry_cfg, platform):
     global_cfg = config.get("global", {})
@@ -46,6 +47,7 @@ def _base_spec(config, runner, cat_cfg, entry_cfg, platform):
             spec[key] = cat_cfg[key]
 
     return spec
+
 def loop_specs(config):
     cat = _category(config, "loops")
 
@@ -53,7 +55,6 @@ def loop_specs(config):
         return
 
     tests = cat.get("tests", {})
-
     default_iterations = cat.get("iterations", [])
     if isinstance(default_iterations, int):
         default_iterations = [default_iterations]
@@ -68,11 +69,7 @@ def loop_specs(config):
         if not _enabled(test):
             continue
 
-        if runner.startswith("numba"):
-            platforms = ["cpu"]
-        else:
-            platforms = _platforms(config, cat, test)
-
+        platforms = _platforms(config, cat, test)
         iterations = test.get("iterations", default_iterations)
         if isinstance(iterations, int):
             iterations = [iterations]
@@ -97,7 +94,6 @@ def stencil_specs(config):
         return
 
     tests = cat.get("tests", {})
-
     default_shape = cat.get("shape", [256, 256])
     default_call_shape = cat.get("numba_call_shape", [4, 4])
     default_warm = cat.get("warm", 3)
@@ -108,10 +104,7 @@ def stencil_specs(config):
         if not _enabled(test):
             continue
 
-        if runner == "jax_stencil":
-            platforms = _platforms(config, cat, test)
-        else:
-            platforms = ["cpu"]
+        platforms = _platforms(config, cat, test)
 
         for platform in platforms:
             spec = _base_spec(config, runner, cat, test, platform)
@@ -131,7 +124,6 @@ def control_flow_specs(config):
         return
 
     tests = cat.get("tests", {})
-
     default_array_shape = cat.get("array_shape", [1024])
     default_call_shape = cat.get("numba_call_shape", [8])
     default_warm = cat.get("warm", 3)
@@ -148,10 +140,7 @@ def control_flow_specs(config):
         if not _enabled(test):
             continue
 
-        if runner.startswith("jax_"):
-            platforms = _platforms(config, cat, test)
-        else:
-            platforms = ["cpu"]
+        platforms = _platforms(config, cat, test)
 
         for platform in platforms:
             spec = _base_spec(config, runner, cat, test, platform)
@@ -173,7 +162,6 @@ def recompile_specs(config):
         return
 
     tests = cat.get("tests", {})
-
     default_shapes = cat.get("shapes", [])
     default_warm = cat.get("warm", 1)
 
@@ -183,10 +171,7 @@ def recompile_specs(config):
         if not _enabled(test):
             continue
 
-        if runner.startswith("recompile_jax"):
-            platforms = _platforms(config, cat, test)
-        else:
-            platforms = ["cpu"]
+        platforms = _platforms(config, cat, test)
 
         for platform in platforms:
             spec = _base_spec(config, runner, cat, test, platform)
@@ -210,10 +195,7 @@ def solver_first_step_specs(config):
     data_dir = impl_dir / "data"
     models_dir = impl_dir / "models"
 
-    default_data_names = cat.get("data_names", [])
-    if isinstance(default_data_names, str):
-        default_data_names = [default_data_names]
-
+    default_data_names = _as_list(cat.get("data_names", []))
     default_steps = cat.get("steps", 1)
     default_warm = cat.get("warm", 3)
 
@@ -228,15 +210,11 @@ def solver_first_step_specs(config):
         target_model_dir = models_dir / model_name
 
         if not target_model_dir.exists():
+            print(f"Warning: skipping model, directory not found: {target_model_dir}")
             continue
 
-        platforms = model.get("platforms", ["cpu"])
-        if isinstance(platforms, str):
-            platforms = [platforms]
-
-        data_names = model.get("data_names", default_data_names)
-        if isinstance(data_names, str):
-            data_names = [data_names]
+        platforms = _as_list(model.get("platforms", config.get("global", {}).get("platforms", ["cpu"])))
+        data_names = _as_list(model.get("data_names", default_data_names))
 
         for platform in platforms:
             for data_name in data_names:
