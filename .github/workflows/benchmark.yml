@@ -87,3 +87,30 @@ jobs:
           pip install -e benchmarks/implementations_comparison/models/libmpdataxx_serial/
       
       - run: python -m benchmarks.implementations_comparison.main
+
+  compilation_time:
+    name: Run compilation time benchmark on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-15]
+    steps:
+      - uses: actions/checkout@v6
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install --verbose -e .[benchmarks]
+
+      - name: Run benchmark
+        run: python -m benchmarks.compilation_time.main --config .github/configs/compile_time_benchmark_config_ci.json
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compilation-time-results-${{ matrix.os }}
+          path: benchmarks/compilation_time/results/compilation_comparison.json
