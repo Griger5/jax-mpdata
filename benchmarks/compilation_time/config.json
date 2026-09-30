@@ -136,7 +136,7 @@
         "solver_first_step": {
             "enabled": true,
             "data_names": [
-                "gaussian2d_64_3.nc"
+                "gaussian2d_256_3.nc"
             ],
             "steps": 1,
             "warm": 3,
