@@ -5,11 +5,6 @@ import numpy as np
 import numba
 from numba import njit, prange
 
-if platform.system() == "Darwin" and os.environ.get("CI", "false").lower() == "true":
-    numba.set_num_threads(min(4, numba.config.NUMBA_NUM_THREADS))
-else:
-    numba.set_num_threads(4)
-
 @njit(cache=False)
 def numba_loop_kernel(x, iterations):
     y = x.copy()

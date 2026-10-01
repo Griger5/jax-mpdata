@@ -4,10 +4,9 @@ import sys
 import time
 from pathlib import Path
 
-import numba
 import xarray as xr
 
-from benchmarks.compilation_time.measure import median
+from benchmarks.compilation_time.measure import median, set_numba_threads
 
 def solver_first_step(spec):
     target_model_dir = Path(spec["target_model_dir"])
@@ -26,7 +25,7 @@ def solver_first_step(spec):
 
     threads = spec.get("threads")
     if threads is not None:
-        numba.set_num_threads(int(threads))
+        set_numba_threads(threads)
 
     ds = xr.open_dataset(data_path)
     data = (ds["psi"].to_numpy(), ds["Cx"].to_numpy(), ds["Cy"].to_numpy())

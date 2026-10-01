@@ -1,7 +1,9 @@
 import re
 import statistics
 import time
+import os
 
+import numba
 import jax
 import numpy as np
 
@@ -11,6 +13,9 @@ DTYPE_MAP = {
     "float32": np.float32,
     "float64": np.float64,
 }
+
+def set_numba_threads(threads):
+    numba.set_num_threads(min(int(threads), os.cpu_count()))
 
 def get_dtype(spec):
     return DTYPE_MAP[spec.get("dtype", DEFAULT_DTYPE)]
