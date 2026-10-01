@@ -1,0 +1,1407 @@
+[
+    {
+        "result": {
+            "compile_time": 2.0459015519991226,
+            "jaxpr_counts": {
+                "abs": 1,
+                "cos": 1,
+                "exp": 1,
+                "sin": 1,
+                "while": 0
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 1,
+            "platform": "cpu",
+            "runner": "jax_loop_unrolled",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.5151688529986131,
+            "jaxpr_counts": {
+                "abs": 5,
+                "cos": 5,
+                "exp": 5,
+                "sin": 5,
+                "while": 0
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 5,
+            "platform": "cpu",
+            "runner": "jax_loop_unrolled",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.5932466970007226,
+            "jaxpr_counts": {
+                "abs": 10,
+                "cos": 10,
+                "exp": 10,
+                "sin": 10,
+                "while": 0
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 10,
+            "platform": "cpu",
+            "runner": "jax_loop_unrolled",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.7333140300033847,
+            "jaxpr_counts": {
+                "abs": 20,
+                "cos": 20,
+                "exp": 20,
+                "sin": 20,
+                "while": 0
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 20,
+            "platform": "cpu",
+            "runner": "jax_loop_unrolled",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 1.1009485769973253,
+            "jaxpr_counts": {
+                "abs": 50,
+                "cos": 50,
+                "exp": 50,
+                "sin": 50,
+                "while": 0
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 50,
+            "platform": "cpu",
+            "runner": "jax_loop_unrolled",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 2.371987270998943,
+            "jaxpr_counts": {
+                "abs": 100,
+                "cos": 100,
+                "exp": 100,
+                "sin": 100,
+                "while": 0
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 100,
+            "platform": "cpu",
+            "runner": "jax_loop_unrolled",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.4654018190012721,
+            "jaxpr_counts": {
+                "abs": 1,
+                "cos": 1,
+                "exp": 1,
+                "sin": 1,
+                "while": 0
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 1,
+            "platform": "cuda",
+            "runner": "jax_loop_unrolled",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.5162893669985351,
+            "jaxpr_counts": {
+                "abs": 5,
+                "cos": 5,
+                "exp": 5,
+                "sin": 5,
+                "while": 0
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 5,
+            "platform": "cuda",
+            "runner": "jax_loop_unrolled",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.5894501059992763,
+            "jaxpr_counts": {
+                "abs": 10,
+                "cos": 10,
+                "exp": 10,
+                "sin": 10,
+                "while": 0
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 10,
+            "platform": "cuda",
+            "runner": "jax_loop_unrolled",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.7388809080002829,
+            "jaxpr_counts": {
+                "abs": 20,
+                "cos": 20,
+                "exp": 20,
+                "sin": 20,
+                "while": 0
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 20,
+            "platform": "cuda",
+            "runner": "jax_loop_unrolled",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 1.1041586920000555,
+            "jaxpr_counts": {
+                "abs": 50,
+                "cos": 50,
+                "exp": 50,
+                "sin": 50,
+                "while": 0
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 50,
+            "platform": "cuda",
+            "runner": "jax_loop_unrolled",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 2.380908601000556,
+            "jaxpr_counts": {
+                "abs": 100,
+                "cos": 100,
+                "exp": 100,
+                "sin": 100,
+                "while": 0
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 100,
+            "platform": "cuda",
+            "runner": "jax_loop_unrolled",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.47930309300136287,
+            "jaxpr_counts": {
+                "abs": 1,
+                "cos": 1,
+                "exp": 1,
+                "sin": 1,
+                "while": 1
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 1,
+            "platform": "cpu",
+            "runner": "jax_loop_fori",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.4755717289990571,
+            "jaxpr_counts": {
+                "abs": 1,
+                "cos": 1,
+                "exp": 1,
+                "sin": 1,
+                "while": 1
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 5,
+            "platform": "cpu",
+            "runner": "jax_loop_fori",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.47445582900036243,
+            "jaxpr_counts": {
+                "abs": 1,
+                "cos": 1,
+                "exp": 1,
+                "sin": 1,
+                "while": 1
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 10,
+            "platform": "cpu",
+            "runner": "jax_loop_fori",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.4730164309985412,
+            "jaxpr_counts": {
+                "abs": 1,
+                "cos": 1,
+                "exp": 1,
+                "sin": 1,
+                "while": 1
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 20,
+            "platform": "cpu",
+            "runner": "jax_loop_fori",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.47108099699835293,
+            "jaxpr_counts": {
+                "abs": 1,
+                "cos": 1,
+                "exp": 1,
+                "sin": 1,
+                "while": 1
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 50,
+            "platform": "cpu",
+            "runner": "jax_loop_fori",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.4807131310008117,
+            "jaxpr_counts": {
+                "abs": 1,
+                "cos": 1,
+                "exp": 1,
+                "sin": 1,
+                "while": 1
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 100,
+            "platform": "cpu",
+            "runner": "jax_loop_fori",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.48142765699958545,
+            "jaxpr_counts": {
+                "abs": 1,
+                "cos": 1,
+                "exp": 1,
+                "sin": 1,
+                "while": 1
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 1,
+            "platform": "cuda",
+            "runner": "jax_loop_fori",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.4745244520017877,
+            "jaxpr_counts": {
+                "abs": 1,
+                "cos": 1,
+                "exp": 1,
+                "sin": 1,
+                "while": 1
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 5,
+            "platform": "cuda",
+            "runner": "jax_loop_fori",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.4801924230014265,
+            "jaxpr_counts": {
+                "abs": 1,
+                "cos": 1,
+                "exp": 1,
+                "sin": 1,
+                "while": 1
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 10,
+            "platform": "cuda",
+            "runner": "jax_loop_fori",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.47477448300196556,
+            "jaxpr_counts": {
+                "abs": 1,
+                "cos": 1,
+                "exp": 1,
+                "sin": 1,
+                "while": 1
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 20,
+            "platform": "cuda",
+            "runner": "jax_loop_fori",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.478936640000029,
+            "jaxpr_counts": {
+                "abs": 1,
+                "cos": 1,
+                "exp": 1,
+                "sin": 1,
+                "while": 1
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 50,
+            "platform": "cuda",
+            "runner": "jax_loop_fori",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.47440857499896083,
+            "jaxpr_counts": {
+                "abs": 1,
+                "cos": 1,
+                "exp": 1,
+                "sin": 1,
+                "while": 1
+            }
+        },
+        "spec": {
+            "dtype": "float32",
+            "iterations": 100,
+            "platform": "cuda",
+            "runner": "jax_loop_fori",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "first": 0.41153000299891573,
+            "overhead_estimate": 0.4115283700011787,
+            "warm_median": 1.6329977370332927e-06,
+            "warm_times": [
+                6.591999408556148e-06,
+                1.6329977370332927e-06,
+                1.2519994925241917e-06
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                8
+            ],
+            "dtype": "float32",
+            "iterations": 1,
+            "platform": "cpu",
+            "runner": "numba_loop",
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": 0.3987624380024499,
+            "overhead_estimate": 0.3987609150026401,
+            "warm_median": 1.5229998098220676e-06,
+            "warm_times": [
+                3.6759993236046284e-06,
+                1.5229998098220676e-06,
+                1.06200241134502e-06
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                8
+            ],
+            "dtype": "float32",
+            "iterations": 5,
+            "platform": "cpu",
+            "runner": "numba_loop",
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": 0.4009668880025856,
+            "overhead_estimate": 0.40096495400212007,
+            "warm_median": 1.934000465553254e-06,
+            "warm_times": [
+                3.8670004869345576e-06,
+                1.934000465553254e-06,
+                1.4729994290973991e-06
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                8
+            ],
+            "dtype": "float32",
+            "iterations": 10,
+            "platform": "cpu",
+            "runner": "numba_loop",
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": 0.3982760530016094,
+            "overhead_estimate": 0.3982735390018206,
+            "warm_median": 2.5139997887890786e-06,
+            "warm_times": [
+                5.5300006351899356e-06,
+                2.5139997887890786e-06,
+                2.234002749901265e-06
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                8
+            ],
+            "dtype": "float32",
+            "iterations": 20,
+            "platform": "cpu",
+            "runner": "numba_loop",
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": 0.39800663600180997,
+            "overhead_estimate": 0.39800180699967314,
+            "warm_median": 4.8290021368302405e-06,
+            "warm_times": [
+                7.073002052493393e-06,
+                4.8290021368302405e-06,
+                4.397999873617664e-06
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                8
+            ],
+            "dtype": "float32",
+            "iterations": 50,
+            "platform": "cpu",
+            "runner": "numba_loop",
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": 0.43121669700121856,
+            "overhead_estimate": 0.4312080910021905,
+            "warm_median": 8.605999028077349e-06,
+            "warm_times": [
+                1.1041000107070431e-05,
+                8.605999028077349e-06,
+                8.19600245449692e-06
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                8
+            ],
+            "dtype": "float32",
+            "iterations": 100,
+            "platform": "cpu",
+            "runner": "numba_loop",
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": 0.5042170460001216,
+            "overhead_estimate": 0.5041647880025266,
+            "warm_median": 5.22579975950066e-05,
+            "warm_times": [
+                6.2347997300094e-05,
+                4.076699769939296e-05,
+                5.22579975950066e-05
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                8
+            ],
+            "cores": 4,
+            "dtype": "float32",
+            "iterations": 1,
+            "platform": "cpu",
+            "runner": "numba_loop_parallel",
+            "threads": 4,
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": 0.48923575400112895,
+            "overhead_estimate": 0.4890412770000694,
+            "warm_median": 0.00019447700105956756,
+            "warm_times": [
+                0.0002393710019532591,
+                0.00018730300143943168,
+                0.00019447700105956756
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                8
+            ],
+            "cores": 4,
+            "dtype": "float32",
+            "iterations": 5,
+            "platform": "cpu",
+            "runner": "numba_loop_parallel",
+            "threads": 4,
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": 0.5119670969979779,
+            "overhead_estimate": 0.5115584169980139,
+            "warm_median": 0.0004086799999640789,
+            "warm_times": [
+                0.0004685320018325001,
+                0.0004086799999640789,
+                0.00038308099829009734
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                8
+            ],
+            "cores": 4,
+            "dtype": "float32",
+            "iterations": 10,
+            "platform": "cpu",
+            "runner": "numba_loop_parallel",
+            "threads": 4,
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": 0.48675608600024134,
+            "overhead_estimate": 0.48598949299775995,
+            "warm_median": 0.0007665930024813861,
+            "warm_times": [
+                0.000776631997723598,
+                0.0006821140013926197,
+                0.0007665930024813861
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                8
+            ],
+            "cores": 4,
+            "dtype": "float32",
+            "iterations": 20,
+            "platform": "cpu",
+            "runner": "numba_loop_parallel",
+            "threads": 4,
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": 0.4913149099993461,
+            "overhead_estimate": 0.4894708879983227,
+            "warm_median": 0.0018440220010234043,
+            "warm_times": [
+                0.001895667999633588,
+                0.0017746509984135628,
+                0.0018440220010234043
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                8
+            ],
+            "cores": 4,
+            "dtype": "float32",
+            "iterations": 50,
+            "platform": "cpu",
+            "runner": "numba_loop_parallel",
+            "threads": 4,
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": 0.49097634200006723,
+            "overhead_estimate": 0.4871461510010704,
+            "warm_median": 0.003830190998996841,
+            "warm_times": [
+                0.003830190998996841,
+                0.003768915998080047,
+                0.0038529930025106296
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                8
+            ],
+            "cores": 4,
+            "dtype": "float32",
+            "iterations": 100,
+            "platform": "cpu",
+            "runner": "numba_loop_parallel",
+            "threads": 4,
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "compile_time": 2.048112590000528
+        },
+        "spec": {
+            "dtype": "float32",
+            "platform": "cpu",
+            "runner": "jax_stencil",
+            "shape": [
+                256,
+                256
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.4656221130026097
+        },
+        "spec": {
+            "dtype": "float32",
+            "platform": "cuda",
+            "runner": "jax_stencil",
+            "shape": [
+                256,
+                256
+            ]
+        }
+    },
+    {
+        "result": {
+            "first": 0.44380297700263327,
+            "overhead_estimate": 0.4438019550034369,
+            "warm_median": 1.0219991963822395e-06,
+            "warm_times": [
+                3.436001861700788e-06,
+                1.0219991963822395e-06,
+                6.72000169288367e-07
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                4,
+                4
+            ],
+            "dtype": "float32",
+            "platform": "cpu",
+            "runner": "numba_stencil_serial",
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": 0.7078687450011785,
+            "overhead_estimate": 0.7078221980009403,
+            "warm_median": 4.654700023820624e-05,
+            "warm_times": [
+                7.602400000905618e-05,
+                4.149799860897474e-05,
+                4.654700023820624e-05
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                4,
+                4
+            ],
+            "cores": 4,
+            "dtype": "float32",
+            "platform": "cpu",
+            "runner": "numba_stencil_parallel",
+            "threads": 4,
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.4697919850004837
+        },
+        "spec": {
+            "dtype": "float32",
+            "platform": "cpu",
+            "runner": "jax_control_scalar"
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.4696153120021336
+        },
+        "spec": {
+            "dtype": "float32",
+            "platform": "cuda",
+            "runner": "jax_control_scalar"
+        }
+    },
+    {
+        "result": {
+            "first": 0.2411636830001953,
+            "overhead_estimate": 0.24116324200076633,
+            "warm_median": 4.4099942897446454e-07,
+            "warm_times": [
+                3.877001290675253e-06,
+                4.4099942897446454e-07,
+                2.710003172978759e-07
+            ]
+        },
+        "spec": {
+            "dtype": "float32",
+            "platform": "cpu",
+            "runner": "numba_control_scalar",
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.4679634239982988
+        },
+        "spec": {
+            "dtype": "float32",
+            "platform": "cpu",
+            "runner": "jax_control_array",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "compile_time": 0.4694431899988558
+        },
+        "spec": {
+            "dtype": "float32",
+            "platform": "cuda",
+            "runner": "jax_control_array",
+            "shape": [
+                1024
+            ]
+        }
+    },
+    {
+        "result": {
+            "first": 0.4850066010003502,
+            "overhead_estimate": 0.48500550799872144,
+            "warm_median": 1.0930016287602484e-06,
+            "warm_times": [
+                3.4670010791160166e-06,
+                1.0930016287602484e-06,
+                7.309972716029733e-07
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                8
+            ],
+            "dtype": "float32",
+            "platform": "cpu",
+            "runner": "numba_control_array",
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": 0.4694906299991999,
+            "overhead_estimate": 0.4694195359988953,
+            "warm_median": 7.109400030458346e-05,
+            "warm_times": [
+                0.00010067900075227953,
+                7.109400030458346e-05,
+                5.685699943569489e-05
+            ]
+        },
+        "spec": {
+            "call_shape": [
+                8
+            ],
+            "cores": 4,
+            "dtype": "float32",
+            "platform": "cpu",
+            "runner": "numba_control_array_parallel",
+            "threads": 4,
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "sequence": [
+                {
+                    "first": 0.04309012100202381,
+                    "overhead_estimate": 0.043010902001697104,
+                    "shape": [
+                        64,
+                        64
+                    ],
+                    "warm_median": 7.921900032670237e-05,
+                    "warm_times": [
+                        7.921900032670237e-05
+                    ]
+                },
+                {
+                    "first": 0.03803923299710732,
+                    "overhead_estimate": 0.03789310799766099,
+                    "shape": [
+                        128,
+                        128
+                    ],
+                    "warm_median": 0.00014612499944632873,
+                    "warm_times": [
+                        0.00014612499944632873
+                    ]
+                },
+                {
+                    "first": 0.044720180001604604,
+                    "overhead_estimate": 0.044559517002198845,
+                    "shape": [
+                        256,
+                        256
+                    ],
+                    "warm_median": 0.00016066299940575846,
+                    "warm_times": [
+                        0.00016066299940575846
+                    ]
+                }
+            ]
+        },
+        "spec": {
+            "dtype": "float32",
+            "platform": "cpu",
+            "runner": "recompile_jax_stencil",
+            "shapes": [
+                [
+                    64,
+                    64
+                ],
+                [
+                    128,
+                    128
+                ],
+                [
+                    256,
+                    256
+                ]
+            ],
+            "warm": 1
+        }
+    },
+    {
+        "result": {
+            "sequence": [
+                {
+                    "first": 0.04352755400032038,
+                    "overhead_estimate": 0.04031277200192562,
+                    "shape": [
+                        64,
+                        64
+                    ],
+                    "warm_median": 0.0032147819983947556,
+                    "warm_times": [
+                        0.0032147819983947556
+                    ]
+                },
+                {
+                    "first": 0.03971746200113557,
+                    "overhead_estimate": 0.03963671000019531,
+                    "shape": [
+                        128,
+                        128
+                    ],
+                    "warm_median": 8.075200094026513e-05,
+                    "warm_times": [
+                        8.075200094026513e-05
+                    ]
+                },
+                {
+                    "first": 0.04554156599988346,
+                    "overhead_estimate": 0.04537754700140795,
+                    "shape": [
+                        256,
+                        256
+                    ],
+                    "warm_median": 0.0001640189984755125,
+                    "warm_times": [
+                        0.0001640189984755125
+                    ]
+                }
+            ]
+        },
+        "spec": {
+            "dtype": "float32",
+            "platform": "cuda",
+            "runner": "recompile_jax_stencil",
+            "shapes": [
+                [
+                    64,
+                    64
+                ],
+                [
+                    128,
+                    128
+                ],
+                [
+                    256,
+                    256
+                ]
+            ],
+            "warm": 1
+        }
+    },
+    {
+        "result": {
+            "sequence": [
+                {
+                    "first": 0.4476336640000227,
+                    "overhead_estimate": 0.4476295759995992,
+                    "shape": [
+                        64,
+                        64
+                    ],
+                    "warm_median": 4.088000423507765e-06,
+                    "warm_times": [
+                        4.088000423507765e-06
+                    ]
+                },
+                {
+                    "first": 1.0370000381954014e-05,
+                    "overhead_estimate": 6.222002411959693e-06,
+                    "shape": [
+                        128,
+                        128
+                    ],
+                    "warm_median": 4.1479979699943215e-06,
+                    "warm_times": [
+                        4.1479979699943215e-06
+                    ]
+                },
+                {
+                    "first": 6.165599916130304e-05,
+                    "overhead_estimate": 4.5725999370915815e-05,
+                    "shape": [
+                        256,
+                        256
+                    ],
+                    "warm_median": 1.5929999790387228e-05,
+                    "warm_times": [
+                        1.5929999790387228e-05
+                    ]
+                }
+            ]
+        },
+        "spec": {
+            "dtype": "float32",
+            "platform": "cpu",
+            "runner": "recompile_numba_stencil",
+            "shapes": [
+                [
+                    64,
+                    64
+                ],
+                [
+                    128,
+                    128
+                ],
+                [
+                    256,
+                    256
+                ]
+            ],
+            "warm": 1
+        }
+    },
+    {
+        "result": {
+            "sequence": [
+                {
+                    "first": 0.7056033290027699,
+                    "overhead_estimate": 0.7055296200014709,
+                    "shape": [
+                        64,
+                        64
+                    ],
+                    "warm_median": 7.370900129899383e-05,
+                    "warm_times": [
+                        7.370900129899383e-05
+                    ]
+                },
+                {
+                    "first": 6.94110021868255e-05,
+                    "overhead_estimate": 2.291400232934393e-05,
+                    "shape": [
+                        128,
+                        128
+                    ],
+                    "warm_median": 4.649699985748157e-05,
+                    "warm_times": [
+                        4.649699985748157e-05
+                    ]
+                },
+                {
+                    "first": 0.0001721339976938907,
+                    "overhead_estimate": 0.00010440599726280198,
+                    "shape": [
+                        256,
+                        256
+                    ],
+                    "warm_median": 6.772800043108873e-05,
+                    "warm_times": [
+                        6.772800043108873e-05
+                    ]
+                }
+            ]
+        },
+        "spec": {
+            "cores": 4,
+            "dtype": "float32",
+            "platform": "cpu",
+            "runner": "recompile_numba_stencil_parallel",
+            "shapes": [
+                [
+                    64,
+                    64
+                ],
+                [
+                    128,
+                    128
+                ],
+                [
+                    256,
+                    256
+                ]
+            ],
+            "threads": 4,
+            "warm": 1
+        }
+    },
+    {
+        "result": {
+            "first": {
+                "compute": 0.0052369980003277306,
+                "setup": 19.413104850002128,
+                "total": 19.418341848002456
+            },
+            "first_total_overhead_estimate": 19.409415126003296,
+            "warm": [
+                {
+                    "compute": 0.004815993997908663,
+                    "setup": 0.005006778003007639,
+                    "total": 0.009822772000916302
+                },
+                {
+                    "compute": 0.004868563999480102,
+                    "setup": 0.004058157999679679,
+                    "total": 0.008926721999159781
+                },
+                {
+                    "compute": 0.004756540998641867,
+                    "setup": 0.004000016000645701,
+                    "total": 0.008756556999287568
+                }
+            ],
+            "warm_median_total": 0.008926721999159781
+        },
+        "spec": {
+            "cores": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/implementations_comparison/data/gaussian2d_256_3.nc",
+            "dtype": "float32",
+            "platform": "cpu",
+            "runner": "solver_first_step",
+            "steps": 1,
+            "target_model_dir": "/home/graca/Desktop/code/jax-mpdata/benchmarks/implementations_comparison/models/PyMPDATA_serial",
+            "threads": 1,
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": {
+                "compute": 0.005684293999365764,
+                "setup": 27.97205689400289,
+                "total": 27.977741188002256
+            },
+            "first_total_overhead_estimate": 27.832241765998333,
+            "warm": [
+                {
+                    "compute": 0.005500333001691615,
+                    "setup": 0.1399990890022309,
+                    "total": 0.14549942200392252
+                },
+                {
+                    "compute": 0.005282657999487128,
+                    "setup": 0.2842085699994641,
+                    "total": 0.2894912279989512
+                },
+                {
+                    "compute": 0.005219768001552438,
+                    "setup": 0.13409952399888425,
+                    "total": 0.1393192920004367
+                }
+            ],
+            "warm_median_total": 0.14549942200392252
+        },
+        "spec": {
+            "cores": 4,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/implementations_comparison/data/gaussian2d_256_3.nc",
+            "dtype": "float32",
+            "platform": "cpu",
+            "runner": "solver_first_step",
+            "steps": 1,
+            "target_model_dir": "/home/graca/Desktop/code/jax-mpdata/benchmarks/implementations_comparison/models/PyMPDATA_4threads",
+            "threads": 4,
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": {
+                "compute": 0.8987558090011589,
+                "setup": 0.110269012999197,
+                "total": 1.009024822000356
+            },
+            "first_total_overhead_estimate": 1.0057693929993547,
+            "warm": [
+                {
+                    "compute": 0.006457478000811534,
+                    "setup": 0.0009824840017245151,
+                    "total": 0.007439962002536049
+                },
+                {
+                    "compute": 0.0025116309989243746,
+                    "setup": 0.0007437980020768009,
+                    "total": 0.0032554290010011755
+                },
+                {
+                    "compute": 0.0025005400020745583,
+                    "setup": 0.0006809389997215476,
+                    "total": 0.003181479001796106
+                }
+            ],
+            "warm_median_total": 0.0032554290010011755
+        },
+        "spec": {
+            "cores": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/implementations_comparison/data/gaussian2d_256_3.nc",
+            "dtype": "float32",
+            "platform": "cpu",
+            "runner": "solver_first_step",
+            "steps": 1,
+            "target_model_dir": "/home/graca/Desktop/code/jax-mpdata/benchmarks/implementations_comparison/models/jax_mpdata_cpu_serial",
+            "threads": 1,
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": {
+                "compute": 0.5503871190012433,
+                "setup": 0.11232588300117641,
+                "total": 0.6627130020024197
+            },
+            "first_total_overhead_estimate": 0.6592643639996822,
+            "warm": [
+                {
+                    "compute": 0.0029413909978757147,
+                    "setup": 0.0011336919997120276,
+                    "total": 0.004075082997587742
+                },
+                {
+                    "compute": 0.002668330002052244,
+                    "setup": 0.0007803080006851815,
+                    "total": 0.0034486380027374253
+                },
+                {
+                    "compute": 0.002673740000318503,
+                    "setup": 0.0007414550018438604,
+                    "total": 0.0034151950021623634
+                }
+            ],
+            "warm_median_total": 0.0034486380027374253
+        },
+        "spec": {
+            "cores": 4,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/implementations_comparison/data/gaussian2d_256_3.nc",
+            "dtype": "float32",
+            "platform": "cpu",
+            "runner": "solver_first_step",
+            "steps": 1,
+            "target_model_dir": "/home/graca/Desktop/code/jax-mpdata/benchmarks/implementations_comparison/models/jax_mpdata_cpu_4threads",
+            "threads": 4,
+            "warm": 3
+        }
+    },
+    {
+        "result": {
+            "first": {
+                "compute": 1.5940960369989625,
+                "setup": 0.22562646500227856,
+                "total": 1.819722502001241
+            },
+            "first_total_overhead_estimate": 1.8180031730007613,
+            "warm": [
+                {
+                    "compute": 0.0008861700007400941,
+                    "setup": 0.0016710169984435197,
+                    "total": 0.002557186999183614
+                },
+                {
+                    "compute": 0.0006004349997965619,
+                    "setup": 0.0011188940006832127,
+                    "total": 0.0017193290004797745
+                },
+                {
+                    "compute": 0.0005341190008039121,
+                    "setup": 0.0010380799976701383,
+                    "total": 0.0015721989984740503
+                }
+            ],
+            "warm_median_total": 0.0017193290004797745
+        },
+        "spec": {
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/implementations_comparison/data/gaussian2d_256_3.nc",
+            "dtype": "float32",
+            "platform": "cuda",
+            "runner": "solver_first_step",
+            "steps": 1,
+            "target_model_dir": "/home/graca/Desktop/code/jax-mpdata/benchmarks/implementations_comparison/models/jax_mpdata_gpu",
+            "warm": 3
+        }
+    }
+]

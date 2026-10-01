@@ -1,0 +1,228 @@
+{
+    "global": {
+        "platforms": [
+            "cpu",
+            "cuda"
+        ],
+        "dtype": "float32",
+        "env": {},
+        "worker_module": "benchmarks.compilation_time.worker",
+        "results_dir": "../results",
+        "taskset": true
+    },
+    "paths": {
+        "implementations_comparison": "benchmarks/implementations_comparison"
+    },
+    "categories": {
+        "loops": {
+            "enabled": true,
+            "iterations": [
+                1,
+                5,
+                10,
+                20,
+                50,
+                100
+            ],
+            "shape": [
+                1024
+            ],
+            "numba_call_shape": [
+                8
+            ],
+            "warm": 3,
+            "tests": {
+                "jax_loop_unrolled": {
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
+                },
+                "jax_loop_fori": {
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
+                },
+                "numba_loop": {
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
+                },
+                "numba_loop_parallel": {
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ],
+                    "threads": 4,
+                    "cores": 4
+                }
+            }
+        },
+        "stencil": {
+            "enabled": true,
+            "shape": [
+                256,
+                256
+            ],
+            "numba_call_shape": [
+                4,
+                4
+            ],
+            "warm": 3,
+            "tests": {
+                "jax_stencil": {
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
+                },
+                "numba_stencil_serial": {
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
+                },
+                "numba_stencil_parallel": {
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ],
+                    "threads": 4,
+                    "cores": 4
+                }
+            }
+        },
+        "control_flow": {
+            "enabled": true,
+            "array_shape": [
+                1024
+            ],
+            "numba_call_shape": [
+                8
+            ],
+            "warm": 3,
+            "tests": {
+                "jax_control_scalar": {
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
+                },
+                "numba_control_scalar": {
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
+                },
+                "jax_control_array": {
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
+                },
+                "numba_control_array": {
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
+                },
+                "numba_control_array_parallel": {
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ],
+                    "threads": 4,
+                    "cores": 4
+                }
+            }
+        },
+        "recompile": {
+            "enabled": true,
+            "shapes": [
+                [
+                    64,
+                    64
+                ],
+                [
+                    128,
+                    128
+                ],
+                [
+                    256,
+                    256
+                ]
+            ],
+            "warm": 1,
+            "tests": {
+                "recompile_jax_stencil": {
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
+                },
+                "recompile_numba_stencil": {
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ]
+                },
+                "recompile_numba_stencil_parallel": {
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ],
+                    "threads": 4,
+                    "cores": 4
+                }
+            }
+        },
+        "solver_first_step": {
+            "enabled": true,
+            "data_names": [
+                "gaussian2d_256_3.nc"
+            ],
+            "steps": 1,
+            "warm": 3,
+            "models": [
+                {
+                    "name": "PyMPDATA_serial",
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ],
+                    "threads": 1,
+                    "cores": 1
+                },
+                {
+                    "name": "PyMPDATA_4threads",
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ],
+                    "threads": 4,
+                    "cores": 4
+                },
+                {
+                    "name": "jax_mpdata_cpu_serial",
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ],
+                    "threads": 1,
+                    "cores": 1
+                },
+                {
+                    "name": "jax_mpdata_cpu_4threads",
+                    "enabled": true,
+                    "platforms": [
+                        "cpu"
+                    ],
+                    "threads": 4,
+                    "cores": 4
+                }
+            ]
+        }
+    }
+}
