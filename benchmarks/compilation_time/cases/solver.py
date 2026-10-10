@@ -65,17 +65,13 @@ def solver_first_step(spec):
 
     first = run_once()
     warm = [run_once() for _ in range(warm_n)]
-
-    warm_totals = [w["total"] for w in warm]
-    warm_median = median(warm_totals)
-
-    first_total_overhead_estimate = (
-        first["total"] - warm_median if warm_median is not None else None
-    )
+    warm_step = median([w["total"] for w in warm])
 
     return {
-        "first": first,
-        "warm": warm,
-        "warm_median_total": warm_median,
-        "first_total_overhead_estimate": first_total_overhead_estimate,
+        "first_setup": first["setup"],
+        "first_compute": first["compute"],
+        "first_step": first["total"],
+        "warm_step": warm_step,
+        "compile_overhead": first["total"] - warm_step,
+        "details": {"warm_runs": warm},
     }

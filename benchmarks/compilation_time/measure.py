@@ -20,9 +20,13 @@ def set_numba_threads(threads):
 def get_dtype(spec):
     return DTYPE_MAP[spec.get("dtype", DEFAULT_DTYPE)]
 
-def enable_jax_dtype(dtype):
+def configure_jax(spec):
+    dtype = get_dtype(spec)
     if dtype == np.float64:
         jax.config.update("jax_enable_x64", True)
+
+    platform = spec.get("platform", "cpu")
+    jax.config.update("jax_default_device", jax.devices(platform)[0])
 
 def median(xs):
     return statistics.median(xs) if xs else None
@@ -44,20 +48,16 @@ def jax_compile_time(fn, args=(), kwargs=None, jit_kwargs=None):
     lowered.compile()
     return time.perf_counter() - start
 
-def first_warm(call, warm):
+def estimate_compile_time(call, warm):
     first = call()
     warm_times = [call() for _ in range(warm)]
-    warm_median = median(warm_times)
-
-    overhead_estimate = (
-        max(first - warm_median, 0.0)
-        if warm_median is not None
-        else None
-    )
+    warm_median = statistics.median(warm_times)
 
     return {
-        "first": first,
-        "warm_times": warm_times,
-        "warm_median": warm_median,
-        "overhead_estimate": overhead_estimate,
+        "compile_time": max(first - warm_median, 0.0),
+        "details": {
+            "first": first,
+            "warm_median": warm_median,
+            "warm_times": warm_times,
+        },
     }

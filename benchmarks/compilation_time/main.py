@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import shutil
+import statistics
 import subprocess
 import sys
 import tempfile
@@ -102,6 +103,8 @@ def main():
     config = load_config(args.config)
     global_cfg = config.get("global", {})
 
+    repeats = int(global_cfg.get("repeats", 1))
+
     results_dir = Path(global_cfg.get("results_dir", "results"))
     if not results_dir.is_absolute():
         results_dir = PACKAGE_DIR / results_dir
@@ -117,17 +120,27 @@ def main():
     for spec in tqdm(specs):
         tqdm.write(spec["runner"])
 
-        try:
-            result = run_spec(spec, config)
-        except Exception as exc:
-            failed_count += 1
+        results = []
+        for repeat in range(repeats):
+            try:
+                results.append(run_spec({**spec, "repeat": repeat}, config))
+            except Exception as exc:
+                failed_count += 1
 
+                tqdm.write(f"FAILED {spec['runner']} (repeat {repeat + 1}/{repeats})", file=sys.stderr)
+                tqdm.write(str(exc), file=sys.stderr)
+
+        if not results:
+            result = {"error": f"all {repeats} repeats failed"}
+        else:
             result = {
-                "error": str(exc),
+                **{
+                    key: statistics.median([r[key] for r in results])
+                    for key in results[0]
+                    if key != "details"
+                },
+                "repeats": results,
             }
-
-            tqdm.write(f"FAILED {spec['runner']}", file=sys.stderr)
-            tqdm.write(str(exc), file=sys.stderr)
 
         records.append(
             {
@@ -139,7 +152,7 @@ def main():
         save_results(records, results_path)
 
     if failed_count:
-        tqdm.write(f"{failed_count} benchmark(s) failed", file=sys.stderr)
+        tqdm.write(f"{failed_count} repeat(s) failed", file=sys.stderr)
         raise SystemExit(1)
 
 if __name__ == "__main__":
