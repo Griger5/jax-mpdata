@@ -7,11 +7,11 @@ import numba
 
 from benchmarks.compilation_time.kernels_jax import jax_loop_fori_kernel, jax_loop_unrolled_kernel
 from benchmarks.compilation_time.kernels_numba import numba_loop_kernel, numba_loop_parallel_kernel
-from benchmarks.compilation_time.measure import count_tokens, enable_jax_dtype, first_warm, get_dtype, jax_compile_time
+from benchmarks.compilation_time.measure import count_tokens, configure_jax, estimate_compile_time, get_dtype, jax_compile_time
 
 def jax_loop_unrolled(spec):
+    configure_jax(spec)
     dtype = get_dtype(spec)
-    enable_jax_dtype(dtype)
 
     iterations = int(spec.get("iterations", 100))
     shape = tuple(spec.get("shape", (1024,)))
@@ -35,12 +35,13 @@ def jax_loop_unrolled(spec):
 
     return {
         "compile_time": compile_time,
-        "jaxpr_counts": counts,
+        "jaxpr_sin": counts["sin"],
+        "details": {"jaxpr_counts": counts},
     }
 
 def jax_loop_fori(spec):
+    configure_jax(spec)
     dtype = get_dtype(spec)
-    enable_jax_dtype(dtype)
 
     iterations = int(spec.get("iterations", 100))
     shape = tuple(spec.get("shape", (1024,)))
@@ -63,7 +64,8 @@ def jax_loop_fori(spec):
 
     return {
         "compile_time": compile_time,
-        "jaxpr_counts": counts,
+        "jaxpr_sin": counts["sin"],
+        "details": {"jaxpr_counts": counts},
     }
 
 def numba_loop(spec):
@@ -79,7 +81,7 @@ def numba_loop(spec):
         numba_loop_kernel(x, iterations)
         return time.perf_counter() - start
 
-    return first_warm(call, warm)
+    return estimate_compile_time(call, warm)
 
 def numba_loop_parallel(spec):
     dtype = get_dtype(spec)
@@ -98,4 +100,4 @@ def numba_loop_parallel(spec):
         numba_loop_parallel_kernel(x, iterations)
         return time.perf_counter() - start
 
-    return first_warm(call, warm)
+    return estimate_compile_time(call, warm)

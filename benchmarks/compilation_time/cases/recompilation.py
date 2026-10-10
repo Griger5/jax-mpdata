@@ -6,15 +6,17 @@ import numpy as np
 
 from benchmarks.compilation_time.kernels_jax import jax_stencil_5pt
 from benchmarks.compilation_time.kernels_numba import numba_stencil_5pt, numba_stencil_5pt_parallel
-from benchmarks.compilation_time.measure import enable_jax_dtype, first_warm, get_dtype
+from benchmarks.compilation_time.measure import configure_jax, estimate_compile_time, get_dtype, set_numba_threads
 
 def recompile_jax_stencil(spec):
-    dtype = get_dtype(spec)
-    enable_jax_dtype(dtype)
+    configure_jax(spec)
 
-    f = jax.jit(jax_stencil_5pt)
+    dtype = get_dtype(spec)
     warm = int(spec.get("warm", 1))
-    sequence = []
+    f = jax.jit(jax_stencil_5pt)
+
+    times = {}
+    details = {}
 
     for shape in spec.get("shapes", []):
         shape = tuple(shape)
@@ -26,16 +28,19 @@ def recompile_jax_stencil(spec):
             y.block_until_ready()
             return time.perf_counter() - start
 
-        entry = {"shape": list(shape)}
-        entry.update(first_warm(call, warm))
-        sequence.append(entry)
+        measured = estimate_compile_time(call, warm)
+        key = "x".join(str(d) for d in shape)
+        times[key] = measured["compile_time"]
+        details[key] = measured["details"]
 
-    return {"sequence": sequence}
+    return {**times, "details": details}
 
 def recompile_numba_stencil(spec):
     dtype = get_dtype(spec)
     warm = int(spec.get("warm", 1))
-    sequence = []
+
+    times = {}
+    details = {}
 
     for shape in spec.get("shapes", []):
         shape = tuple(shape)
@@ -46,23 +51,23 @@ def recompile_numba_stencil(spec):
             numba_stencil_5pt(x)
             return time.perf_counter() - start
 
-        entry = {"shape": list(shape)}
-        entry.update(first_warm(call, warm))
-        sequence.append(entry)
+        measured = estimate_compile_time(call, warm)
+        key = "x".join(str(d) for d in shape)
+        times[key] = measured["compile_time"]
+        details[key] = measured["details"]
 
-    return {"sequence": sequence}
+    return {**times, "details": details}
 
 def recompile_numba_stencil_parallel(spec):
-    import numba
-
     dtype = get_dtype(spec)
     warm = int(spec.get("warm", 1))
 
     threads = spec.get("threads")
     if threads is not None:
-        numba.set_num_threads(int(threads))
+        set_numba_threads(threads)
 
-    sequence = []
+    times = {}
+    details = {}
 
     for shape in spec.get("shapes", []):
         shape = tuple(shape)
@@ -73,8 +78,9 @@ def recompile_numba_stencil_parallel(spec):
             numba_stencil_5pt_parallel(x)
             return time.perf_counter() - start
 
-        entry = {"shape": list(shape)}
-        entry.update(first_warm(call, warm))
-        sequence.append(entry)
+        measured = estimate_compile_time(call, warm)
+        key = "x".join(str(d) for d in shape)
+        times[key] = measured["compile_time"]
+        details[key] = measured["details"]
 
-    return {"sequence": sequence}
+    return {**times, "details": details}

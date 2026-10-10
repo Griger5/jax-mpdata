@@ -8,7 +8,8 @@
         "env": {},
         "worker_module": "benchmarks.compilation_time.worker",
         "results_dir": "../results",
-        "taskset": true
+        "taskset": true,
+        "repeats": 3
     },
     "paths": {
         "implementations_comparison": "benchmarks/implementations_comparison"
