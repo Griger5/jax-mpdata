@@ -1,0 +1,1902 @@
+{
+    "cases": [
+        {
+            "batch_size": 1,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_32_1.nc",
+            "field_size": 32,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 58790149.24276387,
+                    "cell_steps_per_sec_best": 59196431.575139925,
+                    "cells_per_sec": 235160.5969710555,
+                    "cells_per_sec_best": 236785.7263005597,
+                    "fields_per_sec": 229.64902047954638,
+                    "fields_per_sec_best": 231.23606084039034,
+                    "max": 0.004364850001365994,
+                    "mean": 0.004347968667085904,
+                    "median": 0.004354471000624471,
+                    "min": 0.004324584999267245,
+                    "times": [
+                        0.004324584999267245,
+                        0.004354471000624471,
+                        0.004364850001365994
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 60160482.77502633,
+                    "cell_steps_per_sec_best": 60194489.349068016,
+                    "cells_per_sec": 240641.9311001053,
+                    "cells_per_sec_best": 240777.95739627208,
+                    "fields_per_sec": 235.0018858399466,
+                    "fields_per_sec_best": 235.13472401979695,
+                    "max": 0.004731873999844538,
+                    "mean": 0.004413346666600167,
+                    "median": 0.004255285000908771,
+                    "min": 0.004252880999047193,
+                    "times": [
+                        0.004731873999844538,
+                        0.004255285000908771,
+                        0.004252880999047193
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 30749808.86706589,
+                    "cell_steps_per_sec_best": 30804522.68239218,
+                    "cells_per_sec": 122999.23546826358,
+                    "cells_per_sec_best": 123218.09072956872,
+                    "fields_per_sec": 120.11644088697615,
+                    "fields_per_sec_best": 120.33016672809445,
+                    "max": 0.008373134998691967,
+                    "mean": 0.008336285999272755,
+                    "median": 0.008325254999363096,
+                    "min": 0.008310467999763205,
+                    "times": [
+                        0.008325254999363096,
+                        0.008373134998691967,
+                        0.008310467999763205
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 30633423.81589585,
+                    "cell_steps_per_sec_best": 30706794.847609226,
+                    "cells_per_sec": 122533.69526358342,
+                    "cells_per_sec_best": 122827.17939043691,
+                    "fields_per_sec": 119.66181178084318,
+                    "fields_per_sec_best": 119.94841737347355,
+                    "max": 0.00839606800036563,
+                    "mean": 0.008363290000488632,
+                    "median": 0.008356885000466718,
+                    "min": 0.008336917000633548,
+                    "times": [
+                        0.00839606800036563,
+                        0.008356885000466718,
+                        0.008336917000633548
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 1039843.1754033376,
+                    "cell_steps_per_sec_best": 1097847.9923619858,
+                    "cells_per_sec": 4159.372701613351,
+                    "cells_per_sec_best": 4391.391969447944,
+                    "fields_per_sec": 4.061887403919288,
+                    "fields_per_sec_best": 4.2884687201640075,
+                    "max": 0.24630530400099815,
+                    "mean": 0.24189324666682901,
+                    "median": 0.24619096999958856,
+                    "min": 0.23318346599990036,
+                    "times": [
+                        0.23318346599990036,
+                        0.24619096999958856,
+                        0.24630530400099815
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 8,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_32_1.nc",
+            "field_size": 32,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 66742081.74220427,
+                    "cell_steps_per_sec_best": 67215582.98701523,
+                    "cells_per_sec": 266968.3269688171,
+                    "cells_per_sec_best": 268862.33194806095,
+                    "fields_per_sec": 260.71125680548545,
+                    "fields_per_sec_best": 262.56087104302827,
+                    "max": 0.0323290040014399,
+                    "mean": 0.0311611390006874,
+                    "median": 0.03068528800031345,
+                    "min": 0.03046912500030885,
+                    "times": [
+                        0.0323290040014399,
+                        0.03046912500030885,
+                        0.03068528800031345
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 60284837.61644217,
+                    "cell_steps_per_sec_best": 60431260.25269593,
+                    "cells_per_sec": 241139.3504657687,
+                    "cells_per_sec_best": 241725.04101078375,
+                    "fields_per_sec": 235.48764693922723,
+                    "fields_per_sec_best": 236.0596103620935,
+                    "max": 0.03560577600001125,
+                    "mean": 0.03448919299989939,
+                    "median": 0.03397205799956282,
+                    "min": 0.033889745000124094,
+                    "times": [
+                        0.03560577600001125,
+                        0.033889745000124094,
+                        0.03397205799956282
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 251541181.00041166,
+                    "cell_steps_per_sec_best": 251809233.35323364,
+                    "cells_per_sec": 1006164.7240016466,
+                    "cells_per_sec_best": 1007236.9334129345,
+                    "fields_per_sec": 982.582738282858,
+                    "fields_per_sec_best": 983.6298177860689,
+                    "max": 0.008199776000765269,
+                    "mean": 0.008158241667236629,
+                    "median": 0.008141808000800665,
+                    "min": 0.00813314100014395,
+                    "times": [
+                        0.008199776000765269,
+                        0.008141808000800665,
+                        0.00813314100014395
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 29481382.887728106,
+                    "cell_steps_per_sec_best": 36370930.56955978,
+                    "cells_per_sec": 117925.53155091242,
+                    "cells_per_sec_best": 145483.72227823912,
+                    "fields_per_sec": 115.16165190518791,
+                    "fields_per_sec_best": 142.0739475373429,
+                    "max": 0.07076498000060383,
+                    "mean": 0.06551375133373465,
+                    "median": 0.06946756900106266,
+                    "min": 0.05630870499953744,
+                    "times": [
+                        0.06946756900106266,
+                        0.07076498000060383,
+                        0.05630870499953744
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 987527.092104063,
+                    "cell_steps_per_sec_best": 992577.7724022487,
+                    "cells_per_sec": 3950.108368416252,
+                    "cells_per_sec_best": 3970.311089608995,
+                    "fields_per_sec": 3.857527703531496,
+                    "fields_per_sec_best": 3.8772569234462844,
+                    "max": 2.0742412169984163,
+                    "mean": 2.0704742533331832,
+                    "median": 2.0738671540002542,
+                    "min": 2.0633143890008796,
+                    "times": [
+                        2.0633143890008796,
+                        2.0738671540002542,
+                        2.0742412169984163
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 16,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_32_1.nc",
+            "field_size": 32,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 69824444.19929521,
+                    "cell_steps_per_sec_best": 70166516.31156178,
+                    "cells_per_sec": 279297.7767971808,
+                    "cells_per_sec_best": 280666.0652462471,
+                    "fields_per_sec": 272.7517351534969,
+                    "fields_per_sec_best": 274.0879543420382,
+                    "max": 0.059962111999993795,
+                    "mean": 0.058999646333177225,
+                    "median": 0.058661404998929356,
+                    "min": 0.05837542200060852,
+                    "times": [
+                        0.05837542200060852,
+                        0.058661404998929356,
+                        0.059962111999993795
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 57668541.13420117,
+                    "cell_steps_per_sec_best": 58224371.59549357,
+                    "cells_per_sec": 230674.16453680466,
+                    "cells_per_sec_best": 232897.48638197427,
+                    "fields_per_sec": 225.2677388054733,
+                    "fields_per_sec_best": 227.43895154489675,
+                    "max": 0.0712419850005972,
+                    "mean": 0.07087237533354103,
+                    "median": 0.07102659299926017,
+                    "min": 0.07034854800076573,
+                    "times": [
+                        0.0712419850005972,
+                        0.07034854800076573,
+                        0.07102659299926017
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 501150284.2546765,
+                    "cell_steps_per_sec_best": 501815835.76884097,
+                    "cells_per_sec": 2004601.137018706,
+                    "cells_per_sec_best": 2007263.343075364,
+                    "fields_per_sec": 1957.61829786983,
+                    "fields_per_sec_best": 1960.218108472035,
+                    "max": 0.008205207001083181,
+                    "mean": 0.008180253667281553,
+                    "median": 0.008173197000360233,
+                    "min": 0.008162357000401244,
+                    "times": [
+                        0.008205207001083181,
+                        0.008173197000360233,
+                        0.008162357000401244
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 39499413.21240412,
+                    "cell_steps_per_sec_best": 39729968.13294523,
+                    "cells_per_sec": 157997.65284961648,
+                    "cells_per_sec_best": 158919.87253178091,
+                    "fields_per_sec": 154.2945828609536,
+                    "fields_per_sec_best": 155.1951880193173,
+                    "max": 0.1167455240010895,
+                    "mean": 0.10784641566715436,
+                    "median": 0.10369774300124845,
+                    "min": 0.10309597999912512,
+                    "times": [
+                        0.1167455240010895,
+                        0.10309597999912512,
+                        0.10369774300124845
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 962304.3824900958,
+                    "cell_steps_per_sec_best": 970984.3422990814,
+                    "cells_per_sec": 3849.217529960383,
+                    "cells_per_sec_best": 3883.9373691963256,
+                    "fields_per_sec": 3.7590014941019367,
+                    "fields_per_sec_best": 3.7929075871057867,
+                    "max": 4.271147160001419,
+                    "mean": 4.24866543066734,
+                    "median": 4.256449492000684,
+                    "min": 4.218399639999916,
+                    "times": [
+                        4.271147160001419,
+                        4.256449492000684,
+                        4.218399639999916
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 32,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_32_1.nc",
+            "field_size": 32,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 71245505.36644527,
+                    "cell_steps_per_sec_best": 71987045.98649947,
+                    "cells_per_sec": 284982.02146578114,
+                    "cells_per_sec_best": 287948.1839459979,
+                    "fields_per_sec": 278.3027553376769,
+                    "fields_per_sec_best": 281.1993983847636,
+                    "max": 0.11528561799968884,
+                    "mean": 0.114688854000633,
+                    "median": 0.11498269200092182,
+                    "min": 0.11379825200128835,
+                    "times": [
+                        0.11528561799968884,
+                        0.11498269200092182,
+                        0.11379825200128835
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 58357423.46155956,
+                    "cell_steps_per_sec_best": 58371617.14297061,
+                    "cells_per_sec": 233429.69384623822,
+                    "cells_per_sec_best": 233486.46857188243,
+                    "fields_per_sec": 227.95868539671702,
+                    "fields_per_sec_best": 228.01412946472894,
+                    "max": 0.1510814390003361,
+                    "mean": 0.1439333109998794,
+                    "median": 0.14037631399878592,
+                    "min": 0.14034218000051624,
+                    "times": [
+                        0.14037631399878592,
+                        0.1510814390003361,
+                        0.14034218000051624
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 755477441.9120874,
+                    "cell_steps_per_sec_best": 757456676.4755194,
+                    "cells_per_sec": 3021909.76764835,
+                    "cells_per_sec_best": 3029826.7059020777,
+                    "fields_per_sec": 2951.083757469092,
+                    "fields_per_sec_best": 2958.815142482498,
+                    "max": 0.011025994001101935,
+                    "mean": 0.010894869334151736,
+                    "median": 0.010843474001376308,
+                    "min": 0.010815139999976964,
+                    "times": [
+                        0.010843474001376308,
+                        0.010815139999976964,
+                        0.011025994001101935
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 41690697.640351124,
+                    "cell_steps_per_sec_best": 41870587.29648937,
+                    "cells_per_sec": 166762.7905614045,
+                    "cells_per_sec_best": 167482.3491859575,
+                    "fields_per_sec": 162.85428765762157,
+                    "fields_per_sec_best": 163.5569816269116,
+                    "max": 0.22147225800108572,
+                    "mean": 0.20453913300055623,
+                    "median": 0.1964946730004158,
+                    "min": 0.19565046800016717,
+                    "times": [
+                        0.22147225800108572,
+                        0.19565046800016717,
+                        0.1964946730004158
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 964872.3494852474,
+                    "cell_steps_per_sec_best": 966706.0745915032,
+                    "cells_per_sec": 3859.48939794099,
+                    "cells_per_sec_best": 3866.824298366013,
+                    "fields_per_sec": 3.769032615176748,
+                    "fields_per_sec_best": 3.7761956038730595,
+                    "max": 8.504975796000508,
+                    "mean": 8.489785118000631,
+                    "median": 8.490242263000255,
+                    "min": 8.474137295001128,
+                    "times": [
+                        8.490242263000255,
+                        8.504975796000508,
+                        8.474137295001128
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 64,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_32_1.nc",
+            "field_size": 32,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 84914173.53248098,
+                    "cell_steps_per_sec_best": 86369198.26362509,
+                    "cells_per_sec": 339656.69412992394,
+                    "cells_per_sec_best": 345476.7930545003,
+                    "fields_per_sec": 331.69599036125385,
+                    "fields_per_sec_best": 337.37968071728545,
+                    "max": 0.1947298499999306,
+                    "mean": 0.1924582906673701,
+                    "median": 0.19294776500100852,
+                    "min": 0.18969725700117124,
+                    "times": [
+                        0.18969725700117124,
+                        0.19294776500100852,
+                        0.1947298499999306
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 60399602.131049015,
+                    "cell_steps_per_sec_best": 60836464.17654377,
+                    "cells_per_sec": 241598.40852419607,
+                    "cells_per_sec_best": 243345.8567061751,
+                    "fields_per_sec": 235.93594582441023,
+                    "fields_per_sec_best": 237.64243818962413,
+                    "max": 0.2742363519992068,
+                    "mean": 0.2716028613328187,
+                    "median": 0.27126006499929645,
+                    "min": 0.26931216699995275,
+                    "times": [
+                        0.26931216699995275,
+                        0.27126006499929645,
+                        0.2742363519992068
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 1097471682.19142,
+                    "cell_steps_per_sec_best": 1115308721.9165118,
+                    "cells_per_sec": 4389886.72876568,
+                    "cells_per_sec_best": 4461234.887666047,
+                    "fields_per_sec": 4286.998758560235,
+                    "fields_per_sec_best": 4356.674694986374,
+                    "max": 0.015113853000002564,
+                    "mean": 0.014910938332832302,
+                    "median": 0.014928859000065131,
+                    "min": 0.01469010299842921,
+                    "times": [
+                        0.01469010299842921,
+                        0.015113853000002564,
+                        0.014928859000065131
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 41688858.082988426,
+                    "cell_steps_per_sec_best": 41736635.41626482,
+                    "cells_per_sec": 166755.43233195372,
+                    "cells_per_sec_best": 166946.54166505925,
+                    "fields_per_sec": 162.84710188667356,
+                    "fields_per_sec_best": 163.03373209478443,
+                    "max": 0.43259082400072657,
+                    "mean": 0.4060514366665302,
+                    "median": 0.39300668699979724,
+                    "min": 0.3925567989990668,
+                    "times": [
+                        0.39300668699979724,
+                        0.3925567989990668,
+                        0.43259082400072657
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 952299.2552106834,
+                    "cell_steps_per_sec_best": 957866.5033214096,
+                    "cells_per_sec": 3809.1970208427338,
+                    "cells_per_sec_best": 3831.4660132856384,
+                    "fields_per_sec": 3.719918965666732,
+                    "fields_per_sec_best": 3.7416660285992562,
+                    "max": 17.58473134399901,
+                    "mean": 17.298029057665797,
+                    "median": 17.204675851999127,
+                    "min": 17.10467997699925,
+                    "times": [
+                        17.204675851999127,
+                        17.58473134399901,
+                        17.10467997699925
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 1,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_64_1.nc",
+            "field_size": 64,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 67543193.51093991,
+                    "cell_steps_per_sec_best": 68027581.4666275,
+                    "cells_per_sec": 270172.7740437596,
+                    "cells_per_sec_best": 272110.32586651,
+                    "fields_per_sec": 65.96014991302725,
+                    "fields_per_sec_best": 66.43318502600341,
+                    "max": 0.01553662100013753,
+                    "mean": 0.015250002666410486,
+                    "median": 0.015160668999669724,
+                    "min": 0.015052717999424203,
+                    "times": [
+                        0.015052717999424203,
+                        0.01553662100013753,
+                        0.015160668999669724
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 68440606.18745704,
+                    "cell_steps_per_sec_best": 68687183.33769153,
+                    "cells_per_sec": 273762.4247498282,
+                    "cells_per_sec_best": 274748.7333507661,
+                    "fields_per_sec": 66.83652947993852,
+                    "fields_per_sec_best": 67.07732747821439,
+                    "max": 0.016909545000089565,
+                    "mean": 0.015593196666789785,
+                    "median": 0.014961877999667195,
+                    "min": 0.014908167000612593,
+                    "times": [
+                        0.014961877999667195,
+                        0.016909545000089565,
+                        0.014908167000612593
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 80570032.9748322,
+                    "cell_steps_per_sec_best": 80914466.21825829,
+                    "cells_per_sec": 322280.13189932884,
+                    "cells_per_sec_best": 323657.8648730332,
+                    "fields_per_sec": 78.68167282698458,
+                    "fields_per_sec_best": 79.01803341626787,
+                    "max": 0.013098957999318372,
+                    "mean": 0.012821245666903755,
+                    "median": 0.012709440001344774,
+                    "min": 0.012655339000048116,
+                    "times": [
+                        0.012655339000048116,
+                        0.012709440001344774,
+                        0.013098957999318372
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 79562586.0374234,
+                    "cell_steps_per_sec_best": 79626056.13670634,
+                    "cells_per_sec": 318250.3441496936,
+                    "cells_per_sec_best": 318504.22454682534,
+                    "fields_per_sec": 77.69783792717129,
+                    "fields_per_sec_best": 77.75982044600228,
+                    "max": 0.01302393799960555,
+                    "mean": 0.012918140332961533,
+                    "median": 0.012870370999735314,
+                    "min": 0.012860111999543733,
+                    "times": [
+                        0.012860111999543733,
+                        0.01302393799960555,
+                        0.012870370999735314
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 3620424.9725422505,
+                    "cell_steps_per_sec_best": 3749391.5202615233,
+                    "cells_per_sec": 14481.699890169002,
+                    "cells_per_sec_best": 14997.566081046092,
+                    "fields_per_sec": 3.5355712622482915,
+                    "fields_per_sec_best": 3.6615151565053936,
+                    "max": 0.29791962200033595,
+                    "mean": 0.284623442666998,
+                    "median": 0.2828397240009508,
+                    "min": 0.2731109819997073,
+                    "times": [
+                        0.29791962200033595,
+                        0.2731109819997073,
+                        0.2828397240009508
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 8,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_64_1.nc",
+            "field_size": 64,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 72230338.3874657,
+                    "cell_steps_per_sec_best": 74345644.2086139,
+                    "cells_per_sec": 288921.3535498628,
+                    "cells_per_sec_best": 297382.57683445566,
+                    "fields_per_sec": 70.53743983150947,
+                    "fields_per_sec_best": 72.60316817247453,
+                    "max": 0.12171501199918566,
+                    "mean": 0.11510599599932902,
+                    "median": 0.11341494699991017,
+                    "min": 0.11018802899889124,
+                    "times": [
+                        0.12171501199918566,
+                        0.11341494699991017,
+                        0.11018802899889124
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 66400677.052841865,
+                    "cell_steps_per_sec_best": 66757537.43115735,
+                    "cells_per_sec": 265602.7082113675,
+                    "cells_per_sec_best": 267030.1497246294,
+                    "fields_per_sec": 64.84441118441589,
+                    "fields_per_sec_best": 65.1929076476146,
+                    "max": 0.12693700499949045,
+                    "mean": 0.12434065866667272,
+                    "median": 0.12337223600115976,
+                    "min": 0.12271273499936797,
+                    "times": [
+                        0.12337223600115976,
+                        0.12271273499936797,
+                        0.12693700499949045
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 766713191.7898679,
+                    "cell_steps_per_sec_best": 775215072.0444603,
+                    "cells_per_sec": 3066852.7671594718,
+                    "cells_per_sec_best": 3100860.2881778413,
+                    "fields_per_sec": 748.7433513572929,
+                    "fields_per_sec_best": 757.0459687934183,
+                    "max": 0.010713693000070634,
+                    "mean": 0.010655217332896427,
+                    "median": 0.010684568998840405,
+                    "min": 0.010567389999778243,
+                    "times": [
+                        0.010713693000070634,
+                        0.010684568998840405,
+                        0.010567389999778243
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 95267793.32460961,
+                    "cell_steps_per_sec_best": 95897781.58169349,
+                    "cells_per_sec": 381071.1732984384,
+                    "cells_per_sec_best": 383591.12632677396,
+                    "fields_per_sec": 93.03495441856407,
+                    "fields_per_sec_best": 93.65017732587255,
+                    "max": 0.09634813699994993,
+                    "mean": 0.08925387133300926,
+                    "median": 0.08598918600000616,
+                    "min": 0.08542429099907167,
+                    "times": [
+                        0.09634813699994993,
+                        0.08542429099907167,
+                        0.08598918600000616
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 3812262.431848631,
+                    "cell_steps_per_sec_best": 3815902.8993310314,
+                    "cells_per_sec": 15249.049727394524,
+                    "cells_per_sec_best": 15263.611597324125,
+                    "fields_per_sec": 3.7229125311021787,
+                    "fields_per_sec_best": 3.72646767512796,
+                    "max": 2.1621719210015726,
+                    "mean": 2.152610761667044,
+                    "median": 2.1488552129994787,
+                    "min": 2.1468051510000805,
+                    "times": [
+                        2.1488552129994787,
+                        2.1468051510000805,
+                        2.1621719210015726
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 16,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_64_1.nc",
+            "field_size": 64,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 93209271.62559569,
+                    "cell_steps_per_sec_best": 95406637.42472292,
+                    "cells_per_sec": 372837.08650238276,
+                    "cells_per_sec_best": 381626.5496988917,
+                    "fields_per_sec": 91.02467932187079,
+                    "fields_per_sec_best": 93.17054436008098,
+                    "max": 0.1813344589991175,
+                    "mean": 0.17627968600027089,
+                    "median": 0.17577650500061281,
+                    "min": 0.17172809400108235,
+                    "times": [
+                        0.17577650500061281,
+                        0.1813344589991175,
+                        0.17172809400108235
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 67508524.00219171,
+                    "cell_steps_per_sec_best": 68460526.0528885,
+                    "cells_per_sec": 270034.09600876685,
+                    "cells_per_sec_best": 273842.104211554,
+                    "fields_per_sec": 65.92629297089034,
+                    "fields_per_sec_best": 66.85598247352392,
+                    "max": 0.24346741199951794,
+                    "mean": 0.24182769433294501,
+                    "median": 0.24269527799879143,
+                    "min": 0.23932039300052566,
+                    "times": [
+                        0.23932039300052566,
+                        0.24269527799879143,
+                        0.24346741199951794
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 1116129211.5521002,
+                    "cell_steps_per_sec_best": 1123671872.275526,
+                    "cells_per_sec": 4464516.846208401,
+                    "cells_per_sec_best": 4494687.489102105,
+                    "fields_per_sec": 1089.969933156348,
+                    "fields_per_sec_best": 1097.3358127690685,
+                    "max": 0.014774020999539061,
+                    "mean": 0.01467803133285391,
+                    "median": 0.014679304000310367,
+                    "min": 0.014580768998712301,
+                    "times": [
+                        0.014679304000310367,
+                        0.014580768998712301,
+                        0.014774020999539061
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 95636875.19055915,
+                    "cell_steps_per_sec_best": 99866378.73695144,
+                    "cells_per_sec": 382547.50076223654,
+                    "cells_per_sec_best": 399465.5149478058,
+                    "fields_per_sec": 93.3953859282804,
+                    "fields_per_sec_best": 97.52576048530415,
+                    "max": 0.17289860199889517,
+                    "mean": 0.16942416433266771,
+                    "median": 0.1713146729998698,
+                    "min": 0.16405921799923817,
+                    "times": [
+                        0.1713146729998698,
+                        0.17289860199889517,
+                        0.16405921799923817
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 3754936.4419534216,
+                    "cell_steps_per_sec_best": 3781506.65939298,
+                    "cells_per_sec": 15019.745767813687,
+                    "cells_per_sec_best": 15126.026637571918,
+                    "fields_per_sec": 3.6669301190951384,
+                    "fields_per_sec_best": 3.6928775970634566,
+                    "max": 4.545473834999939,
+                    "mean": 4.4138204269996395,
+                    "median": 4.363322855999286,
+                    "min": 4.332664589999695,
+                    "times": [
+                        4.332664589999695,
+                        4.363322855999286,
+                        4.545473834999939
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 32,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_64_1.nc",
+            "field_size": 64,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 112811455.99773395,
+                    "cell_steps_per_sec_best": 112837185.80330521,
+                    "cells_per_sec": 451245.8239909358,
+                    "cells_per_sec_best": 451348.74321322085,
+                    "fields_per_sec": 110.16743749778706,
+                    "fields_per_sec_best": 110.19256426104025,
+                    "max": 0.2993734720002976,
+                    "mean": 0.29341371533337224,
+                    "median": 0.2904669540002942,
+                    "min": 0.2904007199995249,
+                    "times": [
+                        0.2993734720002976,
+                        0.2904669540002942,
+                        0.2904007199995249
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 67141502.51333152,
+                    "cell_steps_per_sec_best": 67645161.94388868,
+                    "cells_per_sec": 268566.0100533261,
+                    "cells_per_sec_best": 270580.6477755547,
+                    "fields_per_sec": 65.56787354817531,
+                    "fields_per_sec_best": 66.05972846082878,
+                    "max": 0.4922657770002843,
+                    "mean": 0.48823992366730334,
+                    "median": 0.48804388900134654,
+                    "min": 0.48441010500027915,
+                    "times": [
+                        0.48441010500027915,
+                        0.4922657770002843,
+                        0.48804388900134654
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 1271707819.2084942,
+                    "cell_steps_per_sec_best": 1282225813.7793212,
+                    "cells_per_sec": 5086831.276833978,
+                    "cells_per_sec_best": 5128903.255117285,
+                    "fields_per_sec": 1241.9021671957953,
+                    "fields_per_sec_best": 1252.1736462688684,
+                    "max": 0.026095539000380086,
+                    "mean": 0.025806008333650727,
+                    "median": 0.025766925000425545,
+                    "min": 0.025555561000146554,
+                    "times": [
+                        0.025555561000146554,
+                        0.026095539000380086,
+                        0.025766925000425545
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 99740427.42455311,
+                    "cell_steps_per_sec_best": 100243738.69811125,
+                    "cells_per_sec": 398961.70969821245,
+                    "cells_per_sec_best": 400974.954792445,
+                    "fields_per_sec": 97.40276115679015,
+                    "fields_per_sec_best": 97.89427607237427,
+                    "max": 0.3289997530009714,
+                    "mean": 0.32813859766732395,
+                    "median": 0.32853278100083116,
+                    "min": 0.32688325900016935,
+                    "times": [
+                        0.3289997530009714,
+                        0.32688325900016935,
+                        0.32853278100083116
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 3746479.450936243,
+                    "cell_steps_per_sec_best": 3746872.6899988167,
+                    "cells_per_sec": 14985.917803744971,
+                    "cells_per_sec_best": 14987.490759995266,
+                    "fields_per_sec": 3.6586713388049246,
+                    "fields_per_sec_best": 3.659055361326969,
+                    "max": 8.76314268600072,
+                    "mean": 8.751637925999603,
+                    "median": 8.746344515999226,
+                    "min": 8.745426575998863,
+                    "times": [
+                        8.745426575998863,
+                        8.76314268600072,
+                        8.746344515999226
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 64,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_64_1.nc",
+            "field_size": 64,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 131934117.15581977,
+                    "cell_steps_per_sec_best": 136816453.89206746,
+                    "cells_per_sec": 527736.4686232791,
+                    "cells_per_sec_best": 547265.8155682698,
+                    "fields_per_sec": 128.84191128498026,
+                    "fields_per_sec_best": 133.60981825397212,
+                    "max": 0.5097038639996754,
+                    "mean": 0.4951477839998309,
+                    "median": 0.4967327739996108,
+                    "min": 0.47900671400020656,
+                    "times": [
+                        0.5097038639996754,
+                        0.47900671400020656,
+                        0.4967327739996108
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 68518303.13263498,
+                    "cell_steps_per_sec_best": 69096494.1851222,
+                    "cells_per_sec": 274073.2125305399,
+                    "cells_per_sec_best": 276385.97674048884,
+                    "fields_per_sec": 66.91240540296384,
+                    "fields_per_sec_best": 67.47704510265841,
+                    "max": 0.9566287599991483,
+                    "mean": 0.9538579383327791,
+                    "median": 0.9564743579994683,
+                    "min": 0.9484706969997205,
+                    "times": [
+                        0.9566287599991483,
+                        0.9564743579994683,
+                        0.9484706969997205
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 1333518824.6161504,
+                    "cell_steps_per_sec_best": 1344873658.3012664,
+                    "cells_per_sec": 5334075.298464601,
+                    "cells_per_sec_best": 5379494.6332050655,
+                    "fields_per_sec": 1302.2644771642092,
+                    "fields_per_sec_best": 1313.3531819348304,
+                    "max": 0.049290204000499216,
+                    "mean": 0.04905519833361419,
+                    "median": 0.04914516300050309,
+                    "min": 0.04873022799984028,
+                    "times": [
+                        0.049290204000499216,
+                        0.04873022799984028,
+                        0.04914516300050309
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 94534083.73532915,
+                    "cell_steps_per_sec_best": 98712293.49200074,
+                    "cells_per_sec": 378136.3349413166,
+                    "cells_per_sec_best": 394849.17396800296,
+                    "fields_per_sec": 92.31844114778238,
+                    "fields_per_sec_best": 96.39872411328197,
+                    "max": 0.6948078499990515,
+                    "mean": 0.6839898863339234,
+                    "median": 0.693252607001341,
+                    "min": 0.6639092020013777,
+                    "times": [
+                        0.6639092020013777,
+                        0.693252607001341,
+                        0.6948078499990515
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 3752421.6845898954,
+                    "cell_steps_per_sec_best": 3763968.193452994,
+                    "cells_per_sec": 15009.686738359582,
+                    "cells_per_sec_best": 15055.872773811976,
+                    "fields_per_sec": 3.6644743013573198,
+                    "fields_per_sec_best": 3.6757501889189395,
+                    "max": 17.521403589998954,
+                    "mean": 17.46593447133273,
+                    "median": 17.464988081999763,
+                    "min": 17.411411741999473,
+                    "times": [
+                        17.464988081999763,
+                        17.411411741999473,
+                        17.521403589998954
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 1,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_128_1.nc",
+            "field_size": 128,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 73290264.80521366,
+                    "cell_steps_per_sec_best": 74218695.57119381,
+                    "cells_per_sec": 293161.05922085466,
+                    "cells_per_sec_best": 296874.7822847753,
+                    "fields_per_sec": 17.893131055960367,
+                    "fields_per_sec_best": 18.11979872343599,
+                    "max": 0.05828037200080871,
+                    "mean": 0.05645199699999163,
+                    "median": 0.055887368000185234,
+                    "min": 0.05518825099898095,
+                    "times": [
+                        0.055887368000185234,
+                        0.05518825099898095,
+                        0.05828037200080871
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 75150086.42854193,
+                    "cell_steps_per_sec_best": 76696181.65176718,
+                    "cells_per_sec": 300600.3457141677,
+                    "cells_per_sec_best": 306784.72660706873,
+                    "fields_per_sec": 18.347189069468243,
+                    "fields_per_sec_best": 18.724653723575972,
+                    "max": 0.06006073100070353,
+                    "mean": 0.05599017333346031,
+                    "median": 0.05450426199968206,
+                    "min": 0.053405526999995345,
+                    "times": [
+                        0.05450426199968206,
+                        0.053405526999995345,
+                        0.06006073100070353
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 305697352.31949145,
+                    "cell_steps_per_sec_best": 313091393.808647,
+                    "cells_per_sec": 1222789.4092779658,
+                    "cells_per_sec_best": 1252365.575234588,
+                    "fields_per_sec": 74.63314265612584,
+                    "fields_per_sec_best": 76.43832856656421,
+                    "max": 0.013529978999940795,
+                    "mean": 0.013337097999586453,
+                    "median": 0.013398872999459854,
+                    "min": 0.013082441999358707,
+                    "times": [
+                        0.013398872999459854,
+                        0.013082441999358707,
+                        0.013529978999940795
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 281007083.8284261,
+                    "cell_steps_per_sec_best": 281418124.7266305,
+                    "cells_per_sec": 1124028.3353137046,
+                    "cells_per_sec_best": 1125672.498906522,
+                    "fields_per_sec": 68.60524507529935,
+                    "fields_per_sec_best": 68.70559685708753,
+                    "max": 0.015215950999845518,
+                    "mean": 0.014782317000329689,
+                    "median": 0.01457614500031923,
+                    "min": 0.014554855000824318,
+                    "times": [
+                        0.01457614500031923,
+                        0.015215950999845518,
+                        0.014554855000824318
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 14213368.23145973,
+                    "cell_steps_per_sec_best": 14779997.944447022,
+                    "cells_per_sec": 56853.47292583891,
+                    "cells_per_sec_best": 59119.99177778809,
+                    "fields_per_sec": 3.4700606033837227,
+                    "fields_per_sec_best": 3.6083979356560114,
+                    "max": 0.30055928100046003,
+                    "mean": 0.2886233276670585,
+                    "median": 0.2881794050008466,
+                    "min": 0.27713129699986894,
+                    "times": [
+                        0.30055928100046003,
+                        0.2881794050008466,
+                        0.27713129699986894
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 8,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_128_1.nc",
+            "field_size": 128,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 105890263.19449496,
+                    "cell_steps_per_sec_best": 108999452.9468125,
+                    "cells_per_sec": 423561.0527779799,
+                    "cells_per_sec_best": 435997.81178725,
+                    "fields_per_sec": 25.852115037718498,
+                    "fields_per_sec_best": 26.611194567092895,
+                    "max": 0.31423216500115814,
+                    "mean": 0.30810332133357105,
+                    "median": 0.3094524369989813,
+                    "min": 0.30062536200057366,
+                    "times": [
+                        0.31423216500115814,
+                        0.3094524369989813,
+                        0.30062536200057366
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 72047743.18631867,
+                    "cell_steps_per_sec_best": 75302101.7114336,
+                    "cells_per_sec": 288190.97274527466,
+                    "cells_per_sec_best": 301208.4068457344,
+                    "fields_per_sec": 17.58978105134733,
+                    "fields_per_sec_best": 18.38430217564297,
+                    "max": 0.4752828180007782,
+                    "mean": 0.4550820673339331,
+                    "median": 0.4548095270001795,
+                    "min": 0.4351538570008415,
+                    "times": [
+                        0.4752828180007782,
+                        0.4548095270001795,
+                        0.4351538570008415
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 1170745399.1381485,
+                    "cell_steps_per_sec_best": 1171685753.192478,
+                    "cells_per_sec": 4682981.596552595,
+                    "cells_per_sec_best": 4686743.012769911,
+                    "fields_per_sec": 285.82651346146207,
+                    "fields_per_sec_best": 286.0560920880073,
+                    "max": 0.028025984998748754,
+                    "mean": 0.027993844666222383,
+                    "median": 0.02798900599918852,
+                    "min": 0.02796654300072987,
+                    "times": [
+                        0.02798900599918852,
+                        0.02796654300072987,
+                        0.028025984998748754
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 377937662.8704173,
+                    "cell_steps_per_sec_best": 383116819.9436359,
+                    "cells_per_sec": 1511750.6514816692,
+                    "cells_per_sec_best": 1532467.2797745436,
+                    "fields_per_sec": 92.26993722422297,
+                    "fields_per_sec_best": 93.53437986905173,
+                    "max": 0.11558578699987265,
+                    "mean": 0.09593932133369283,
+                    "median": 0.08670212899960461,
+                    "min": 0.08553004800160124,
+                    "times": [
+                        0.11558578699987265,
+                        0.08670212899960461,
+                        0.08553004800160124
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 14594975.716582207,
+                    "cell_steps_per_sec_best": 14617067.515850538,
+                    "cells_per_sec": 58379.902866328826,
+                    "cells_per_sec_best": 58468.27006340215,
+                    "fields_per_sec": 3.563226493306203,
+                    "fields_per_sec_best": 3.568619998986948,
+                    "max": 2.252446463000524,
+                    "mean": 2.246455190332805,
+                    "median": 2.2451561849993595,
+                    "min": 2.2417629229985323,
+                    "times": [
+                        2.2451561849993595,
+                        2.252446463000524,
+                        2.2417629229985323
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 16,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_128_1.nc",
+            "field_size": 128,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 123916621.5544237,
+                    "cell_steps_per_sec_best": 123937544.89512973,
+                    "cells_per_sec": 495666.4862176948,
+                    "cells_per_sec_best": 495750.17958051886,
+                    "fields_per_sec": 30.253081434185475,
+                    "fields_per_sec_best": 30.258189671662528,
+                    "max": 0.546516148999217,
+                    "mean": 0.5347234520001317,
+                    "median": 0.528871746000732,
+                    "min": 0.5287824610004463,
+                    "times": [
+                        0.546516148999217,
+                        0.528871746000732,
+                        0.5287824610004463
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 72494502.71960348,
+                    "cell_steps_per_sec_best": 72958524.6617098,
+                    "cells_per_sec": 289978.0108784139,
+                    "cells_per_sec_best": 291834.09864683915,
+                    "fields_per_sec": 17.698853203028193,
+                    "fields_per_sec_best": 17.81213980998774,
+                    "max": 0.9077948609992745,
+                    "mean": 0.903357337666724,
+                    "median": 0.9040133739999874,
+                    "min": 0.89826377800091,
+                    "times": [
+                        0.89826377800091,
+                        0.9040133739999874,
+                        0.9077948609992745
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 1207706611.4700415,
+                    "cell_steps_per_sec_best": 1214823058.2951052,
+                    "cells_per_sec": 4830826.445880166,
+                    "cells_per_sec_best": 4859292.233180421,
+                    "fields_per_sec": 294.8502469409281,
+                    "fields_per_sec_best": 296.58766071657845,
+                    "max": 0.05432978600038041,
+                    "mean": 0.05418052400030623,
+                    "median": 0.05426483500014001,
+                    "min": 0.05394695100039826,
+                    "times": [
+                        0.05394695100039826,
+                        0.05426483500014001,
+                        0.05432978600038041
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 384314547.9475604,
+                    "cell_steps_per_sec_best": 397239430.83716863,
+                    "cells_per_sec": 1537258.1917902417,
+                    "cells_per_sec_best": 1588957.7233486746,
+                    "fields_per_sec": 93.82679393250987,
+                    "fields_per_sec_best": 96.98228291923063,
+                    "max": 0.1732038879999891,
+                    "mean": 0.16956981899966195,
+                    "median": 0.170526981999501,
+                    "min": 0.16497858699949575,
+                    "times": [
+                        0.1732038879999891,
+                        0.170526981999501,
+                        0.16497858699949575
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 14458802.721882751,
+                    "cell_steps_per_sec_best": 14529262.154236889,
+                    "cells_per_sec": 57835.21088753101,
+                    "cells_per_sec_best": 58117.048616947555,
+                    "fields_per_sec": 3.5299811332721562,
+                    "fields_per_sec_best": 3.5471831431242404,
+                    "max": 4.622314516998813,
+                    "mean": 4.555179330332976,
+                    "median": 4.5326021290002245,
+                    "min": 4.51062134499989,
+                    "times": [
+                        4.51062134499989,
+                        4.5326021290002245,
+                        4.622314516998813
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 32,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_128_1.nc",
+            "field_size": 128,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 117228091.65192063,
+                    "cell_steps_per_sec_best": 119722568.34065367,
+                    "cells_per_sec": 468912.36660768255,
+                    "cells_per_sec_best": 478890.2733626147,
+                    "fields_per_sec": 28.620139563457187,
+                    "fields_per_sec_best": 29.2291426612924,
+                    "max": 1.1532434029995784,
+                    "mean": 1.1220449816664768,
+                    "median": 1.1180937789995369,
+                    "min": 1.0947977630003152,
+                    "times": [
+                        1.1532434029995784,
+                        1.0947977630003152,
+                        1.1180937789995369
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 72682081.70410927,
+                    "cell_steps_per_sec_best": 73284438.5067185,
+                    "cells_per_sec": 290728.32681643707,
+                    "cells_per_sec_best": 293137.754026874,
+                    "fields_per_sec": 17.7446488535423,
+                    "fields_per_sec_best": 17.891708619804323,
+                    "max": 1.815431596000053,
+                    "mean": 1.8024433733335172,
+                    "median": 1.803360566000265,
+                    "min": 1.7885379580002336,
+                    "times": [
+                        1.815431596000053,
+                        1.7885379580002336,
+                        1.803360566000265
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 1227795605.6231203,
+                    "cell_steps_per_sec_best": 1235833588.523904,
+                    "cells_per_sec": 4911182.422492481,
+                    "cells_per_sec_best": 4943334.354095616,
+                    "fields_per_sec": 299.7547865290821,
+                    "fields_per_sec_best": 301.7171846982188,
+                    "max": 0.10849510199841461,
+                    "mean": 0.10710287133345749,
+                    "median": 0.10675392500161252,
+                    "min": 0.10605958700034535,
+                    "times": [
+                        0.10675392500161252,
+                        0.10849510199841461,
+                        0.10605958700034535
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 392365845.23006475,
+                    "cell_steps_per_sec_best": 392467283.4913419,
+                    "cells_per_sec": 1569463.3809202588,
+                    "cells_per_sec_best": 1569869.1339653675,
+                    "fields_per_sec": 95.79244268312127,
+                    "fields_per_sec_best": 95.81720788362838,
+                    "max": 0.3345440220000455,
+                    "mean": 0.3341896136662399,
+                    "median": 0.33405557999867597,
+                    "min": 0.3339692389999982,
+                    "times": [
+                        0.3345440220000455,
+                        0.33405557999867597,
+                        0.3339692389999982
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 13598673.188810298,
+                    "cell_steps_per_sec_best": 14268711.452241277,
+                    "cells_per_sec": 54394.692755241194,
+                    "cells_per_sec_best": 57074.84580896511,
+                    "fields_per_sec": 3.3199885714868893,
+                    "fields_per_sec_best": 3.483572131894843,
+                    "max": 9.671261124998637,
+                    "mean": 9.498607216999517,
+                    "median": 9.63858739600073,
+                    "min": 9.185973129999184,
+                    "times": [
+                        9.671261124998637,
+                        9.63858739600073,
+                        9.185973129999184
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 64,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_128_1.nc",
+            "field_size": 128,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 91151878.77508949,
+                    "cell_steps_per_sec_best": 91208146.92611311,
+                    "cells_per_sec": 364607.515100358,
+                    "cells_per_sec_best": 364832.58770445245,
+                    "fields_per_sec": 22.253876654074585,
+                    "fields_per_sec_best": 22.267613995633084,
+                    "max": 2.8858593330005533,
+                    "mean": 2.8786306573341185,
+                    "median": 2.875903421001567,
+                    "min": 2.8741292180002347,
+                    "times": [
+                        2.875903421001567,
+                        2.8858593330005533,
+                        2.8741292180002347
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 73909769.03426078,
+                    "cell_steps_per_sec_best": 73994983.01628608,
+                    "cells_per_sec": 295639.0761370431,
+                    "cells_per_sec_best": 295979.9320651443,
+                    "fields_per_sec": 18.044377205630074,
+                    "fields_per_sec_best": 18.065181400460467,
+                    "max": 3.5873318819994893,
+                    "mean": 3.5589566003333553,
+                    "median": 3.5468112460002885,
+                    "min": 3.5427266730002884,
+                    "times": [
+                        3.5873318819994893,
+                        3.5468112460002885,
+                        3.5427266730002884
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 1273211705.1827111,
+                    "cell_steps_per_sec_best": 1273229310.945685,
+                    "cells_per_sec": 5092846.8207308445,
+                    "cells_per_sec_best": 5092917.243782739,
+                    "fields_per_sec": 310.84270146062283,
+                    "fields_per_sec_best": 310.8469997425988,
+                    "max": 0.20641509600136487,
+                    "mean": 0.20606536166693937,
+                    "median": 0.20589191799990658,
+                    "min": 0.20588907099954668,
+                    "times": [
+                        0.20589191799990658,
+                        0.20588907099954668,
+                        0.20641509600136487
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 377174294.65400636,
+                    "cell_steps_per_sec_best": 380558877.1848124,
+                    "cells_per_sec": 1508697.1786160255,
+                    "cells_per_sec_best": 1522235.5087392498,
+                    "fields_per_sec": 92.08356803076327,
+                    "fields_per_sec_best": 92.90988212519835,
+                    "max": 0.6989864379993378,
+                    "mean": 0.6942822753329286,
+                    "median": 0.6950208529997326,
+                    "min": 0.6888395349997154,
+                    "times": [
+                        0.6888395349997154,
+                        0.6989864379993378,
+                        0.6950208529997326
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 14558317.960457489,
+                    "cell_steps_per_sec_best": 14580336.942592744,
+                    "cells_per_sec": 58233.271841829956,
+                    "cells_per_sec_best": 58321.34777037098,
+                    "fields_per_sec": 3.5542768458148166,
+                    "fields_per_sec_best": 3.559652573875182,
+                    "max": 18.073275814000226,
+                    "mean": 18.019678109333352,
+                    "median": 18.00647579699944,
+                    "min": 17.979282717000387,
+                    "times": [
+                        18.073275814000226,
+                        18.00647579699944,
+                        17.979282717000387
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 1,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_256_1.nc",
+            "field_size": 256,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 82885508.84126434,
+                    "cell_steps_per_sec_best": 83163758.92361128,
+                    "cells_per_sec": 331542.03536505735,
+                    "cells_per_sec_best": 332655.03569444513,
+                    "fields_per_sec": 5.058929982987325,
+                    "fields_per_sec_best": 5.0759130202399465,
+                    "max": 0.2003714129987202,
+                    "mean": 0.1983501879991915,
+                    "median": 0.1976702590000059,
+                    "min": 0.1970088919988484,
+                    "times": [
+                        0.2003714129987202,
+                        0.1976702590000059,
+                        0.1970088919988484
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 79985092.62191331,
+                    "cell_steps_per_sec_best": 81627871.39802203,
+                    "cells_per_sec": 319940.37048765324,
+                    "cells_per_sec_best": 326511.48559208814,
+                    "fields_per_sec": 4.881902625849201,
+                    "fields_per_sec_best": 4.982169885133181,
+                    "max": 0.20679133600060595,
+                    "mean": 0.20411508766725697,
+                    "median": 0.2048381700005848,
+                    "min": 0.2007157570005802,
+                    "times": [
+                        0.2048381700005848,
+                        0.2007157570005802,
+                        0.20679133600060595
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 689964681.8256173,
+                    "cell_steps_per_sec_best": 691623887.6469083,
+                    "cells_per_sec": 2759858.7273024693,
+                    "cells_per_sec_best": 2766495.550587633,
+                    "fields_per_sec": 42.11210216220809,
+                    "fields_per_sec_best": 42.21337204876149,
+                    "max": 0.023774757000865065,
+                    "mean": 0.023736692000359955,
+                    "median": 0.023746143000607844,
+                    "min": 0.02368917599960696,
+                    "times": [
+                        0.023746143000607844,
+                        0.023774757000865065,
+                        0.02368917599960696
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 685411798.0338554,
+                    "cell_steps_per_sec_best": 686676427.8206446,
+                    "cells_per_sec": 2741647.192135422,
+                    "cells_per_sec_best": 2746705.7112825783,
+                    "fields_per_sec": 41.834216188589814,
+                    "fields_per_sec_best": 41.91140306522489,
+                    "max": 0.02441572499992617,
+                    "mean": 0.024059819333463867,
+                    "median": 0.023903878000055556,
+                    "min": 0.02385985500040988,
+                    "times": [
+                        0.02385985500040988,
+                        0.02441572499992617,
+                        0.023903878000055556
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 49079338.08892311,
+                    "cell_steps_per_sec_best": 49788135.892691165,
+                    "cells_per_sec": 196317.35235569245,
+                    "cells_per_sec_best": 199152.54357076465,
+                    "fields_per_sec": 2.9955650689039985,
+                    "fields_per_sec_best": 3.0388266536066384,
+                    "max": 0.3453891589997511,
+                    "mean": 0.33609679099996964,
+                    "median": 0.333826833000785,
+                    "min": 0.3290743809993728,
+                    "times": [
+                        0.333826833000785,
+                        0.3453891589997511,
+                        0.3290743809993728
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 8,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_256_1.nc",
+            "field_size": 256,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 109835602.66168377,
+                    "cell_steps_per_sec_best": 110297561.31490497,
+                    "cells_per_sec": 439342.41064673505,
+                    "cells_per_sec_best": 441190.2452596199,
+                    "fields_per_sec": 6.703833170268784,
+                    "fields_per_sec_best": 6.732028888849181,
+                    "max": 1.193993863000287,
+                    "mean": 1.19189667066712,
+                    "median": 1.1933471190004639,
+                    "min": 1.1883490300006088,
+                    "times": [
+                        1.193993863000287,
+                        1.1933471190004639,
+                        1.1883490300006088
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 80244565.49200812,
+                    "cell_steps_per_sec_best": 80700744.55299439,
+                    "cells_per_sec": 320978.26196803246,
+                    "cells_per_sec_best": 322802.9782119775,
+                    "fields_per_sec": 4.897739593018073,
+                    "fields_per_sec_best": 4.925582553283348,
+                    "max": 1.6380887939994864,
+                    "mean": 1.6318895749997562,
+                    "median": 1.6334065640003246,
+                    "min": 1.6241733669994574,
+                    "times": [
+                        1.6334065640003246,
+                        1.6241733669994574,
+                        1.6380887939994864
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 892901295.052552,
+                    "cell_steps_per_sec_best": 900566188.9419329,
+                    "cells_per_sec": 3571605.180210208,
+                    "cells_per_sec_best": 3602264.7557677315,
+                    "fields_per_sec": 54.498370059359864,
+                    "fields_per_sec_best": 54.966198055537895,
+                    "max": 0.14753675300016766,
+                    "mean": 0.1466247093333853,
+                    "median": 0.1467933809999522,
+                    "min": 0.14554399400003604,
+                    "times": [
+                        0.1467933809999522,
+                        0.14554399400003604,
+                        0.14753675300016766
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 791062299.645609,
+                    "cell_steps_per_sec_best": 794380297.5864154,
+                    "cells_per_sec": 3164249.198582436,
+                    "cells_per_sec_best": 3177521.1903456617,
+                    "fields_per_sec": 48.282611062354064,
+                    "fields_per_sec_best": 48.485125585108364,
+                    "max": 0.17619273299897031,
+                    "mean": 0.16896097066576962,
+                    "median": 0.16569112199977098,
+                    "min": 0.16499905699856754,
+                    "times": [
+                        0.17619273299897031,
+                        0.16499905699856754,
+                        0.16569112199977098
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 48260732.015732154,
+                    "cell_steps_per_sec_best": 48282629.325528346,
+                    "cells_per_sec": 193042.9280629286,
+                    "cells_per_sec_best": 193130.51730211338,
+                    "fields_per_sec": 2.9456013193195894,
+                    "fields_per_sec_best": 2.9469378250444547,
+                    "max": 2.7170284999992873,
+                    "mean": 2.7158749543329272,
+                    "median": 2.715914046999387,
+                    "min": 2.7146823160001077,
+                    "times": [
+                        2.7170284999992873,
+                        2.7146823160001077,
+                        2.715914046999387
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 16,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_256_1.nc",
+            "field_size": 256,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 85695784.15455627,
+                    "cell_steps_per_sec_best": 85966570.1127719,
+                    "cells_per_sec": 342783.1366182251,
+                    "cells_per_sec_best": 343866.28045108763,
+                    "fields_per_sec": 5.230455575839616,
+                    "fields_per_sec_best": 5.2469830391096135,
+                    "max": 3.1336809280001034,
+                    "mean": 3.080686427666175,
+                    "median": 3.0590069579993724,
+                    "min": 3.0493713969990495,
+                    "times": [
+                        3.1336809280001034,
+                        3.0590069579993724,
+                        3.0493713969990495
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 80814948.54115385,
+                    "cell_steps_per_sec_best": 80832467.40400085,
+                    "cells_per_sec": 323259.7941646154,
+                    "cells_per_sec_best": 323329.86961600336,
+                    "fields_per_sec": 4.932553011545035,
+                    "fields_per_sec_best": 4.933622278076223,
+                    "max": 3.2722942269992927,
+                    "mean": 3.2530346146662246,
+                    "median": 3.243756318999658,
+                    "min": 3.2430532979997224,
+                    "times": [
+                        3.2722942269992927,
+                        3.243756318999658,
+                        3.2430532979997224
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 931682499.875836,
+                    "cell_steps_per_sec_best": 938273407.6332397,
+                    "cells_per_sec": 3726729.9995033443,
+                    "cells_per_sec_best": 3753093.630532959,
+                    "fields_per_sec": 56.86538695531226,
+                    "fields_per_sec_best": 57.26766404011473,
+                    "max": 0.28279899900007877,
+                    "mean": 0.2811850053331,
+                    "median": 0.2813662379994639,
+                    "min": 0.27938977899975725,
+                    "times": [
+                        0.27938977899975725,
+                        0.2813662379994639,
+                        0.28279899900007877
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 785427611.6626539,
+                    "cell_steps_per_sec_best": 789213402.6961092,
+                    "cells_per_sec": 3141710.446650616,
+                    "cells_per_sec_best": 3156853.6107844366,
+                    "fields_per_sec": 47.93869700089441,
+                    "fields_per_sec_best": 48.16976334815119,
+                    "max": 0.3437891710000258,
+                    "mean": 0.3365691133337047,
+                    "median": 0.33375959300065006,
+                    "min": 0.3321585760004382,
+                    "times": [
+                        0.3321585760004382,
+                        0.33375959300065006,
+                        0.3437891710000258
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 47736093.72132035,
+                    "cell_steps_per_sec_best": 48117695.53968323,
+                    "cells_per_sec": 190944.3748852814,
+                    "cells_per_sec_best": 192470.78215873294,
+                    "fields_per_sec": 2.9135799390454316,
+                    "fields_per_sec_best": 2.9368710656544943,
+                    "max": 5.506581387000551,
+                    "mean": 5.4820274473331665,
+                    "median": 5.491526003999752,
+                    "min": 5.447974950999196,
+                    "times": [
+                        5.506581387000551,
+                        5.491526003999752,
+                        5.447974950999196
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 32,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_256_1.nc",
+            "field_size": 256,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 69839967.95720589,
+                    "cell_steps_per_sec_best": 70031092.47305746,
+                    "cells_per_sec": 279359.8718288235,
+                    "cells_per_sec_best": 280124.36989222985,
+                    "fields_per_sec": 4.262693356763054,
+                    "fields_per_sec_best": 4.274358671451261,
+                    "max": 7.524602197001514,
+                    "mean": 7.506032090333974,
+                    "median": 7.506990844000029,
+                    "min": 7.48650323000038,
+                    "times": [
+                        7.48650323000038,
+                        7.524602197001514,
+                        7.506990844000029
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 80781667.50531232,
+                    "cell_steps_per_sec_best": 80781988.47073612,
+                    "cells_per_sec": 323126.6700212493,
+                    "cells_per_sec_best": 323127.9538829445,
+                    "fields_per_sec": 4.930521698322285,
+                    "fields_per_sec_best": 4.930541288497078,
+                    "max": 6.545397391999359,
+                    "mean": 6.508580809666455,
+                    "median": 6.490185411999846,
+                    "min": 6.49015962500016,
+                    "times": [
+                        6.49015962500016,
+                        6.490185411999846,
+                        6.545397391999359
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 930666844.8724309,
+                    "cell_steps_per_sec_best": 935575983.7897675,
+                    "cells_per_sec": 3722667.3794897236,
+                    "cells_per_sec_best": 3742303.93515907,
+                    "fields_per_sec": 56.80339629348333,
+                    "fields_per_sec_best": 57.103026354355926,
+                    "max": 0.5638122569998814,
+                    "mean": 0.562516489333575,
+                    "median": 0.5633465970004181,
+                    "min": 0.5603906140004256,
+                    "times": [
+                        0.5638122569998814,
+                        0.5603906140004256,
+                        0.5633465970004181
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 782146515.2166677,
+                    "cell_steps_per_sec_best": 793091512.900085,
+                    "cells_per_sec": 3128586.0608666707,
+                    "cells_per_sec_best": 3172366.05160034,
+                    "fields_per_sec": 47.738434766642314,
+                    "fields_per_sec_best": 48.406464410405576,
+                    "max": 0.6731523769994965,
+                    "mean": 0.6681801766668892,
+                    "median": 0.67031942200083,
+                    "min": 0.6610687310003414,
+                    "times": [
+                        0.67031942200083,
+                        0.6610687310003414,
+                        0.6731523769994965
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 47859621.927544214,
+                    "cell_steps_per_sec_best": 48124446.93241628,
+                    "cells_per_sec": 191438.48771017685,
+                    "cells_per_sec_best": 192497.78772966514,
+                    "fields_per_sec": 2.921119502413587,
+                    "fields_per_sec_best": 2.937283137964861,
+                    "max": 10.993502792000072,
+                    "mean": 10.947542756666735,
+                    "median": 10.954704171999765,
+                    "min": 10.894421306000368,
+                    "times": [
+                        10.993502792000072,
+                        10.954704171999765,
+                        10.894421306000368
+                    ]
+                }
+            }
+        },
+        {
+            "batch_size": 64,
+            "case_id": 1,
+            "data_path": "/home/graca/Desktop/code/jax-mpdata/benchmarks/independent_fields/../implementations_comparison/data/gaussian2d_256_1.nc",
+            "field_size": 256,
+            "results": {
+                "jax_cpu_batched": {
+                    "cell_steps_per_sec": 64859554.19516923,
+                    "cell_steps_per_sec_best": 64964511.96315564,
+                    "cells_per_sec": 259438.21678067694,
+                    "cells_per_sec_best": 259858.04785262255,
+                    "fields_per_sec": 3.9587130246074973,
+                    "fields_per_sec_best": 3.9651191383761986,
+                    "max": 16.213562392998938,
+                    "mean": 16.173727836999507,
+                    "median": 16.166870294000546,
+                    "min": 16.140750823999042,
+                    "times": [
+                        16.213562392998938,
+                        16.140750823999042,
+                        16.166870294000546
+                    ]
+                },
+                "jax_cpu_sequential": {
+                    "cell_steps_per_sec": 80808332.51582727,
+                    "cell_steps_per_sec_best": 81072698.87461862,
+                    "cells_per_sec": 323233.3300633091,
+                    "cells_per_sec_best": 324290.79549847444,
+                    "fields_per_sec": 4.9321492014054735,
+                    "fields_per_sec_best": 4.948284843421546,
+                    "max": 13.008594595001341,
+                    "mean": 12.972818870000992,
+                    "median": 12.976087581000684,
+                    "min": 12.933774434000952,
+                    "times": [
+                        13.008594595001341,
+                        12.933774434000952,
+                        12.976087581000684
+                    ]
+                },
+                "jax_gpu_batched": {
+                    "cell_steps_per_sec": 951752609.0848833,
+                    "cell_steps_per_sec_best": 951764782.0281677,
+                    "cells_per_sec": 3807010.436339533,
+                    "cells_per_sec_best": 3807059.128112671,
+                    "fields_per_sec": 58.09036920684102,
+                    "fields_per_sec_best": 58.09111218433641,
+                    "max": 1.1018889660008426,
+                    "mean": 1.1017794110005827,
+                    "median": 1.1017316790002951,
+                    "min": 1.1017175880006107,
+                    "times": [
+                        1.1017316790002951,
+                        1.1018889660008426,
+                        1.1017175880006107
+                    ]
+                },
+                "jax_gpu_sequential": {
+                    "cell_steps_per_sec": 775804123.5454332,
+                    "cell_steps_per_sec_best": 780360406.0554445,
+                    "cells_per_sec": 3103216.4941817326,
+                    "cells_per_sec_best": 3121441.624221778,
+                    "fields_per_sec": 47.35132589998982,
+                    "fields_per_sec_best": 47.6294193149075,
+                    "max": 1.3565672639997501,
+                    "mean": 1.3506244990003324,
+                    "median": 1.3515989000006812,
+                    "min": 1.343707333000566,
+                    "times": [
+                        1.343707333000566,
+                        1.3515989000006812,
+                        1.3565672639997501
+                    ]
+                },
+                "pympdata_sequential": {
+                    "cell_steps_per_sec": 48050203.164749384,
+                    "cell_steps_per_sec_best": 48145039.995678134,
+                    "cells_per_sec": 192200.81265899754,
+                    "cells_per_sec_best": 192580.15998271253,
+                    "fields_per_sec": 2.9327516580047233,
+                    "fields_per_sec_best": 2.938540038798714,
+                    "max": 22.094268562999787,
+                    "mean": 21.898766875667206,
+                    "median": 21.822509187000833,
+                    "min": 21.779522877001,
+                    "times": [
+                        22.094268562999787,
+                        21.779522877001,
+                        21.822509187000833
+                    ]
+                }
+            }
+        }
+    ],
+    "config": {
+        "batch_sizes": [
+            1,
+            8,
+            16,
+            32,
+            64
+        ],
+        "case_ids": [
+            1
+        ],
+        "data_dir": "../implementations_comparison/data",
+        "different_fields": true,
+        "field_sizes": [
+            32,
+            64,
+            128,
+            256
+        ],
+        "implementation_modules": [
+            "benchmarks.independent_fields.jax_impl",
+            "benchmarks.independent_fields.pympdata_impl"
+        ],
+        "jax_devices": [
+            "cpu",
+            "gpu"
+        ],
+        "jax_modes": [
+            "sequential",
+            "batched"
+        ],
+        "n_iters": 3,
+        "nt": 250,
+        "output": "../results/independent_fields.json",
+        "repeats": 3,
+        "warmup": 1,
+        "warmup_pympdata": 1
+    }
+}

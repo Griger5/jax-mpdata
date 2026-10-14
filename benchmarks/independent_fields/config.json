@@ -1,0 +1,38 @@
+{
+    "data_dir": "../implementations_comparison/data",
+    "field_sizes": [
+        32,
+        64,
+        128,
+        256
+    ],
+    "case_ids": [
+        1
+    ],
+    "nt": 250,
+    "n_iters": 3,
+    "batch_sizes": [
+        1,
+        8,
+        16,
+        32,
+        64
+    ],
+    "repeats": 3,
+    "warmup": 1,
+    "warmup_pympdata": 1,
+    "different_fields": true,
+    "implementation_modules": [
+        "benchmarks.independent_fields.jax_impl",
+        "benchmarks.independent_fields.pympdata_impl"
+    ],
+    "jax_devices": [
+        "cpu",
+        "gpu"
+    ],
+    "jax_modes": [
+        "sequential",
+        "batched"
+    ],
+    "output": "../results/independent_fields.json"
+}

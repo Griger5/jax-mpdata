@@ -1,4 +1,5 @@
 import time
+from functools import partial
 
 import jax
 import jax.numpy as jnp
@@ -147,11 +148,30 @@ def step(psi, C, halo, n_iters):
 
     return psi
 
-@jax.jit(static_argnums=(3, 4), donate_argnums=(0,))
-def solve(psi0, C, nt, halo=1, n_iters=1):
+def _solve_impl(psi0, C, nt, halo=1, n_iters=1):
     def body(n, psi):
         return step(psi, C, halo, n_iters)
     return lax.fori_loop(0, nt, body, psi0)
+
+solve = jax.jit(
+    _solve_impl,
+    static_argnums=(3, 4),
+    donate_argnums=(0,),
+)
+
+@partial(
+    jax.jit,
+    static_argnames=("halo", "n_iters", "batched_C"),
+    donate_argnums=(0,),
+)
+def solve_batch(psi0_batch, C, nt, halo=1, n_iters=1, batched_C=False):
+    C_in_axis = 0 if batched_C else None
+
+    return jax.vmap(
+        _solve_impl,
+        in_axes=(0, C_in_axis, None, None, None),
+        out_axes=0,
+    )(psi0_batch, C, nt, halo, n_iters)
 
 def gaussian_2d(h: int, w: int) -> jax.Array:
     y = jnp.arange(h)[:, None]
@@ -178,66 +198,229 @@ def quicklook(arg, halo):
 	im = ax.imshow(arg[halo:-halo, halo:-halo], vmax=1)
 	fig.colorbar(im, ax=ax)
 
+# if __name__ == "__main__":
+#     # nx, ny = 20, 30
+#     # nt = 50
+#     # halo = 1
+
+#     # psi0, Cx, Cy = init(nx, ny, halo)
+#     # quicklook(psi0, halo)
+#     # plt.show()
+
+#     # start = time.perf_counter()
+#     # psi_final = solve(psi0, Cx, Cy, nt, halo)
+#     # end = time.perf_counter()
+
+#     # quicklook(psi_final, halo)
+
+#     # psi0, Cx, Cy = init(nx, ny, halo)
+#     # psi_mp = solve(psi0, Cx, Cy, nt, halo, 3)
+#     # quicklook(psi_mp, halo)
+
+#     # plt.show()
+
+#     # print(f"Time: {end - start:.6f} s")
+
+#     times = {cpu_device: [], gpu_device : []}
+
+#     with jax.default_device(cpu_device):
+#         # with jax.profiler.trace("/tmp/jax-trace", create_perfetto_link=True):
+#             nx = int(20 * 1)
+#             ny = int(30 * 1)
+#             halo = 1
+#             n_iters = 3
+#             nt = 50
+
+#             psi0, Cx, Cy = init(nx, ny, halo)
+
+#             quicklook(psi0, halo)
+
+#             psi_final = solve(psi0, (Cx, Cy), nt, halo, n_iters).block_until_ready()
+
+#             quicklook(psi_final, halo)
+#             plt.show()
+
+#     # for _ in range(10):
+#     #     for device, name in zip([cpu_device, gpu_device], ["CPU", "GPU"]):
+#     #         print("#########################      " + name + "     ##########################")
+#     #         with jax.default_device(device):
+#     #             nx = int(200 * 0.5)
+#     #             ny = int(300 * 0.5)
+#     #             halo = 1
+#     #             n_iters = 3
+#     #             nt = 100
+
+#     #             psi0, Cx, Cy = init(nx, ny, halo)
+
+#     #             start = time.perf_counter()
+#     #             psi_final = solve(psi0, Cx, Cy, nt, halo, n_iters).block_until_ready()
+#     #             end = time.perf_counter()
+
+#     #             print(f"Time: {end - start:.6f} seconds")
+
+#     #             times[device].append(end - start)
+
+#     #         print(f"{min(times[device])=}")
+
 if __name__ == "__main__":
-    # nx, ny = 20, 30
-    # nt = 50
-    # halo = 1
+    GRID_SCALE_X = 2.0
+    GRID_SCALE_Y = 2.0
 
-    # psi0, Cx, Cy = init(nx, ny, halo)
-    # quicklook(psi0, halo)
-    # plt.show()
+    BATCH_SIZE = 64
+    NT = 250
+    HALO = 1
+    N_ITERS = 3
 
-    # start = time.perf_counter()
-    # psi_final = solve(psi0, Cx, Cy, nt, halo)
-    # end = time.perf_counter()
+    USE_GPU = True
+    SHOW_PLOTS = False
+    CHECK_RESULTS = True
+    DIFFERENT_FIELDS = True
 
-    # quicklook(psi_final, halo)
+    nx = max(1, int(20 * GRID_SCALE_X))
+    ny = max(1, int(30 * GRID_SCALE_Y))
 
-    # psi0, Cx, Cy = init(nx, ny, halo)
-    # psi_mp = solve(psi0, Cx, Cy, nt, halo, 3)
-    # quicklook(psi_mp, halo)
+    device = gpu_device if (USE_GPU and gpu_device is not None) else cpu_device
 
-    # plt.show()
+    print("==================================================")
+    print("JAX MPDATA batched vs sequential quick test")
+    print("==================================================")
+    print(f"device       = {device}")
+    print(f"grid         = {nx} x {ny}")
+    print(f"halo         = {HALO}")
+    print(f"steps        = {NT}")
+    print(f"MPDATA iters = {N_ITERS}")
+    print(f"batch size   = {BATCH_SIZE}")
+    print(f"different fields = {DIFFERENT_FIELDS}")
+    print("==================================================")
 
-    # print(f"Time: {end - start:.6f} s")
+    with jax.default_device(device):
+        psi0, Cx, Cy = init(nx, ny, HALO)
+        C = (Cx, Cy)
 
-    times = {cpu_device: [], gpu_device : []}
+        if DIFFERENT_FIELDS:
+            amps = jnp.linspace(0.9, 1.1, BATCH_SIZE, dtype=real_t)
+            amps = amps[:, None, None]
+            psi0_batch = psi0[None, ...] * amps
+        else:
+            psi0_batch = jnp.repeat(psi0[None, ...], BATCH_SIZE, axis=0)
 
-    with jax.default_device(cpu_device):
-        # with jax.profiler.trace("/tmp/jax-trace", create_perfetto_link=True):
-            nx = int(20 * 1)
-            ny = int(30 * 1)
-            halo = 1
-            n_iters = 3
-            nt = 50
+        print(f"psi0.shape      = {psi0.shape}")
+        print(f"psi0_batch.shape = {psi0_batch.shape}")
 
-            psi0, Cx, Cy = init(nx, ny, halo)
+        print("Warming up solve_batch...")
+        _ = solve_batch(
+            psi0_batch.copy(),
+            C,
+            NT,
+            halo=HALO,
+            n_iters=N_ITERS,
+        ).block_until_ready()
 
-            quicklook(psi0, halo)
+        print("Warming up solve...")
+        _ = solve(
+            psi0.copy(),
+            C,
+            NT,
+            HALO,
+            N_ITERS,
+        ).block_until_ready()
 
-            psi_final = solve(psi0, (Cx, Cy), nt, halo, n_iters).block_until_ready()
+        print("Running timed batched solve...")
 
-            quicklook(psi_final, halo)
+        batch_in = psi0_batch.copy()
+
+        start = time.perf_counter()
+        psi_batch_out = solve_batch(
+            batch_in,
+            C,
+            NT,
+            halo=HALO,
+            n_iters=N_ITERS,
+        ).block_until_ready()
+        batch_time = time.perf_counter() - start
+
+        batch_in = None
+
+        print("Preparing sequential inputs...")
+        sequential_inputs = [
+            psi0_batch[i].copy()
+            for i in range(BATCH_SIZE)
+        ]
+
+        print("Running timed sequential solves...")
+
+        sequential_outputs = []
+
+        start = time.perf_counter()
+        for i in range(BATCH_SIZE):
+            psi_i = sequential_inputs[i]
+
+            psi_out_i = solve(
+                psi_i,
+                C,
+                NT,
+                HALO,
+                N_ITERS,
+            ).block_until_ready()
+
+            psi_i = None
+            sequential_inputs[i] = None
+
+            sequential_outputs.append(psi_out_i)
+
+        sequential_time = time.perf_counter() - start
+
+        psi_sequential_out = jnp.stack(sequential_outputs, axis=0)
+
+        print("==================================================")
+        print("Timing results")
+        print("==================================================")
+        print(f"Batched total time      = {batch_time:.6f} s")
+        print(f"Sequential total time   = {sequential_time:.6f} s")
+        print()
+        print(f"Batched time / field    = {batch_time / BATCH_SIZE:.6f} s")
+        print(f"Sequential time / field = {sequential_time / BATCH_SIZE:.6f} s")
+        print()
+        print(f"Batched throughput      = {BATCH_SIZE / batch_time:.3f} fields/s")
+        print(f"Sequential throughput   = {BATCH_SIZE / sequential_time:.3f} fields/s")
+        print()
+        print(f"Sequential / batched wall-clock ratio = {sequential_time / batch_time:.3f}x")
+        print("==================================================")
+
+        if CHECK_RESULTS:
+            max_abs_diff = float(jnp.max(jnp.abs(psi_batch_out - psi_sequential_out)))
+            close = bool(
+                jnp.allclose(
+                    psi_batch_out,
+                    psi_sequential_out,
+                    rtol=1e-5,
+                    atol=1e-6,
+                )
+            )
+
+            print("Result comparison:")
+            print(f"  max abs diff = {max_abs_diff:.6e}")
+            print(f"  allclose     = {close}")
+
+            if not close:
+                print("WARNING: batched and sequential results differ more than expected.")
+            print("==================================================")
+
+        if SHOW_PLOTS:
+            quicklook(psi0, HALO)
+            plt.title("Initial field")
+
+            quicklook(psi_batch_out[0], HALO)
+            plt.title("Batched output, member 0")
+
+            quicklook(psi_sequential_out[0], HALO)
+            plt.title("Sequential output, member 0")
+
+            if BATCH_SIZE > 1:
+                quicklook(psi_batch_out[-1], HALO)
+                plt.title("Batched output, last member")
+
+                quicklook(psi_sequential_out[-1], HALO)
+                plt.title("Sequential output, last member")
+            
             plt.show()
-
-    # for _ in range(10):
-    #     for device, name in zip([cpu_device, gpu_device], ["CPU", "GPU"]):
-    #         print("#########################      " + name + "     ##########################")
-    #         with jax.default_device(device):
-    #             nx = int(200 * 0.5)
-    #             ny = int(300 * 0.5)
-    #             halo = 1
-    #             n_iters = 3
-    #             nt = 100
-
-    #             psi0, Cx, Cy = init(nx, ny, halo)
-
-    #             start = time.perf_counter()
-    #             psi_final = solve(psi0, Cx, Cy, nt, halo, n_iters).block_until_ready()
-    #             end = time.perf_counter()
-
-    #             print(f"Time: {end - start:.6f} seconds")
-
-    #             times[device].append(end - start)
-
-    #         print(f"{min(times[device])=}")
