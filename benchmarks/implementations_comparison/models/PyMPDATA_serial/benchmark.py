@@ -5,7 +5,7 @@ solver = None
 def setup(data, metadata: dict):
     global solver
 
-    solver = _setup(data, metadata, 1)    
+    solver = _setup(data, metadata, 1)
 
 def compute(data, metadata: dict):
     solver.advance(n_steps=metadata["steps"])

@@ -9,10 +9,12 @@ import os
 import platform
 
 import numpy as np
+import numba
 
 solver = None
 
 def _setup(data, metadata, n_threads):
+    numba.set_num_threads(n_threads)
     options = Options(n_iters=metadata["n_iters"], dtype=np.float32, epsilon=1e-12)
     stepper = Stepper(options=options, n_dims=2, n_threads=n_threads)
 

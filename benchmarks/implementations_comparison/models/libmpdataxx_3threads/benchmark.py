@@ -1,0 +1,6 @@
+from benchmarks.common.env_manager import EnvContextManager
+from benchmarks.implementations_comparison.models.libmpdataxx_4threads.benchmark import setup, _compute as imported_compute, result_to_numpy
+
+def compute(data, metadata: dict):
+    with EnvContextManager("OMP_NUM_THREADS", "3"):
+        return imported_compute(data, metadata)

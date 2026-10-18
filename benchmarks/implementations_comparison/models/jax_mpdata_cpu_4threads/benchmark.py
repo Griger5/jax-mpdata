@@ -1,5 +1,3 @@
-import os
-
 from jax_mpdata.permutations import solve
 
 import jax
