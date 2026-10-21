@@ -21,6 +21,14 @@ try:
 except:
     gpu_device = None
 
+def setup_comm(ndim, periods=True):
+    size = MPI.COMM_WORLD.Get_size()
+    dims = MPI.Compute_dims(size, [0] * ndim)
+
+    COMM = MPI.COMM_WORLD.Create_cart(dims, periods=periods, reorder=False)
+
+    return COMM
+
 def donorcell(psi_l, psi_r, C):
     return ((C + jnp.abs(C)) * psi_l + (C - jnp.abs(C)) * psi_r) / 2
 
@@ -39,13 +47,6 @@ def fill_halos_axis(psi, halo, axis):
     psi = jnp.moveaxis(psi, axis, 0)
 
     if COMM is None:
-        psi = psi.at[:halo].set(psi[-2 * halo:-halo])
-        psi = psi.at[-halo:].set(psi[halo:2 * halo])
-        return jnp.moveaxis(psi, 0, axis)
-
-    dims, _, _ = COMM.Get_topo()
-
-    if dims[axis] == 1:
         psi = psi.at[:halo].set(psi[-2 * halo:-halo])
         psi = psi.at[-halo:].set(psi[halo:2 * halo])
         return jnp.moveaxis(psi, 0, axis)
@@ -221,14 +222,6 @@ def solve_batch(psi0_batch, C, nt, halo=1, n_iters=1, batched_C=False):
         in_axes=(0, C_in_axis, None, None, None),
         out_axes=0,
     )(psi0_batch, C, nt, halo, n_iters)
-
-def setup_comm(ndim, periods=True):
-    size = MPI.COMM_WORLD.Get_size()
-    dims = MPI.Compute_dims(size, [0] * ndim)
-
-    COMM = MPI.COMM_WORLD.Create_cart(dims, periods=periods, reorder=False)
-
-    return COMM
 
 @partial(
     jax.jit,
