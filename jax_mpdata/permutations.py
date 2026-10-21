@@ -5,11 +5,16 @@ import jax
 import jax.numpy as jnp
 from jax import lax
 
+import mpi4jax
+from mpi4py import MPI
+
 import matplotlib.pyplot as plt
 
 real_t = "float32"
 
 cpu_device = jax.devices("cpu")[0]
+
+COMM = None
 
 try:
     gpu_device = jax.devices("gpu")[0]
@@ -22,11 +27,55 @@ def donorcell(psi_l, psi_r, C):
 def mpdata_frac(nom, den, eps=1e-12):
     return nom / (den + eps)
 
+# def fill_halos_axis(psi, halo, axis):
+#     psi = jnp.moveaxis(psi, axis, 0)
+
+#     psi = psi.at[:halo].set(psi[-2 * halo:-halo])
+#     psi = psi.at[-halo:].set(psi[halo:2 * halo])
+
+#     return jnp.moveaxis(psi, 0, axis)
+
 def fill_halos_axis(psi, halo, axis):
     psi = jnp.moveaxis(psi, axis, 0)
 
-    psi = psi.at[:halo].set(psi[-2 * halo:-halo])
-    psi = psi.at[-halo:].set(psi[halo:2 * halo])
+    if COMM is None:
+        psi = psi.at[:halo].set(psi[-2 * halo:-halo])
+        psi = psi.at[-halo:].set(psi[halo:2 * halo])
+        return jnp.moveaxis(psi, 0, axis)
+
+    dims, _, _ = COMM.Get_topo()
+
+    if dims[axis] == 1:
+        psi = psi.at[:halo].set(psi[-2 * halo:-halo])
+        psi = psi.at[-halo:].set(psi[halo:2 * halo])
+        return jnp.moveaxis(psi, 0, axis)
+
+    lower_src, upper_dst = COMM.Shift(axis, 1)
+    upper_src, lower_dst = COMM.Shift(axis, -1)
+
+    send_upper = psi[-2 * halo:-halo]
+    recv_lower = mpi4jax.sendrecv(
+        send_upper,
+        recvbuf=psi[:halo],
+        source=lower_src,
+        dest=upper_dst,
+        sendtag=2 * axis,
+        recvtag=2 * axis,
+        comm=COMM,
+    )
+    psi = psi.at[:halo].set(recv_lower)
+
+    send_lower = psi[halo:2 * halo]
+    recv_upper = mpi4jax.sendrecv(
+        send_lower,
+        recvbuf=psi[-halo:],
+        source=upper_src,
+        dest=lower_dst,
+        sendtag=2 * axis + 1,
+        recvtag=2 * axis + 1,
+        comm=COMM,
+    )
+    psi = psi.at[-halo:].set(recv_upper)
 
     return jnp.moveaxis(psi, 0, axis)
 
@@ -173,6 +222,54 @@ def solve_batch(psi0_batch, C, nt, halo=1, n_iters=1, batched_C=False):
         out_axes=0,
     )(psi0_batch, C, nt, halo, n_iters)
 
+def setup_comm(ndim, periods=True):
+    size = MPI.COMM_WORLD.Get_size()
+    dims = MPI.Compute_dims(size, [0] * ndim)
+
+    COMM = MPI.COMM_WORLD.Create_cart(dims, periods=periods, reorder=False)
+
+    return COMM
+
+@partial(
+    jax.jit,
+    static_argnums=(3, 4)
+)
+def solve_mpi(psi_global, C_global, nt, halo=1, n_iters=1):
+    dims, _, coords = COMM.Get_topo()
+    ndim = psi_global.ndim
+
+    starts = []
+    local_sizes = []
+
+    for axis in range(ndim):
+        N = psi_global.shape[axis] - 2 * halo
+
+        nprocs = dims[axis]
+        coord = coords[axis]
+
+        base, rem = divmod(N, nprocs)
+
+        local_n = base + (1 if coord < rem else 0)
+        start = coord * base + min(coord, rem)
+
+        starts.append(start)
+        local_sizes.append(local_n)
+
+    psi_slice = tuple(slice(starts[axis], starts[axis] + local_sizes[axis] + 2 * halo) for axis in range(ndim))
+
+    psi_local = psi_global[psi_slice]
+
+    C_local = []
+
+    for vel_axis, C_axis_global in enumerate(C_global):
+        C_slice = tuple(slice(starts[axis], starts[axis] + local_sizes[axis] + 2 * halo + (1 if axis == vel_axis else 0)) for axis in range(ndim))
+
+        C_local.append(C_axis_global[C_slice])
+
+    C_local = tuple(C_local)
+
+    return _solve_impl(psi_local, C_local, nt, halo, n_iters)
+
 def gaussian_2d(h: int, w: int) -> jax.Array:
     y = jnp.arange(h)[:, None]
     x = jnp.arange(w)[None, :]
@@ -198,229 +295,240 @@ def quicklook(arg, halo):
 	im = ax.imshow(arg[halo:-halo, halo:-halo], vmax=1)
 	fig.colorbar(im, ax=ax)
 
-# if __name__ == "__main__":
-#     # nx, ny = 20, 30
-#     # nt = 50
-#     # halo = 1
-
-#     # psi0, Cx, Cy = init(nx, ny, halo)
-#     # quicklook(psi0, halo)
-#     # plt.show()
-
-#     # start = time.perf_counter()
-#     # psi_final = solve(psi0, Cx, Cy, nt, halo)
-#     # end = time.perf_counter()
-
-#     # quicklook(psi_final, halo)
-
-#     # psi0, Cx, Cy = init(nx, ny, halo)
-#     # psi_mp = solve(psi0, Cx, Cy, nt, halo, 3)
-#     # quicklook(psi_mp, halo)
-
-#     # plt.show()
-
-#     # print(f"Time: {end - start:.6f} s")
-
-#     times = {cpu_device: [], gpu_device : []}
-
-#     with jax.default_device(cpu_device):
-#         # with jax.profiler.trace("/tmp/jax-trace", create_perfetto_link=True):
-#             nx = int(20 * 1)
-#             ny = int(30 * 1)
-#             halo = 1
-#             n_iters = 3
-#             nt = 50
-
-#             psi0, Cx, Cy = init(nx, ny, halo)
-
-#             quicklook(psi0, halo)
-
-#             psi_final = solve(psi0, (Cx, Cy), nt, halo, n_iters).block_until_ready()
-
-#             quicklook(psi_final, halo)
-#             plt.show()
-
-#     # for _ in range(10):
-#     #     for device, name in zip([cpu_device, gpu_device], ["CPU", "GPU"]):
-#     #         print("#########################      " + name + "     ##########################")
-#     #         with jax.default_device(device):
-#     #             nx = int(200 * 0.5)
-#     #             ny = int(300 * 0.5)
-#     #             halo = 1
-#     #             n_iters = 3
-#     #             nt = 100
-
-#     #             psi0, Cx, Cy = init(nx, ny, halo)
-
-#     #             start = time.perf_counter()
-#     #             psi_final = solve(psi0, Cx, Cy, nt, halo, n_iters).block_until_ready()
-#     #             end = time.perf_counter()
-
-#     #             print(f"Time: {end - start:.6f} seconds")
-
-#     #             times[device].append(end - start)
-
-#     #         print(f"{min(times[device])=}")
-
 if __name__ == "__main__":
-    GRID_SCALE_X = 2.0
-    GRID_SCALE_Y = 2.0
+    # nx, ny = 20, 30
+    # nt = 50
+    # halo = 1
 
-    BATCH_SIZE = 64
-    NT = 250
-    HALO = 1
-    N_ITERS = 3
+    # psi0, Cx, Cy = init(nx, ny, halo)
+    # quicklook(psi0, halo)
+    # plt.show()
 
-    USE_GPU = True
-    SHOW_PLOTS = False
-    CHECK_RESULTS = True
-    DIFFERENT_FIELDS = True
+    # start = time.perf_counter()
+    # psi_final = solve(psi0, Cx, Cy, nt, halo)
+    # end = time.perf_counter()
 
-    nx = max(1, int(20 * GRID_SCALE_X))
-    ny = max(1, int(30 * GRID_SCALE_Y))
+    # quicklook(psi_final, halo)
 
-    device = gpu_device if (USE_GPU and gpu_device is not None) else cpu_device
+    # psi0, Cx, Cy = init(nx, ny, halo)
+    # psi_mp = solve(psi0, Cx, Cy, nt, halo, 3)
+    # quicklook(psi_mp, halo)
 
-    print("==================================================")
-    print("JAX MPDATA batched vs sequential quick test")
-    print("==================================================")
-    print(f"device       = {device}")
-    print(f"grid         = {nx} x {ny}")
-    print(f"halo         = {HALO}")
-    print(f"steps        = {NT}")
-    print(f"MPDATA iters = {N_ITERS}")
-    print(f"batch size   = {BATCH_SIZE}")
-    print(f"different fields = {DIFFERENT_FIELDS}")
-    print("==================================================")
+    # plt.show()
 
-    with jax.default_device(device):
-        psi0, Cx, Cy = init(nx, ny, HALO)
-        C = (Cx, Cy)
+    # print(f"Time: {end - start:.6f} s")
 
-        if DIFFERENT_FIELDS:
-            amps = jnp.linspace(0.9, 1.1, BATCH_SIZE, dtype=real_t)
-            amps = amps[:, None, None]
-            psi0_batch = psi0[None, ...] * amps
-        else:
-            psi0_batch = jnp.repeat(psi0[None, ...], BATCH_SIZE, axis=0)
+    times = {cpu_device: [], gpu_device : []}
 
-        print(f"psi0.shape      = {psi0.shape}")
-        print(f"psi0_batch.shape = {psi0_batch.shape}")
+    with jax.default_device(cpu_device):
+        # with jax.profiler.trace("/tmp/jax-trace", create_perfetto_link=True):
+            nx = int(20 * 1)
+            ny = int(30 * 1)
+            halo = 1
+            n_iters = 3
+            nt = 50
 
-        print("Warming up solve_batch...")
-        _ = solve_batch(
-            psi0_batch.copy(),
-            C,
-            NT,
-            halo=HALO,
-            n_iters=N_ITERS,
-        ).block_until_ready()
+            # psi0, Cx, Cy = init(nx, ny, halo)
 
-        print("Warming up solve...")
-        _ = solve(
-            psi0.copy(),
-            C,
-            NT,
-            HALO,
-            N_ITERS,
-        ).block_until_ready()
+            # quicklook(psi0, halo)
 
-        print("Running timed batched solve...")
+            # psi_final = solve(psi0, (Cx, Cy), nt, halo, n_iters).block_until_ready()
 
-        batch_in = psi0_batch.copy()
+            # quicklook(psi_final, halo)
+            # plt.show()
 
-        start = time.perf_counter()
-        psi_batch_out = solve_batch(
-            batch_in,
-            C,
-            NT,
-            halo=HALO,
-            n_iters=N_ITERS,
-        ).block_until_ready()
-        batch_time = time.perf_counter() - start
+            COMM = setup_comm(2, periods=True)
 
-        batch_in = None
+            psi0, Cx, Cy = init(nx, ny, halo)
+            quicklook(psi0, halo)
 
-        print("Preparing sequential inputs...")
-        sequential_inputs = [
-            psi0_batch[i].copy()
-            for i in range(BATCH_SIZE)
-        ]
+            psi_final = solve_mpi(psi0, (Cx, Cy), nt, halo, n_iters)
 
-        print("Running timed sequential solves...")
-
-        sequential_outputs = []
-
-        start = time.perf_counter()
-        for i in range(BATCH_SIZE):
-            psi_i = sequential_inputs[i]
-
-            psi_out_i = solve(
-                psi_i,
-                C,
-                NT,
-                HALO,
-                N_ITERS,
-            ).block_until_ready()
-
-            psi_i = None
-            sequential_inputs[i] = None
-
-            sequential_outputs.append(psi_out_i)
-
-        sequential_time = time.perf_counter() - start
-
-        psi_sequential_out = jnp.stack(sequential_outputs, axis=0)
-
-        print("==================================================")
-        print("Timing results")
-        print("==================================================")
-        print(f"Batched total time      = {batch_time:.6f} s")
-        print(f"Sequential total time   = {sequential_time:.6f} s")
-        print()
-        print(f"Batched time / field    = {batch_time / BATCH_SIZE:.6f} s")
-        print(f"Sequential time / field = {sequential_time / BATCH_SIZE:.6f} s")
-        print()
-        print(f"Batched throughput      = {BATCH_SIZE / batch_time:.3f} fields/s")
-        print(f"Sequential throughput   = {BATCH_SIZE / sequential_time:.3f} fields/s")
-        print()
-        print(f"Sequential / batched wall-clock ratio = {sequential_time / batch_time:.3f}x")
-        print("==================================================")
-
-        if CHECK_RESULTS:
-            max_abs_diff = float(jnp.max(jnp.abs(psi_batch_out - psi_sequential_out)))
-            close = bool(
-                jnp.allclose(
-                    psi_batch_out,
-                    psi_sequential_out,
-                    rtol=1e-5,
-                    atol=1e-6,
-                )
-            )
-
-            print("Result comparison:")
-            print(f"  max abs diff = {max_abs_diff:.6e}")
-            print(f"  allclose     = {close}")
-
-            if not close:
-                print("WARNING: batched and sequential results differ more than expected.")
-            print("==================================================")
-
-        if SHOW_PLOTS:
-            quicklook(psi0, HALO)
-            plt.title("Initial field")
-
-            quicklook(psi_batch_out[0], HALO)
-            plt.title("Batched output, member 0")
-
-            quicklook(psi_sequential_out[0], HALO)
-            plt.title("Sequential output, member 0")
-
-            if BATCH_SIZE > 1:
-                quicklook(psi_batch_out[-1], HALO)
-                plt.title("Batched output, last member")
-
-                quicklook(psi_sequential_out[-1], HALO)
-                plt.title("Sequential output, last member")
-            
+            psi_final.block_until_ready()
+            quicklook(psi_final, halo)
             plt.show()
+
+    # for _ in range(10):
+    #     for device, name in zip([cpu_device, gpu_device], ["CPU", "GPU"]):
+    #         print("#########################      " + name + "     ##########################")
+    #         with jax.default_device(device):
+    #             nx = int(200 * 0.5)
+    #             ny = int(300 * 0.5)
+    #             halo = 1
+    #             n_iters = 3
+    #             nt = 100
+
+    #             psi0, Cx, Cy = init(nx, ny, halo)
+
+    #             start = time.perf_counter()
+    #             psi_final = solve(psi0, Cx, Cy, nt, halo, n_iters).block_until_ready()
+    #             end = time.perf_counter()
+
+    #             print(f"Time: {end - start:.6f} seconds")
+
+    #             times[device].append(end - start)
+
+    #         print(f"{min(times[device])=}")
+
+# if __name__ == "__main__":
+#     GRID_SCALE_X = 2.0
+#     GRID_SCALE_Y = 2.0
+
+#     BATCH_SIZE = 64
+#     NT = 250
+#     HALO = 1
+#     N_ITERS = 3
+
+#     USE_GPU = False
+#     SHOW_PLOTS = False
+#     CHECK_RESULTS = True
+#     DIFFERENT_FIELDS = True
+
+#     nx = max(1, int(20 * GRID_SCALE_X))
+#     ny = max(1, int(30 * GRID_SCALE_Y))
+
+#     device = gpu_device if (USE_GPU and gpu_device is not None) else cpu_device
+
+#     print("==================================================")
+#     print("JAX MPDATA batched vs sequential quick test")
+#     print("==================================================")
+#     print(f"device       = {device}")
+#     print(f"grid         = {nx} x {ny}")
+#     print(f"halo         = {HALO}")
+#     print(f"steps        = {NT}")
+#     print(f"MPDATA iters = {N_ITERS}")
+#     print(f"batch size   = {BATCH_SIZE}")
+#     print(f"different fields = {DIFFERENT_FIELDS}")
+#     print("==================================================")
+
+#     with jax.default_device(device):
+#         psi0, Cx, Cy = init(nx, ny, HALO)
+#         C = (Cx, Cy)
+
+#         if DIFFERENT_FIELDS:
+#             amps = jnp.linspace(0.9, 1.1, BATCH_SIZE, dtype=real_t)
+#             amps = amps[:, None, None]
+#             psi0_batch = psi0[None, ...] * amps
+#         else:
+#             psi0_batch = jnp.repeat(psi0[None, ...], BATCH_SIZE, axis=0)
+
+#         print(f"psi0.shape      = {psi0.shape}")
+#         print(f"psi0_batch.shape = {psi0_batch.shape}")
+
+#         print("Warming up solve_batch...")
+#         _ = solve_batch(
+#             psi0_batch.copy(),
+#             C,
+#             NT,
+#             halo=HALO,
+#             n_iters=N_ITERS,
+#         ).block_until_ready()
+
+#         print("Warming up solve...")
+#         _ = solve(
+#             psi0.copy(),
+#             C,
+#             NT,
+#             HALO,
+#             N_ITERS,
+#         ).block_until_ready()
+
+#         print("Running timed batched solve...")
+
+#         batch_in = psi0_batch.copy()
+
+#         start = time.perf_counter()
+#         psi_batch_out = solve_batch(
+#             batch_in,
+#             C,
+#             NT,
+#             halo=HALO,
+#             n_iters=N_ITERS,
+#         ).block_until_ready()
+#         batch_time = time.perf_counter() - start
+
+#         batch_in = None
+
+#         print("Preparing sequential inputs...")
+#         sequential_inputs = [
+#             psi0_batch[i].copy()
+#             for i in range(BATCH_SIZE)
+#         ]
+
+#         print("Running timed sequential solves...")
+
+#         sequential_outputs = []
+
+#         start = time.perf_counter()
+#         for i in range(BATCH_SIZE):
+#             psi_i = sequential_inputs[i]
+
+#             psi_out_i = solve(
+#                 psi_i,
+#                 C,
+#                 NT,
+#                 HALO,
+#                 N_ITERS,
+#             ).block_until_ready()
+
+#             psi_i = None
+#             sequential_inputs[i] = None
+
+#             sequential_outputs.append(psi_out_i)
+
+#         sequential_time = time.perf_counter() - start
+
+#         psi_sequential_out = jnp.stack(sequential_outputs, axis=0)
+
+#         print("==================================================")
+#         print("Timing results")
+#         print("==================================================")
+#         print(f"Batched total time      = {batch_time:.6f} s")
+#         print(f"Sequential total time   = {sequential_time:.6f} s")
+#         print()
+#         print(f"Batched time / field    = {batch_time / BATCH_SIZE:.6f} s")
+#         print(f"Sequential time / field = {sequential_time / BATCH_SIZE:.6f} s")
+#         print()
+#         print(f"Batched throughput      = {BATCH_SIZE / batch_time:.3f} fields/s")
+#         print(f"Sequential throughput   = {BATCH_SIZE / sequential_time:.3f} fields/s")
+#         print()
+#         print(f"Sequential / batched wall-clock ratio = {sequential_time / batch_time:.3f}x")
+#         print("==================================================")
+
+#         if CHECK_RESULTS:
+#             max_abs_diff = float(jnp.max(jnp.abs(psi_batch_out - psi_sequential_out)))
+#             close = bool(
+#                 jnp.allclose(
+#                     psi_batch_out,
+#                     psi_sequential_out,
+#                     rtol=1e-5,
+#                     atol=1e-6,
+#                 )
+#             )
+
+#             print("Result comparison:")
+#             print(f"  max abs diff = {max_abs_diff:.6e}")
+#             print(f"  allclose     = {close}")
+
+#             if not close:
+#                 print("WARNING: batched and sequential results differ more than expected.")
+#             print("==================================================")
+
+#         if SHOW_PLOTS:
+#             quicklook(psi0, HALO)
+#             plt.title("Initial field")
+
+#             quicklook(psi_batch_out[0], HALO)
+#             plt.title("Batched output, member 0")
+
+#             quicklook(psi_sequential_out[0], HALO)
+#             plt.title("Sequential output, member 0")
+
+#             if BATCH_SIZE > 1:
+#                 quicklook(psi_batch_out[-1], HALO)
+#                 plt.title("Batched output, last member")
+
+#                 quicklook(psi_sequential_out[-1], HALO)
+#                 plt.title("Sequential output, last member")
+            
+#             plt.show()
