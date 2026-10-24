@@ -10,7 +10,8 @@ requires-python = ">=3.9"
 dependencies = [
     "jax",
     "numpy",
-    "matplotlib"
+    "matplotlib",
+    "mpi4jax"
 ]
 
 [tool.setuptools.packages.find]
