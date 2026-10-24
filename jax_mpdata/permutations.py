@@ -22,6 +22,7 @@ except:
     gpu_device = None
 
 def setup_comm(ndim, periods=True):
+    # MPI.Init_thread(3)
     size = MPI.COMM_WORLD.Get_size()
     dims = MPI.Compute_dims(size, [0] * ndim)
 
@@ -43,10 +44,10 @@ def mpdata_frac(nom, den, eps=1e-12):
 
 #     return jnp.moveaxis(psi, 0, axis)
 
-def fill_halos_axis(psi, halo, axis):
+def fill_halos_axis(psi, halo, axis, no_mpi=False):
     psi = jnp.moveaxis(psi, axis, 0)
 
-    if COMM is None:
+    if COMM is None or no_mpi:
         psi = psi.at[:halo].set(psi[-2 * halo:-halo])
         psi = psi.at[-halo:].set(psi[halo:2 * halo])
         return jnp.moveaxis(psi, 0, axis)
@@ -80,9 +81,9 @@ def fill_halos_axis(psi, halo, axis):
 
     return jnp.moveaxis(psi, 0, axis)
 
-def fill_halos(psi, halo):
+def fill_halos(psi, halo, no_mpi=False):
     for axis in range(psi.ndim):
-        psi = fill_halos_axis(psi, halo, axis)
+        psi = fill_halos_axis(psi, halo, axis, no_mpi)
 
     return psi
 
@@ -223,30 +224,26 @@ def solve_batch(psi0_batch, C, nt, halo=1, n_iters=1, batched_C=False):
         out_axes=0,
     )(psi0_batch, C, nt, halo, n_iters)
 
-@partial(
-    jax.jit,
-    static_argnums=(3, 4)
-)
-def solve_mpi(psi_global, C_global, nt, halo=1, n_iters=1):
-    dims, _, coords = COMM.Get_topo()
-    ndim = psi_global.ndim
-
+def _domain_decomposition_slices(global_shape, dims, coords):
     starts = []
     local_sizes = []
 
-    for axis in range(ndim):
-        N = psi_global.shape[axis] - 2 * halo
+    for axis in range(len(global_shape)):
+        ranks_in_axis = dims[axis]
+        rank_id = coords[axis]
 
-        nprocs = dims[axis]
-        coord = coords[axis]
+        base, rem = divmod(global_shape[axis], ranks_in_axis)
 
-        base, rem = divmod(N, nprocs)
-
-        local_n = base + (1 if coord < rem else 0)
-        start = coord * base + min(coord, rem)
+        local_n = base + (1 if rank_id < rem else 0)
+        start = rank_id * base + min(rank_id, rem)
 
         starts.append(start)
         local_sizes.append(local_n)
+
+    return starts, local_sizes
+
+def _partition_fields(psi_global, C_global, starts, local_sizes, halo):
+    ndim = psi_global.ndim
 
     psi_slice = tuple(slice(starts[axis], starts[axis] + local_sizes[axis] + 2 * halo) for axis in range(ndim))
 
@@ -259,9 +256,58 @@ def solve_mpi(psi_global, C_global, nt, halo=1, n_iters=1):
 
         C_local.append(C_axis_global[C_slice])
 
-    C_local = tuple(C_local)
+    return psi_local, tuple(C_local)
 
-    return _solve_impl(psi_local, C_local, nt, halo, n_iters)
+def _gather_global(psi_local, halo, global_shape):
+    dims, _, coords = COMM.Get_topo()
+    size = COMM.Get_size()
+    ndim = psi_local.ndim
+
+    interior = tuple(slice(halo, None if halo == 0 else -halo) for _ in range(ndim))
+
+    psi_inner = psi_local[interior]
+
+    _, local_sizes = _domain_decomposition_slices(global_shape, dims, coords)
+
+    max_local_sizes = tuple(global_shape[axis] // dims[axis] + (1 if global_shape[axis] % dims[axis] else 0) for axis in range(ndim))
+    pad_widths = tuple((0, max_local_sizes[axis] - local_sizes[axis]) for axis in range(ndim))
+
+    psi_tile = jnp.pad(psi_inner, pad_widths)
+    gathered = mpi4jax.allgather(psi_tile, comm=COMM)
+
+    padded_global_shape = tuple(global_shape[axis] + 2 * halo for axis in range(ndim))
+
+    psi_full = jnp.zeros(padded_global_shape, dtype=psi_inner.dtype)
+
+    for source in range(size):
+        source_coords = COMM.Get_coords(source)
+
+        source_starts, source_sizes = _domain_decomposition_slices(global_shape, dims, source_coords)
+
+        src_slice = tuple(slice(0, source_sizes[axis]) for axis in range(ndim))
+        dst_slice = tuple(slice(halo + source_starts[axis], halo + source_starts[axis] + source_sizes[axis]) for axis in range(ndim))
+
+        psi_full = psi_full.at[dst_slice].set(gathered[source][src_slice])
+
+    return fill_halos(psi_full, halo, no_mpi=True)
+
+@partial(
+    jax.jit,
+    static_argnums=(3, 4),
+    donate_argnums=(0,)
+)
+def solve_mpi(psi_global, C_global, nt, halo=1, n_iters=1):
+    dims, _, coords = COMM.Get_topo()
+
+    global_shape = tuple(psi_global.shape[axis] - 2 * halo for axis in range(psi_global.ndim))
+
+    starts, local_sizes = _domain_decomposition_slices(global_shape, dims, coords)
+
+    psi_local, C_local = _partition_fields(psi_global, C_global, starts, local_sizes, halo)
+
+    psi_local = _solve_impl(psi_local, C_local, nt, halo, n_iters)
+
+    return _gather_global(psi_local, halo, global_shape)
 
 def gaussian_2d(h: int, w: int) -> jax.Array:
     y = jnp.arange(h)[:, None]
@@ -325,7 +371,11 @@ if __name__ == "__main__":
 
             # quicklook(psi0, halo)
 
+            # print_jax_threads()
+
             # psi_final = solve(psi0, (Cx, Cy), nt, halo, n_iters).block_until_ready()
+
+            # print_jax_threads()
 
             # quicklook(psi_final, halo)
             # plt.show()
@@ -337,9 +387,16 @@ if __name__ == "__main__":
 
             psi_final = solve_mpi(psi0, (Cx, Cy), nt, halo, n_iters)
 
-            psi_final.block_until_ready()
+            # jax.debug.visualize_array_sharding(psi_final)
+
+            # if COMM.Get_rank() == 0:
+            # print(MPI.Query_thread())
+
+            # psi_final.block_until_ready()
             quicklook(psi_final, halo)
             plt.show()
+
+                # MPI.Finalize()
 
     # for _ in range(10):
     #     for device, name in zip([cpu_device, gpu_device], ["CPU", "GPU"]):
