@@ -27,8 +27,13 @@ jobs:
         if: startsWith(matrix.os, 'macos-')
         run: brew reinstall gcc
 
-      - name: Install MPI
+      - name: Install MPI (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu-')
         run: sudo apt-get install -y openmpi-bin libopenmpi-dev
+
+      - name: Install MPI (macOS)
+        if: startsWith(matrix.os, 'macos-')
+        run: brew install openmpi-bin libopenmpi-dev
 
       - name: Install libmpdata++ dependencies (Ubuntu)
         if: startsWith(matrix.os, 'ubuntu-')
@@ -107,6 +112,15 @@ jobs:
 
       - name: Install dependencies
         run: pip install --verbose -e .[benchmarks]
+
+      # TODO: Don't install MPI when the benchmarks don't need it
+      - name: Install MPI (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu-')
+        run: sudo apt-get install -y openmpi-bin libopenmpi-dev
+
+      - name: Install MPI (macOS)
+        if: startsWith(matrix.os, 'macos-')
+        run: brew install openmpi-bin libopenmpi-dev
 
       - name: Run benchmark
         run: python -m benchmarks.compilation_time.main --config .github/configs/compile_time_benchmark_config_ci.json
