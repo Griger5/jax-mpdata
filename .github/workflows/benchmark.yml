@@ -86,7 +86,9 @@ jobs:
 
       - name: Create libmpdata++ bindings (Ubuntu)
         if: startsWith(matrix.os, 'ubuntu-')
-        run: pip install -e benchmarks/implementations_comparison/models/libmpdataxx_serial/
+        run: |
+          export CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_POLICY_DEFAULT_CMP0074=NEW -DCMAKE_POLICY_DEFAULT_CMP0167=NEW"
+          pip install -e benchmarks/implementations_comparison/models/libmpdataxx_serial/
       
       - name: Create libmpdata++ bindings (macOS)
         if: startsWith(matrix.os, 'macos-')
