@@ -385,7 +385,11 @@ if __name__ == "__main__":
             psi0, Cx, Cy = init(nx, ny, halo)
             quicklook(psi0, halo)
 
+            # start = time.perf_counter()
             psi_final = solve_mpi(psi0, (Cx, Cy), nt, halo, n_iters)
+            # end = time.perf_counter()
+
+            # print(end - start)
 
             # jax.debug.visualize_array_sharding(psi_final)
 
