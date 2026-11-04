@@ -33,7 +33,7 @@ jobs:
 
       - name: Install MPI (macOS)
         if: startsWith(matrix.os, 'macos-')
-        run: brew install openmpi-bin libopenmpi-dev
+        run: brew install open-mpi
 
       - name: Install libmpdata++ dependencies (Ubuntu)
         if: startsWith(matrix.os, 'ubuntu-')
@@ -43,20 +43,7 @@ jobs:
         if: startsWith(matrix.os, 'macos-')
         run: brew install blitz boost
 
-      - name: Install libmpdata++ (Ubuntu)
-        if: startsWith(matrix.os, 'ubuntu-')
-        run: |
-          git clone https://github.com/igfuw/libmpdataxx.git
-          cd libmpdataxx/libmpdata++
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-          sudo make install
-          cd ../../../
-          rm -rf libmpdataxx
-
-      - name: Install libmpdata++ (macOS)
-        if: startsWith(matrix.os, 'macos-')
+      - name: Install libmpdata++
         run: |
           git clone https://github.com/igfuw/libmpdataxx.git
           cd libmpdataxx/libmpdata++
@@ -120,7 +107,7 @@ jobs:
 
       - name: Install MPI (macOS)
         if: startsWith(matrix.os, 'macos-')
-        run: brew install openmpi-bin libopenmpi-dev
+        run: brew install open-mpi
 
       - name: Run benchmark
         run: python -m benchmarks.compilation_time.main --config .github/configs/compile_time_benchmark_config_ci.json
