@@ -8,9 +8,12 @@ version = "0.0.1"
 description = "Incoming Bachelor thesis"
 requires-python = ">=3.9"
 dependencies = [
-    "jax",
     "numpy",
-    "matplotlib"
+    "matplotlib",
+    "mpi4py",
+    "mpi4jax",
+    "jax==0.11.2",
+    "jaxlib==0.11.2"
 ]
 
 [tool.setuptools.packages.find]
@@ -22,4 +25,7 @@ benchmarks = [
     "netCDF4",
     "PyMPDATA",
     "tqdm"
+]
+cuda = [
+    "jax[cuda13]==0.11.2"
 ]

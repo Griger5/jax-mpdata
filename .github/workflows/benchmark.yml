@@ -27,6 +27,14 @@ jobs:
         if: startsWith(matrix.os, 'macos-')
         run: brew reinstall gcc
 
+      - name: Install MPI (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu-')
+        run: sudo apt-get install -y openmpi-bin libopenmpi-dev
+
+      - name: Install MPI (macOS)
+        if: startsWith(matrix.os, 'macos-')
+        run: brew install open-mpi
+
       - name: Install libmpdata++ dependencies (Ubuntu)
         if: startsWith(matrix.os, 'ubuntu-')
         run: sudo apt-get install libblitz0-dev libboost-thread-dev libboost-date-time-dev libboost-system-dev libboost-iostreams-dev libboost-timer-dev libboost-filesystem-dev
@@ -42,7 +50,10 @@ jobs:
           cd libmpdataxx/libmpdata++
           mkdir build
           cd build
-          cmake .. -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+          cmake .. \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+            -DCMAKE_POLICY_DEFAULT_CMP0074=NEW \
+            -DCMAKE_POLICY_DEFAULT_CMP0167=NEW
           sudo make install
           cd ../../../
           rm -rf libmpdataxx
@@ -75,7 +86,9 @@ jobs:
 
       - name: Create libmpdata++ bindings (Ubuntu)
         if: startsWith(matrix.os, 'ubuntu-')
-        run: pip install -e benchmarks/implementations_comparison/models/libmpdataxx_serial/
+        run: |
+          export CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_POLICY_DEFAULT_CMP0074=NEW -DCMAKE_POLICY_DEFAULT_CMP0167=NEW"
+          pip install -e benchmarks/implementations_comparison/models/libmpdataxx_serial/
       
       - name: Create libmpdata++ bindings (macOS)
         if: startsWith(matrix.os, 'macos-')
@@ -101,6 +114,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+
+      # TODO: Don't install MPI when the benchmarks don't need it
+      - name: Install MPI (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu-')
+        run: sudo apt-get install -y openmpi-bin libopenmpi-dev
+
+      - name: Install MPI (macOS)
+        if: startsWith(matrix.os, 'macos-')
+        run: brew install open-mpi
 
       - name: Install dependencies
         run: pip install --verbose -e .[benchmarks]
