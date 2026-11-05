@@ -84,7 +84,7 @@ jobs:
       - name: Install mpi4jax against pinned jaxlib
         run: |
           pip uninstall -y mpi4jax
-          pip install --no-build-isolation --no-binary mpi4jax
+          pip install --no-build-isolation --no-binary mpi4jax mpi4jax
 
       - name: Create NCAR bindings
         run: pip install -e benchmarks/implementations_comparison/models/NCAR/
@@ -135,7 +135,7 @@ jobs:
       - name: Install mpi4jax against pinned jaxlib
         run: |
           pip uninstall -y mpi4jax
-          pip install --no-build-isolation --no-binary mpi4jax
+          pip install --no-build-isolation --no-binary mpi4jax mpi4jax
 
       - name: Run benchmark
         run: python -m benchmarks.compilation_time.main --config .github/configs/compile_time_benchmark_config_ci.json
