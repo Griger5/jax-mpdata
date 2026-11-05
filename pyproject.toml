@@ -11,7 +11,7 @@ dependencies = [
     "numpy",
     "matplotlib",
     "mpi4py",
-    "mpi4jax",
+    "mpi4jax", # TODO: mpi4jax breaks with build isolation
     "jax==0.11.2",
     "jaxlib==0.11.2"
 ]

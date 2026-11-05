@@ -81,6 +81,11 @@ jobs:
       - name: Install benchmark dependencies
         run: pip install --verbose -e .[benchmarks]
 
+      - name: Install mpi4jax against pinned jaxlib
+        run: |
+          pip uninstall mpi4jax
+          pip install --no-build-isolation mpi4jax
+
       - name: Create NCAR bindings
         run: pip install -e benchmarks/implementations_comparison/models/NCAR/
 
