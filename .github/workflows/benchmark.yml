@@ -81,10 +81,12 @@ jobs:
       - name: Install benchmark dependencies
         run: pip install --verbose -e .[benchmarks]
 
-      - name: Install mpi4jax against pinned jaxlib
+      - name: Rebuild mpi4jax against pinned jaxlib
         run: |
-          pip uninstall -y mpi4jax
-          pip install --no-build-isolation --no-binary mpi4jax mpi4jax
+          python -m pip install --upgrade setuptools wheel nanobind
+          python -m pip uninstall -y mpi4jax
+          python -m pip install --verbose --no-cache-dir --no-build-isolation --no-binary=mpi4jax --no-deps mpi4jax
+          python -m pip check
 
       - name: Create NCAR bindings
         run: pip install -e benchmarks/implementations_comparison/models/NCAR/
