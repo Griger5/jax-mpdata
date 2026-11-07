@@ -1,4 +1,4 @@
-from jax_mpdata.permutations import solve
+from jumbax.jax.mpdata.src.jax_mpdata.impl import solve
 
 import jax
 import jax.numpy as jnp
