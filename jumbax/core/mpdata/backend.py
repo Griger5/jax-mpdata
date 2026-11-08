@@ -26,3 +26,6 @@ class MPDATABackend():
     @abstractmethod
     def solve(self, scalar_field: Array, vector_field: Array, steps: int) -> Array:
         ...
+
+    def teardown(self):
+        pass

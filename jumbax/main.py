@@ -7,6 +7,9 @@ import jax.numpy as jnp
 
 import matplotlib.pyplot as plt
 
+from jumbax_core.common.dtypes import Dtype
+from jumbax_core.mpdata.config import BoundaryCondition
+
 def gaussian_2d(h: int, w: int) -> jax.Array:
     y = jnp.arange(h)[:, None]
     x = jnp.arange(w)[None, :]
@@ -40,11 +43,9 @@ if __name__ == "__main__":
 
     psi0, Cx, Cy = init(nx, ny, halo)
 
-    with setup_mpdata("jax", config=MPDATAConfig(2, 3, 1e-12, jnp.float32, 1, 1, False, None)):
+    with setup_mpdata("jax", n_dims=2, n_iters=3, epsilon=1e-12, dtype=Dtype.float32, halo=1, boundary_conditions=[BoundaryCondition.PERIODIC, BoundaryCondition.PERIODIC], mpi=False, n_threads=None):
         quicklook(psi0, halo)
         psi = solve_mpdata(psi0, (Cx, Cy), nt)
+        # psi = solve_mpdata(psi0[halo:-halo, halo:-halo], (Cx[halo:-halo, halo:-halo], Cy[halo:-halo, halo:-halo]), nt)
         quicklook(psi, halo)
         plt.show()
-
-
-        

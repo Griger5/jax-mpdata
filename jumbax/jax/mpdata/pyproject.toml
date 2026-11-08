@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "jax-mpdata"
 version = "0.0.1"
-description = "Incoming Bachelor thesis"
+description = "JAX MPDATA backend"
 requires-python = ">=3.9"
 dependencies = [
     "mpi4py",

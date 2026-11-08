@@ -1,10 +1,5 @@
-from contextvars import ContextVar
-from typing import Optional
-
 from core.mpdata.config import MPDATAConfig
 from core.mpdata.available_backends import _MPDATA_AVAILABLE_BACKENDS, _MPDATA_CURRENT_BACKEND
-
-_MPDATA_CURRENT_CONFIG: ContextVar[Optional[MPDATAConfig]] = ContextVar("mpdata_current_config", default=None)
 
 class MPDATAContext:
     def __init__(self, backend: str, *, config: MPDATAConfig):
@@ -19,13 +14,10 @@ class MPDATAContext:
         
         self.backend_name = backend
         self.config = config
-        self._backend_name_token = None
-        self._config_token = None
+        self.backend_token = None
 
     def __enter__(self):
-        # self._backend_name_token = _MPDATA_CURRENT_BACKEND.set(self.backend_name)
-        _MPDATA_CURRENT_BACKEND.set(_MPDATA_AVAILABLE_BACKENDS[self.backend_name])
-        self._config_token = _MPDATA_CURRENT_CONFIG.set(self.config)
+        self.backend_token = _MPDATA_CURRENT_BACKEND.set(_MPDATA_AVAILABLE_BACKENDS[self.backend_name])
 
         backend = _MPDATA_CURRENT_BACKEND.get()
 
@@ -38,7 +30,6 @@ class MPDATAContext:
         backend.setup(self.config)
 
     def __exit__(self, exc_type, exc_value, traceback):
-        # _MPDATA_CURRENT_BACKEND.reset(self._backend_name_token)
-        _MPDATA_CURRENT_CONFIG.reset(self._config_token)
+        _MPDATA_CURRENT_BACKEND.reset(self.backend_token)
 
         return False

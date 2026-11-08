@@ -12,3 +12,10 @@ try:
     _MPDATA_AVAILABLE_BACKENDS["jax"] = JaxMPDATABackend()
 except:
     pass
+
+try:
+    from numba_mpdata import NumbaMPDATABackend
+
+    _MPDATA_AVAILABLE_BACKENDS["numba"] = NumbaMPDATABackend()
+except:
+    pass
