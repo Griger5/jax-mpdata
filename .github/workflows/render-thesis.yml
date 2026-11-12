@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up env
-        uses: ./.github/actions/setup-env
+        uses: ./.github/actions/setup-thesis
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
