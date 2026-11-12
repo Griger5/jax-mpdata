@@ -40,4 +40,4 @@ jobs:
         uses: actions/upload-artifact@v7
         with: 
           name: pdf-thesis
-          path: thesis.pdf
+          path: thesis/thesis.pdf
