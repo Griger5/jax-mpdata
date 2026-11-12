@@ -19,3 +19,12 @@ try:
     _MPDATA_AVAILABLE_BACKENDS["numba"] = NumbaMPDATABackend()
 except:
     pass
+
+try:
+    from fortran_mpdata import FortranMPDATABackend
+
+    _MPDATA_AVAILABLE_BACKENDS["fortran"] = FortranMPDATABackend()
+except:
+    pass
+
+# use a decorator wrapper
