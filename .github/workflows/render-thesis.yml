@@ -1,0 +1,44 @@
+name: Render thesis
+
+defaults:
+  run:
+    shell: bash -ex {0}
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - README.md
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - README.md
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+
+      - name: Set up env
+        uses: ./.github/actions/setup-env
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Render example notebook to PDF
+        working-directory: test-project
+        run: |
+          echo $QUARTO_PYTHON
+          cd thesis/
+          quarto render thesis.ipynb 
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v7
+        with: 
+          name: pdf-thesis
+          path: thesis.pdf
