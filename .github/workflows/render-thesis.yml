@@ -31,10 +31,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Render example notebook to PDF
-        working-directory: test-project
+        working-directory: thesis
         run: |
           echo $QUARTO_PYTHON
-          cd thesis/
           quarto render thesis.ipynb 
 
       - name: Upload PDF artifact
