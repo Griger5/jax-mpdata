@@ -5,6 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "jumbax-api"
 version = "0.0.1"
+dependencies = [
+    "types-array-api"
+]
 
 [tool.setuptools]
 packages = ["jumbax_api", "jumbax_api.mpdata"]

@@ -2,4 +2,4 @@
 
 **UMBA = Unified Multi-Backend Algorithms** and **JAX + NUMBA**
 
-Juicy/Jumbo Unified Multi-Backend Algorithms Excellence
+Juicy/Jumbo Unified Multi-Backend Algorithms Excellence/Envelope

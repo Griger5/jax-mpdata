@@ -4,65 +4,23 @@ import jax
 import jax.numpy as jnp
 from jax import lax
 
-import mpi4jax
-from mpi4py import MPI
-
-COMM = None
-
-def setup_comm(ndim, periods=True):
-    size = MPI.COMM_WORLD.Get_size()
-    dims = MPI.Compute_dims(size, [0] * ndim)
-
-    COMM = MPI.COMM_WORLD.Create_cart(dims, periods=periods, reorder=False)
-
-    return COMM
-
 def donorcell(psi_l, psi_r, C):
     return ((C + jnp.abs(C)) * psi_l + (C - jnp.abs(C)) * psi_r) / 2
 
 def mpdata_frac(nom, den, eps=1e-12):
     return nom / (den + eps)
 
-def fill_halos_axis(psi, halo, axis, no_mpi=False):
+def fill_halos_axis(psi, halo, axis):
     psi = jnp.moveaxis(psi, axis, 0)
 
-    if COMM is None or no_mpi:
-        psi = psi.at[:halo].set(psi[-2 * halo:-halo])
-        psi = psi.at[-halo:].set(psi[halo:2 * halo])
-        return jnp.moveaxis(psi, 0, axis)
-
-    lower_src, upper_dst = COMM.Shift(axis, 1)
-    upper_src, lower_dst = COMM.Shift(axis, -1)
-
-    send_upper = psi[-2 * halo:-halo]
-    recv_lower = mpi4jax.sendrecv(
-        send_upper,
-        recvbuf=psi[:halo],
-        source=lower_src,
-        dest=upper_dst,
-        sendtag=2 * axis,
-        recvtag=2 * axis,
-        comm=COMM,
-    )
-    psi = psi.at[:halo].set(recv_lower)
-
-    send_lower = psi[halo:2 * halo]
-    recv_upper = mpi4jax.sendrecv(
-        send_lower,
-        recvbuf=psi[-halo:],
-        source=upper_src,
-        dest=lower_dst,
-        sendtag=2 * axis + 1,
-        recvtag=2 * axis + 1,
-        comm=COMM,
-    )
-    psi = psi.at[-halo:].set(recv_upper)
+    psi = psi.at[:halo].set(psi[-2 * halo:-halo])
+    psi = psi.at[-halo:].set(psi[halo:2 * halo])
 
     return jnp.moveaxis(psi, 0, axis)
 
-def fill_halos(psi, halo, no_mpi=False):
+def fill_halos(psi, halo):
     for axis in range(psi.ndim):
-        psi = fill_halos_axis(psi, halo, axis, no_mpi)
+        psi = fill_halos_axis(psi, halo, axis)
 
     return psi
 
@@ -152,14 +110,14 @@ def compute_antidiff_axis(psi, C, halo, axis):
 
     return C_antidiff
 
-def step(psi, C, halo, n_iters):
-    psi = fill_halos(psi, halo)
+def step(psi, C, halo, n_iters, fill_halos_fn=fill_halos):
+    psi = fill_halos_fn(psi, halo)
     psi = advop(psi, C, halo)
 
     C_uncorr = C
 
     for _ in range(1, n_iters):
-        psi = fill_halos(psi, halo)
+        psi = fill_halos_fn(psi, halo)
 
         C_corr = []
         for d in range(psi.ndim):
@@ -168,7 +126,7 @@ def step(psi, C, halo, n_iters):
             pad_width = [(halo, halo)] * psi.ndim
 
             C_antidiff = jnp.pad(C_antidiff, pad_width)
-            C_antidiff = fill_halos(C_antidiff, halo)
+            C_antidiff = fill_halos_fn(C_antidiff, halo)
             
             C_corr.append(C_antidiff)
 
@@ -178,9 +136,9 @@ def step(psi, C, halo, n_iters):
 
     return psi
 
-def _solve_impl(psi0, C, nt, halo=1, n_iters=1):
+def _solve_impl(psi0, C, nt, halo=1, n_iters=1, fill_halos_fn=fill_halos):
     def body(n, psi):
-        return step(psi, C, halo, n_iters)
+        return step(psi, C, halo, n_iters, fill_halos_fn)
     return lax.fori_loop(0, nt, body, psi0)
 
 _solve_padded = jax.jit(
@@ -203,108 +161,24 @@ def _solve_batch_padded(psi0_batch, C, nt, halo=1, n_iters=1, batched_C=False):
         out_axes=0,
     )(psi0_batch, C, nt, halo, n_iters)
 
-def _domain_decomposition_slices(global_shape, dims, coords):
-    starts = []
-    local_sizes = []
-
-    for axis in range(len(global_shape)):
-        ranks_in_axis = dims[axis]
-        rank_id = coords[axis]
-
-        base, rem = divmod(global_shape[axis], ranks_in_axis)
-
-        local_n = base + (1 if rank_id < rem else 0)
-        start = rank_id * base + min(rank_id, rem)
-
-        starts.append(start)
-        local_sizes.append(local_n)
-
-    return starts, local_sizes
-
-def _partition_fields(psi_global, C_global, starts, local_sizes, halo):
-    ndim = psi_global.ndim
-
-    psi_slice = tuple(slice(starts[axis], starts[axis] + local_sizes[axis] + 2 * halo) for axis in range(ndim))
-
-    psi_local = psi_global[psi_slice]
-
-    C_local = []
-
-    for vel_axis, C_axis_global in enumerate(C_global):
-        C_slice = tuple(slice(starts[axis], starts[axis] + local_sizes[axis] + 2 * halo + (1 if axis == vel_axis else 0)) for axis in range(ndim))
-
-        C_local.append(C_axis_global[C_slice])
-
-    return psi_local, tuple(C_local)
-
-def _gather_global(psi_local, halo, global_shape):
-    dims, _, coords = COMM.Get_topo()
-    size = COMM.Get_size()
-    ndim = psi_local.ndim
-
-    interior = tuple(slice(halo, None if halo == 0 else -halo) for _ in range(ndim))
-
-    psi_inner = psi_local[interior]
-
-    _, local_sizes = _domain_decomposition_slices(global_shape, dims, coords)
-
-    max_local_sizes = tuple(global_shape[axis] // dims[axis] + (1 if global_shape[axis] % dims[axis] else 0) for axis in range(ndim))
-    pad_widths = tuple((0, max_local_sizes[axis] - local_sizes[axis]) for axis in range(ndim))
-
-    psi_tile = jnp.pad(psi_inner, pad_widths)
-    gathered = mpi4jax.allgather(psi_tile, comm=COMM)
-
-    padded_global_shape = tuple(global_shape[axis] + 2 * halo for axis in range(ndim))
-
-    psi_full = jnp.zeros(padded_global_shape, dtype=psi_inner.dtype)
-
-    for source in range(size):
-        source_coords = COMM.Get_coords(source)
-
-        source_starts, source_sizes = _domain_decomposition_slices(global_shape, dims, source_coords)
-
-        src_slice = tuple(slice(0, source_sizes[axis]) for axis in range(ndim))
-        dst_slice = tuple(slice(halo + source_starts[axis], halo + source_starts[axis] + source_sizes[axis]) for axis in range(ndim))
-
-        psi_full = psi_full.at[dst_slice].set(gathered[source][src_slice])
-
-    return fill_halos(psi_full, halo, no_mpi=True)
-
-@partial(
-    jax.jit,
-    static_argnums=(3, 4),
-    donate_argnums=(0,)
-)
-def _solve_mpi_padded(psi_global, C_global, nt, halo=1, n_iters=1):
-    dims, _, coords = COMM.Get_topo()
-
-    global_shape = tuple(psi_global.shape[axis] - 2 * halo for axis in range(psi_global.ndim))
-
-    starts, local_sizes = _domain_decomposition_slices(global_shape, dims, coords)
-
-    psi_local, C_local = _partition_fields(psi_global, C_global, starts, local_sizes, halo)
-
-    psi_local = _solve_impl(psi_local, C_local, nt, halo, n_iters)
-
-    return _gather_global(psi_local, halo, global_shape)
-
 def _pad_field(field, halo):
-    """Recursively pads a field or a tuple/list of fields with halos."""
     if isinstance(field, (tuple, list)):
         return type(field)(_pad_field(f, halo) for f in field)
     if halo == 0:
         return field
+    
     pad_width = [(halo, halo)] * field.ndim
-    # 'edge' is a safe default; fill_halos overwrites these values immediately anyway.
+
     return jnp.pad(field, pad_width, mode='edge')
 
 def _unpad_field(field, halo):
-    """Recursively strips halos from a field or a tuple/list of fields."""
     if isinstance(field, (tuple, list)):
         return type(field)(_unpad_field(f, halo) for f in field)
     if halo == 0:
         return field
+    
     slices = tuple(slice(halo, -halo) for _ in range(field.ndim))
+
     return field[slices]
 
 def solve(psi0, C, nt, halo=1, n_iters=1):
@@ -327,10 +201,3 @@ def solve_batch(psi0_batch, C, nt, halo=1, n_iters=1, batched_C=False):
         in_axes=(0, C_in_axis, None, None, None),
         out_axes=0,
     )(psi0_batch, C, nt, halo, n_iters)
-
-def solve_mpi(psi_global, C_global, nt, halo=1, n_iters=1):
-    psi_global_padded = _pad_field(psi_global, halo)
-    C_global_padded = _pad_field(C_global, halo)
-    res_padded = _solve_mpi_padded(psi_global_padded, C_global_padded, nt, halo, n_iters)
-
-    return _unpad_field(res_padded, halo)
