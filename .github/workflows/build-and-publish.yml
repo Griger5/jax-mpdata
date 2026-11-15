@@ -3,6 +3,8 @@ name: Build wheels and publish to PyPI
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
   release:
     types: [published]
@@ -93,6 +95,7 @@ jobs:
           path: dist/*
 
   publish:
+    if: github.event_name != 'pull_request'
     needs: [python-packages, native-packages]
     runs-on: ubuntu-24.04
     environment: pypi
