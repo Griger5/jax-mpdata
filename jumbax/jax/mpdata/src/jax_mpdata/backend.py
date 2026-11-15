@@ -3,7 +3,7 @@ from array_api.latest import Array
 from jumbax_core.mpdata.backend import MPDATABackend
 from jumbax_core.mpdata.config import MPDATAConfig
 
-from .impl import solve, solve_mpi, setup_comm
+from .implementation import solve, solve_mpi, setup_comm
 
 class JaxMPDATABackend(MPDATABackend):
     name = "jax_mpdata"

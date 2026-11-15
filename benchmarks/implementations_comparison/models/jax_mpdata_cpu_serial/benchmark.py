@@ -1,6 +1,6 @@
 import os
 
-from jumbax.jax.mpdata.src.jax_mpdata.impl import solve
+from jax_mpdata.implementation import solve
 
 import jax
 import jax.numpy as jnp

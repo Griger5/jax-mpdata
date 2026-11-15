@@ -3,7 +3,7 @@ import time
 import jax
 import numpy as np
 
-from jumbax.jax.mpdata.src.jax_mpdata.impl import solve, solve_batch
+from jax_mpdata.implementation import solve, solve_batch
 
 def _pad_batch(psi_batch_np: np.ndarray, halo: int) -> np.ndarray:
     if halo == 0:

@@ -183,7 +183,7 @@ def _solve_impl(psi0, C, nt, halo=1, n_iters=1):
         return step(psi, C, halo, n_iters)
     return lax.fori_loop(0, nt, body, psi0)
 
-solve = jax.jit(
+_solve_padded = jax.jit(
     _solve_impl,
     static_argnums=(3, 4),
     donate_argnums=(0,),
@@ -194,7 +194,7 @@ solve = jax.jit(
     static_argnames=("halo", "n_iters", "batched_C"),
     donate_argnums=(0,),
 )
-def solve_batch(psi0_batch, C, nt, halo=1, n_iters=1, batched_C=False):
+def _solve_batch_padded(psi0_batch, C, nt, halo=1, n_iters=1, batched_C=False):
     C_in_axis = 0 if batched_C else None
 
     return jax.vmap(
@@ -275,7 +275,7 @@ def _gather_global(psi_local, halo, global_shape):
     static_argnums=(3, 4),
     donate_argnums=(0,)
 )
-def solve_mpi(psi_global, C_global, nt, halo=1, n_iters=1):
+def _solve_mpi_padded(psi_global, C_global, nt, halo=1, n_iters=1):
     dims, _, coords = COMM.Get_topo()
 
     global_shape = tuple(psi_global.shape[axis] - 2 * halo for axis in range(psi_global.ndim))
@@ -287,3 +287,50 @@ def solve_mpi(psi_global, C_global, nt, halo=1, n_iters=1):
     psi_local = _solve_impl(psi_local, C_local, nt, halo, n_iters)
 
     return _gather_global(psi_local, halo, global_shape)
+
+def _pad_field(field, halo):
+    """Recursively pads a field or a tuple/list of fields with halos."""
+    if isinstance(field, (tuple, list)):
+        return type(field)(_pad_field(f, halo) for f in field)
+    if halo == 0:
+        return field
+    pad_width = [(halo, halo)] * field.ndim
+    # 'edge' is a safe default; fill_halos overwrites these values immediately anyway.
+    return jnp.pad(field, pad_width, mode='edge')
+
+def _unpad_field(field, halo):
+    """Recursively strips halos from a field or a tuple/list of fields."""
+    if isinstance(field, (tuple, list)):
+        return type(field)(_unpad_field(f, halo) for f in field)
+    if halo == 0:
+        return field
+    slices = tuple(slice(halo, -halo) for _ in range(field.ndim))
+    return field[slices]
+
+def solve(psi0, C, nt, halo=1, n_iters=1):
+    psi0_padded = _pad_field(psi0, halo)
+    C_padded = _pad_field(C, halo)
+    res_padded = _solve_padded(psi0_padded, C_padded, nt, halo, n_iters)
+
+    return _unpad_field(res_padded, halo)
+
+@partial(
+    jax.jit,
+    static_argnames=("halo", "n_iters", "batched_C"),
+    donate_argnums=(0,),
+)
+def solve_batch(psi0_batch, C, nt, halo=1, n_iters=1, batched_C=False):
+    C_in_axis = 0 if batched_C else None
+
+    return jax.vmap(
+        solve,
+        in_axes=(0, C_in_axis, None, None, None),
+        out_axes=0,
+    )(psi0_batch, C, nt, halo, n_iters)
+
+def solve_mpi(psi_global, C_global, nt, halo=1, n_iters=1):
+    psi_global_padded = _pad_field(psi_global, halo)
+    C_global_padded = _pad_field(C_global, halo)
+    res_padded = _solve_mpi_padded(psi_global_padded, C_global_padded, nt, halo, n_iters)
+
+    return _unpad_field(res_padded, halo)
