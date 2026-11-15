@@ -20,7 +20,6 @@ dev = [
     "ninja"
 ]
 
-
 [tool.scikit-build]
 cmake.version = ">=3.18"
 wheel.packages = ["src/fortran_mpdata"]

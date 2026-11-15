@@ -27,4 +27,11 @@ try:
 except:
     pass
 
+try:
+    from cpp_mpdata import CppMPDATABackend
+
+    _MPDATA_AVAILABLE_BACKENDS["cpp"] = CppMPDATABackend()
+except:
+    pass
+
 # use a decorator wrapper

@@ -22,7 +22,7 @@ add_library(mpdata_fortran STATIC
 )
 
 nanobind_add_module(ncar_mpdata NOMINSIZE
-    src/mpdata.cpp
+    src/mpdata_bindings.cpp
 )
 
 target_link_libraries(ncar_mpdata PRIVATE mpdata_fortran)
