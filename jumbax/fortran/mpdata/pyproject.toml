@@ -1,0 +1,32 @@
+[build-system]
+requires = ["scikit-build-core>=0.4.3", "nanobind>=3.0.0"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "jumbax-mpdata-fortran"
+version = "0.0.1"
+description = "Fortran NCAR MPDATA solver with nanobind bindings"
+requires-python = ">=3.11"
+dependencies = [
+    "jumbax-core>=0.0.1",
+    "numpy"
+]
+
+[project.optional-dependencies]
+dev = [
+    "scikit-build-core",
+    "nanobind",
+    "cmake",
+    "ninja"
+]
+
+[project.entry-points."jumbax.backends.mpdata"]
+fortran = "fortran_mpdata.backend"
+
+[tool.scikit-build]
+cmake.version = ">=3.18"
+wheel.packages = ["src/fortran_mpdata"]
+build-dir = "build/{wheel_tag}"
+build.verbose = true
+ninja.make-fallback = true
+cmake.build-type = "Release"

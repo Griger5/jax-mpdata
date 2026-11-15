@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jumbax-mpdata-numba"
+version = "0.0.1"
+description = "Numba MPDATA backend, using PyMPDATA"
+requires-python = ">=3.9"
+dependencies = [
+    "PyMPDATA",
+    "numpy",
+    "jumbax-core>=0.0.1"
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["numba_mpdata*"]
+
+[project.entry-points."jumbax.backends.mpdata"]
+numba = "numba_mpdata.backend"

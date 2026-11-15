@@ -1,0 +1,140 @@
+name: Build and publish
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  python-packages:
+    name: ${{ matrix.package.name }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - {name: jumbax, path: .}
+          - {name: jumbax-core, path: jumbax/core}
+          - {name: jumbax-api, path: jumbax/api}
+          - {name: jumbax-mpdata-jax, path: jumbax/jax/mpdata}
+          - {name: jumbax-mpdata-numba, path: jumbax/numba/mpdata}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+
+      - run: python -m pip install build
+
+      - name: Build wheel and source distribution
+        run: python -m build "${{ matrix.package.path }}" --outdir "$PWD/dist"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist-${{ matrix.package.name }}
+          path: dist/*
+
+  native-packages:
+    name: jumbax-mpdata-${{ matrix.backend }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
+        backend: [cpp, fortran]
+    env:
+      BACKEND: ${{ matrix.backend }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+
+      - run: python -m pip install build cibuildwheel==4.3.2
+
+      - name: Build source distribution
+        if: matrix.os == 'ubuntu-24.04'
+        run: python -m build "jumbax/$BACKEND/mpdata" --sdist --outdir "$PWD/dist"
+
+      - name: Build native wheels
+        env:
+          CIBW_SKIP: "*-musllinux_* cp3??t-*"
+          CIBW_ARCHS: auto64
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
+          CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_28
+          CIBW_BEFORE_ALL: 'bash "{package}/scripts/install-native-dependencies.sh"'
+          CIBW_ENVIRONMENT_LINUX: >-
+            CMAKE_ARGS='-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_POLICY_DEFAULT_CMP0074=NEW -DCMAKE_POLICY_DEFAULT_CMP0167=OLD'
+            CMAKE_PREFIX_PATH=/usr/local
+            PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+            LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+          CIBW_ENVIRONMENT_MACOS: >-
+            MACOSX_DEPLOYMENT_TARGET=15.0
+            CC=clang CXX=clang++
+            FC=$(brew --prefix gcc)/bin/gfortran
+            CMAKE_ARGS='-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_POLICY_DEFAULT_CMP0074=NEW -DCMAKE_POLICY_DEFAULT_CMP0167=OLD'
+            CMAKE_PREFIX_PATH=$(brew --prefix)
+            PKG_CONFIG_PATH=$(brew --prefix)/lib/pkgconfig
+        run: python -m cibuildwheel "jumbax/$BACKEND/mpdata" --output-dir dist
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist-jumbax-mpdata-${{ matrix.backend }}-${{ matrix.os }}
+          path: dist/*
+
+  publish:
+    name: Publish ${{ matrix.package.name }}
+    if: github.event_name != 'pull_request'
+    needs: [python-packages, native-packages]
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - {name: jumbax, environment: pypi-jumbax, artifacts: dist-jumbax}
+          - {name: jumbax-core, environment: pypi-jumbax-core, artifacts: dist-jumbax-core}
+          - {name: jumbax-api, environment: pypi-jumbax-api, artifacts: dist-jumbax-api}
+          - {name: jumbax-mpdata-jax, environment: pypi-jumbax-mpdata-jax, artifacts: dist-jumbax-mpdata-jax}
+          - {name: jumbax-mpdata-numba, environment: pypi-jumbax-mpdata-numba, artifacts: dist-jumbax-mpdata-numba}
+          - {name: jumbax-mpdata-cpp, environment: pypi-jumbax-mpdata-cpp, artifacts: 'dist-jumbax-mpdata-cpp-*'}
+          - {name: jumbax-mpdata-fortran, environment: pypi-jumbax-mpdata-fortran, artifacts: 'dist-jumbax-mpdata-fortran-*'}
+    environment: ${{ matrix.package.environment }}
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: ${{ matrix.package.artifacts }}
+          path: dist
+          merge-multiple: true
+
+      - name: Publish to TestPyPI
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: pypa/gh-action-pypi-publish@release/v1.14
+        with:
+          packages-dir: dist/
+          repository-url: https://test.pypi.org/legacy/
+          attestations: false
+          verbose: true
+          skip-existing: true
+
+      - name: Publish to PyPI
+        if: github.event_name == 'release' && github.event.release.prerelease == false
+        uses: pypa/gh-action-pypi-publish@release/v1.14
+        with:
+          packages-dir: dist/
+          attestations: false
+          skip-existing: true
