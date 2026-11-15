@@ -1,4 +1,4 @@
-name: Build wheels and publish to PyPI
+name: Build and publish
 
 on:
   push:
@@ -21,13 +21,14 @@ jobs:
     name: ${{ matrix.package.name }}
     runs-on: ubuntu-24.04
     strategy:
+      fail-fast: false
       matrix:
         package:
           - {name: jumbax, path: .}
           - {name: jumbax-core, path: jumbax/core}
           - {name: jumbax-api, path: jumbax/api}
-          - {name: jumbax-jax-mpdata, path: jumbax/jax/mpdata}
-          - {name: jumbax-numba-mpdata, path: jumbax/numba/mpdata}
+          - {name: jumbax-mpdata-jax, path: jumbax/jax/mpdata}
+          - {name: jumbax-mpdata-numba, path: jumbax/numba/mpdata}
     steps:
       - uses: actions/checkout@v7
 
@@ -46,9 +47,10 @@ jobs:
           path: dist/*
 
   native-packages:
-    name: jumbax-${{ matrix.backend }}-mpdata / ${{ matrix.os }}
+    name: jumbax-mpdata-${{ matrix.backend }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
         backend: [cpp, fortran]
@@ -91,20 +93,32 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          name: dist-jumbax-${{ matrix.backend }}-mpdata-${{ matrix.os }}
+          name: dist-jumbax-mpdata-${{ matrix.backend }}-${{ matrix.os }}
           path: dist/*
 
   publish:
+    name: Publish ${{ matrix.package.name }}
     if: github.event_name != 'pull_request'
     needs: [python-packages, native-packages]
     runs-on: ubuntu-24.04
-    environment: pypi
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - {name: jumbax, environment: pypi-jumbax, artifacts: dist-jumbax}
+          - {name: jumbax-core, environment: pypi-jumbax-core, artifacts: dist-jumbax-core}
+          - {name: jumbax-api, environment: pypi-jumbax-api, artifacts: dist-jumbax-api}
+          - {name: jumbax-mpdata-jax, environment: pypi-jumbax-mpdata-jax, artifacts: dist-jumbax-mpdata-jax}
+          - {name: jumbax-mpdata-numba, environment: pypi-jumbax-mpdata-numba, artifacts: dist-jumbax-mpdata-numba}
+          - {name: jumbax-mpdata-cpp, environment: pypi-jumbax-mpdata-cpp, artifacts: 'dist-jumbax-mpdata-cpp-*'}
+          - {name: jumbax-mpdata-fortran, environment: pypi-jumbax-mpdata-fortran, artifacts: 'dist-jumbax-mpdata-fortran-*'}
+    environment: ${{ matrix.package.environment }}
     permissions:
       id-token: write
     steps:
       - uses: actions/download-artifact@v8
         with:
-          pattern: dist-*
+          pattern: ${{ matrix.package.artifacts }}
           path: dist
           merge-multiple: true
 
