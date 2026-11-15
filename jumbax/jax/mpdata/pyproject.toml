@@ -26,3 +26,6 @@ include = ["jax_mpdata*"]
 cuda = [
     "jax[cuda13]==0.11.2"
 ]
+
+[project.entry-points."jumbax.backends.mpdata"]
+jax = "jax_mpdata.backend"

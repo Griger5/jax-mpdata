@@ -1,13 +1,14 @@
 import numpy as np
 from array_api.latest import Array
 
-from jumbax_core.mpdata.backend import MPDATABackend
-from jumbax_core.mpdata.config import MPDATAConfig, BoundaryCondition
-from jumbax_core.common.dtypes import Dtype
+from jumbax_core.common import Dtype
+from jumbax_core.mpdata import MPDATABackend, MPDATAConfig, BoundaryCondition
+from jumbax_core.mpdata.available_backends import add_mpdata_backend
 
 from PyMPDATA import Options, ScalarField, VectorField, Stepper, Solver
 from PyMPDATA.boundary_conditions import Periodic
 
+@add_mpdata_backend("numba")
 class NumbaMPDATABackend(MPDATABackend):
     name = "numba_mpdata"
     supports_mpi = True

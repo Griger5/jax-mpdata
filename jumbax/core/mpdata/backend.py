@@ -3,7 +3,7 @@ from typing import ClassVar
 
 from array_api.latest import Array
 
-from core.mpdata.config import MPDATAConfig
+from jumbax_core.mpdata.config import MPDATAConfig
 
 class MPDATABackend():
     supports_mpi: ClassVar[bool]

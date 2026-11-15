@@ -1,12 +1,13 @@
 from array_api.latest import Array
 import numpy as np
 
-from jumbax_core.common.env_manager import EnvContextManager
-from jumbax_core.mpdata.backend import MPDATABackend
-from jumbax_core.mpdata.config import MPDATAConfig
+from jumbax_core.common import EnvContextManager
+from jumbax_core.mpdata import MPDATABackend, MPDATAConfig
+from jumbax_core.mpdata.available_backends import add_mpdata_backend
 
 from libmpdataxx import mpdata_2d
 
+@add_mpdata_backend("cpp")
 class CppMPDATABackend(MPDATABackend):
     name = "cpp_mpdata"
     supports_mpi = False

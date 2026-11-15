@@ -20,6 +20,9 @@ dev = [
     "ninja"
 ]
 
+[project.entry-points."jumbax.backends.mpdata"]
+cpp = "cpp_mpdata.backend"
+
 [tool.scikit-build]
 cmake.version = ">=3.18"
 wheel.packages = ["src/cpp_mpdata"]

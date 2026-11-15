@@ -1,10 +1,11 @@
 from array_api.latest import Array
 
-from jumbax_core.mpdata.backend import MPDATABackend
-from jumbax_core.mpdata.config import MPDATAConfig
+from jumbax_core.mpdata import MPDATABackend, MPDATAConfig
+from jumbax_core.mpdata.available_backends import add_mpdata_backend
 
 from .implementation import solve, solve_mpi, setup_comm
 
+@add_mpdata_backend("jax")
 class JaxMPDATABackend(MPDATABackend):
     name = "jax_mpdata"
     supports_mpi = True

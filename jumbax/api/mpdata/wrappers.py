@@ -3,10 +3,10 @@ from typing import Optional
 
 from array_api.latest import Array
 
-from api.initialization import MPDATAConfig, MPDATAContext
-from core.mpdata.available_backends import _MPDATA_CURRENT_BACKEND
-from core.mpdata.config import BoundaryCondition
-from core.common.dtypes import Dtype
+from jumbax_api.mpdata.context import MPDATAConfig, MPDATAContext
+from jumbax_core.mpdata.available_backends import _MPDATA_CURRENT_BACKEND
+from jumbax_core.mpdata.config import BoundaryCondition
+from jumbax_core.common.dtypes import Dtype
 
 @contextmanager
 def setup_mpdata(backend: str, *, n_dims: int, n_iters: int, epsilon: float, dtype: Dtype, halo: int, boundary_conditions: list[BoundaryCondition], mpi: bool = False, n_threads: Optional[int] =  None):

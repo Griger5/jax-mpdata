@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from core.common import dtypes
+from jumbax_core.common import dtypes
 
 class BoundaryCondition(Enum):
     PERIODIC = 1

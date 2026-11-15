@@ -19,7 +19,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(nanobind)
 
 nanobind_add_module(libmpdataxx NOMINSIZE
-    src/mpdata.cpp
+    src/mpdata_bindings.cpp
 )
 
 target_link_libraries(libmpdataxx PUBLIC ${libmpdataxx_LIBRARIES})
