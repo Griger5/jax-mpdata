@@ -34,7 +34,7 @@ jobs:
 
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: "3.x"
 
       - run: python -m pip install build
 
@@ -61,7 +61,7 @@ jobs:
 
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
+          python-version: "3.x"
 
       - run: python -m pip install build cibuildwheel==4.3.2
 
@@ -71,8 +71,7 @@ jobs:
 
       - name: Build native wheels
         env:
-          CIBW_BUILD: "cp312-* cp313-*"
-          CIBW_SKIP: "*-musllinux_*"
+          CIBW_SKIP: "*-musllinux_* cp3??t-*"
           CIBW_ARCHS: auto64
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
           CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_28

@@ -1,4 +1,6 @@
 #include <cstring>
+#include <limits>
+#include <stdexcept>
 
 #include <nanobind/nanobind.h>
 #include <nanobind/ndarray.h>
@@ -28,8 +30,12 @@ Array2D<> mpdata_2d(Array2D<> advectee_np, Array2D<> u_np, Array2D<> v_np, doubl
     using slv_t = solvers::mpdata<ct_params_t>;
     typename slv_t::rt_params_t p;
 
-    auto nx = advectee_np.shape(0);
-    auto ny = advectee_np.shape(1);
+    if (advectee_np.shape(0) >= std::numeric_limits<int>::max() || advectee_np.shape(1) >= std::numeric_limits<int>::max()) {
+        throw std::overflow_error("Grid dimensions are too large for libmpdata++");
+    }
+
+    const int nx = static_cast<int>(advectee_np.shape(0));
+    const int ny = static_cast<int>(advectee_np.shape(1));
 
     p.n_iters = n_iters;
     p.grid_size = {nx, ny};
@@ -61,7 +67,7 @@ Array2D<> mpdata_2d(Array2D<> advectee_np, Array2D<> u_np, Array2D<> v_np, doubl
     slv.advance(nt);
 
     adv = slv.advectee()(i,j);
-    
+
     return advectee_np;
 }
 
