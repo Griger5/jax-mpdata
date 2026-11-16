@@ -1,0 +1,16 @@
+{
+    "data_dir": "../implementations_comparison/data",
+    "field_size": 1024,
+    "case_id": 1,
+    "nt": 50,
+    "n_iters": 3,
+    "repeats": 10,
+    "warmup": 3,
+    "precisions": [
+        "float32",
+        "float64",
+        "float16",
+        "bfloat16"
+    ],
+    "output": "../results/floating_point_precision.json"
+}
