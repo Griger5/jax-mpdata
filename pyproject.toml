@@ -1,31 +1,31 @@
 [build-system]
-requires = ["setuptools >= 77.0.3"]
+requires = ["setuptools >= 77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "jax-mpdata"
+name = "jumbax"
 version = "0.0.1"
-description = "Incoming Bachelor thesis"
-requires-python = ">=3.9"
+description = "J* Unified Multi-Backend Algorithms Excellence: A multi-algorithm, multi-backend scientific computing library"
+requires-python = ">=3.11"
 dependencies = [
-    "numpy",
-    "matplotlib",
-    "mpi4py",
-    "mpi4jax", # TODO: mpi4jax breaks with build isolation
-    "jax==0.11.2",
-    "jaxlib==0.11.2"
+    "jumbax-core>=0.0.1",
+    "jumbax-api>=0.0.1"
+]
+
+[project.optional-dependencies]
+mpdata-jax = ["jumbax-mpdata-jax>=0.0.1"]
+mpdata-jax-cuda = ["jumbax-mpdata-jax[cuda]>=0.0.1"]
+mpdata-jax-mpi = ["jumbax-mpdata-jax[mpi]>=0.0.1"]
+mpdata-numba = ["jumbax-mpdata-numba>=0.0.1"]
+mpdata-fortran = ["jumbax-mpdata-fortran>=0.0.1"]
+mpdata-cpp = ["jumbax-mpdata-cpp>=0.0.1"]
+
+mpdata = ["jumbax[mpdata-jax,mpdata-numba,mpdata-fortran,mpdata-cpp]"]
+all = [
+    "jumbax[mpdata]"
 ]
 
 [tool.setuptools.packages.find]
-include = ["jax_mpdata*"]
-
-[project.optional-dependencies]
-benchmarks = [
-    "xarray",
-    "netCDF4",
-    "PyMPDATA",
-    "tqdm"
-]
-cuda = [
-    "jax[cuda13]==0.11.2"
-]
+where = ["."]
+include = ["jumbax", "jumbax.api", "jumbax.api.*"]
+namespaces = false

@@ -1,6 +1,6 @@
 import os
 
-from jax_mpdata.permutations import solve
+from jax_mpdata.implementation import solve
 
 import jax
 import jax.numpy as jnp
