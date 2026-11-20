@@ -6,6 +6,7 @@ import numpy as np
 import xarray as xr
 import jax
 import jax.numpy as jnp
+from jax import lax
 
 jax.config.update("jax_platform_name", "gpu")
 jax.config.update("jax_enable_x64", True)
@@ -59,6 +60,28 @@ def _pad_batch(psi_batch_np: np.ndarray, halo: int) -> np.ndarray:
     pad_width = [(0, 0)] + [(halo, halo)] * (psi_batch_np.ndim - 1)
     return np.pad(psi_batch_np, pad_width=pad_width, mode="constant", constant_values=0.0)
 
+def make_sin_kernel(nt):
+    @jax.jit
+    def kernel(x):
+        return lax.fori_loop(0, nt, lambda i, x: jnp.sin(x), x)
+    return kernel
+
+def time_calls(run, warmup: int, repeats: int) -> list:
+    # Warmup (JIT compilation + device cache warming)
+    for _ in range(warmup):
+        out = run()
+        out.block_until_ready()
+
+    # Timed runs
+    times = []
+    for _ in range(repeats):
+        start = time.perf_counter()
+        out = run()
+        out.block_until_ready()
+        times.append(time.perf_counter() - start)
+
+    return times
+
 def make_metrics(times: list, case: dict) -> dict:
     times = np.asarray(times, dtype=np.float64)
 
@@ -73,6 +96,7 @@ def make_metrics(times: list, case: dict) -> dict:
 
     fields = 1.0
     cells = float(nx * ny)
+    element_passes = cells * float(nt)
 
     return {
         "times": [float(t) for t in times],
@@ -84,8 +108,33 @@ def make_metrics(times: list, case: dict) -> dict:
         "fields_per_sec_best": fields / t_min,
         "cells_per_sec": fields * cells / t_median,
         "cells_per_sec_best": fields * cells / t_min,
-        "cell_steps_per_sec": fields * cells * float(nt) / t_median,
-        "cell_steps_per_sec_best": fields * cells * float(nt) / t_min,
+        "cell_steps_per_sec": element_passes / t_median,
+        "cell_steps_per_sec_best": element_passes / t_min,
+        "element_passes_per_sec": element_passes / t_median,
+        "element_passes_per_sec_best": element_passes / t_min,
+    }
+
+def make_sin_metrics(times: list, n_elements: int, nt: int, bytes_per_element: int) -> dict:
+    times = np.asarray(times, dtype=np.float64)
+
+    t_min = float(np.min(times))
+    t_max = float(np.max(times))
+    t_mean = float(np.mean(times))
+    t_median = float(np.median(times))
+
+    element_passes = float(n_elements) * float(nt)
+    bytes_moved = element_passes * 2.0 * bytes_per_element
+
+    return {
+        "times": [float(t) for t in times],
+        "min": t_min,
+        "max": t_max,
+        "mean": t_mean,
+        "median": t_median,
+        "element_passes_per_sec": element_passes / t_median,
+        "element_passes_per_sec_best": element_passes / t_min,
+        "gb_per_sec": bytes_moved / t_median / 1e9,
+        "gb_per_sec_best": bytes_moved / t_min / 1e9,
     }
 
 def main():
@@ -93,7 +142,9 @@ def main():
 
     field_size = config["field_size"]
     case_id = config["case_id"]
+    kernels = config["kernels"]
     precisions = config["precisions"]
+    platforms = config["platforms"]
     warmup = int(config["warmup"])
     repeats = int(config["repeats"])
 
@@ -106,52 +157,75 @@ def main():
     psi_padded = _pad_batch(case["psi"][None, ...], halo)[0]
     Cx, Cy = case["C"]
 
-    try:
-        device = jax.devices("gpu")[0]
-    except RuntimeError:
-        print("ERROR: No GPU found or JAX not installed with CUDA.")
-        raise
+    # Runtime array (not a traced constant), so XLA cannot constant-fold the sin kernel
+    x_np = np.random.default_rng(0).standard_normal(metadata["size_x"] * metadata["size_y"]).astype(np.float32)
+
+    sin_kernel = make_sin_kernel(nt)
 
     results = {
         "config": config,
-        "device": str(device),
-        "device_kind": device.device_kind,
         "field_size": field_size,
         "case_id": case_id,
-        "precisions": {}
+        "results": {}
     }
 
-    for precision in precisions:
-        print(f"Benchmarking {precision}...")
+    for platform in platforms:
+        print("####################")
+        print(f"##### {platform} #####")
+        print("####################")
 
         try:
-            jnp_dtype = getattr(jnp, precision)
+            device = jax.devices(platform)[0]
+        except RuntimeError:
+            print(f"ERROR: No {platform} device found or JAX not installed with the corresponding backend.")
+            continue
 
-            psi_jax = jax.device_put(jnp.asarray(psi_padded, dtype=jnp_dtype), device)
-            Cx_jax = jax.device_put(jnp.asarray(Cx, dtype=jnp_dtype), device)
-            Cy_jax = jax.device_put(jnp.asarray(Cy, dtype=jnp_dtype), device)
+        # Route JAX's default device to the platform under test
+        jax.config.update("jax_platform_name", platform)
 
-            # Warmup (JIT compilation + GPU cache warming)
-            for _ in range(warmup):
-                out = solve(psi_jax, (Cx_jax, Cy_jax), nt, halo=halo, n_iters=n_iters)
-                out.block_until_ready()
+        results["results"][platform] = {
+            "device": str(device),
+            "device_kind": device.device_kind,
+            "kernels": {}
+        }
 
-            # Timed runs
-            times = []
-            for _ in range(repeats):
-                start = time.perf_counter()
-                out = solve(psi_jax, (Cx_jax, Cy_jax), nt, halo=halo, n_iters=n_iters)
-                out.block_until_ready()
-                times.append(time.perf_counter() - start)
+        for kernel_name in kernels:
+            results["results"][platform]["kernels"][kernel_name] = {}
 
-            metrics = make_metrics(times, case)
-            results["precisions"][precision] = metrics
+            for precision in precisions:
+                print(f"Benchmarking {kernel_name}/{precision}...")
 
-            print(f"  -> Median: {metrics['median']:.6f}s | Cell-steps/sec: {metrics['cell_steps_per_sec']:.2e}")
+                try:
+                    jnp_dtype = getattr(jnp, precision)
 
-        except Exception as e:
-            print(f"  -> Failed for {precision}: {e}")
-            results["precisions"][precision] = {"error": str(e)}
+                    if kernel_name == "mpdata":
+                        psi_jax = jax.device_put(jnp.asarray(psi_padded, dtype=jnp_dtype), device)
+                        Cx_jax = jax.device_put(jnp.asarray(Cx, dtype=jnp_dtype), device)
+                        Cy_jax = jax.device_put(jnp.asarray(Cy, dtype=jnp_dtype), device)
+
+                        times = time_calls(
+                            lambda: solve(psi_jax, (Cx_jax, Cy_jax), nt, halo=halo, n_iters=n_iters),
+                            warmup,
+                            repeats,
+                        )
+                        metrics = make_metrics(times, case)
+                    else:
+                        x = jax.device_put(jnp.asarray(x_np, dtype=jnp_dtype), device)
+
+                        times = time_calls(
+                            lambda: sin_kernel(x),
+                            warmup,
+                            repeats,
+                        )
+                        metrics = make_sin_metrics(times, x_np.size, nt, jnp.dtype(jnp_dtype).itemsize)
+
+                    results["results"][platform]["kernels"][kernel_name][precision] = metrics
+
+                    print(f"  -> Median: {metrics['median']:.6f}s | Passes/sec: {metrics['element_passes_per_sec']:.2e}")
+
+                except Exception as e:
+                    print(f"  -> Failed for {precision}: {e}")
+                    results["results"][platform]["kernels"][kernel_name][precision] = {"error": str(e)}
 
     output_path = resolve_path(config["output"])
     output_path.parent.mkdir(parents=True, exist_ok=True)
