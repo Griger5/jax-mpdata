@@ -37,3 +37,7 @@ if __name__ == "__main__":
             for c in columns))
 
     print(f"\nWrote {out}")
+
+    for path in paths.values():
+        path.unlink()
+        print(f"Deleted {path.name}")
