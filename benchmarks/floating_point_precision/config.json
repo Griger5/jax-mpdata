@@ -6,11 +6,19 @@
     "n_iters": 3,
     "repeats": 10,
     "warmup": 3,
+    "kernels": [
+        "mpdata",
+        "sin"
+    ],
     "precisions": [
         "float32",
         "float64",
         "float16",
         "bfloat16"
+    ],
+    "platforms": [
+        "gpu",
+        "cpu"
     ],
     "output": "../results/floating_point_precision.json"
 }
